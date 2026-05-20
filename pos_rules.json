@@ -45,7 +45,7 @@
                         {
                             "id": "REQ_25",
                             "name": "POS Condition Code",
-                            "expected": "00"
+                            "expected": "99"
                         },
                         {
                             "id": "REQ_35",

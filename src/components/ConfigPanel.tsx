@@ -1,7 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import {
   Plus, Trash2, Copy, Save, ChevronDown, ChevronUp,
-  Building2, FileText, Layers, Download, Upload, Info
+  Building2, FileText, Layers, Download, Upload, Info,
+  Cloud, CloudDownload, CloudUpload, RefreshCw, AlertCircle, CheckCircle, X
 } from 'lucide-react';
 import type { AllRules, TransactionConfig, TransactionStep, VerifyField } from '../types';
 
@@ -133,6 +134,21 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
   const [saveMsg, setSaveMsg] = useState('');
   const [renamingTrans, setRenamingTrans] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState('');
+
+  // ── 雲端規格庫狀態 ────────────────────────────────────────────────────────
+  const [cloudBanks, setCloudBanks] = useState<string[]>([]);
+  const [selectedCloudBank, setSelectedCloudBank] = useState('');
+  const [cloudMsg, setCloudMsg] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
+  const [isCloudFetching, setIsCloudFetching] = useState(false);
+  const [isCloudDownloading, setIsCloudDownloading] = useState(false);
+  const [isCloudUploading, setIsCloudUploading] = useState(false);
+  const cloudMsgTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showCloudMsg = (type: 'success' | 'error' | 'info', text: string) => {
+    setCloudMsg({ type, text });
+    if (cloudMsgTimerRef.current) clearTimeout(cloudMsgTimerRef.current);
+    cloudMsgTimerRef.current = setTimeout(() => setCloudMsg(null), 4000);
+  };
 
   // 同步外部 rules 更新
   React.useEffect(() => {
@@ -309,6 +325,106 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
     updateSteps(steps);
   };
 
+  // ── 雲端操作 ──────────────────────────────────────────────────────────────
+
+  const fetchCloudBanks = async () => {
+    setIsCloudFetching(true);
+    try {
+      const res = await fetch('/api/cloud-specs');
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      const banks: string[] = data.banks ?? [];
+      setCloudBanks(banks);
+      if (banks.length > 0) {
+        setSelectedCloudBank(prev => banks.includes(prev) ? prev : banks[0]);
+        showCloudMsg('info', `雲端共有 ${banks.length} 筆規格`);
+      } else {
+        showCloudMsg('info', '雲端目前無規格');
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : '未知錯誤';
+      showCloudMsg('error', `無法取得列表：${msg}`);
+    } finally {
+      setIsCloudFetching(false);
+    }
+  };
+
+  const downloadFromCloud = async () => {
+    if (!selectedCloudBank) { showCloudMsg('error', '請先選擇要下載的規格'); return; }
+    setIsCloudDownloading(true);
+    try {
+      const res = await fetch(`/api/cloud-specs?bank=${encodeURIComponent(selectedCloudBank)}`);
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error ?? `HTTP ${res.status}`);
+      }
+      const bankSpec = await res.json();
+      // 將雲端規格合併進本地 rules（以雲端版本為主）
+      setRules(prev => ({
+        ...prev,
+        [selectedCloudBank]: bankSpec,
+      }));
+      setSelectedBank(selectedCloudBank);
+      setSelectedTrans(Object.keys(bankSpec)[0] ?? '');
+      showCloudMsg('success', `已下載 ${selectedCloudBank}（${Object.keys(bankSpec).length} 個交易）`);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : '未知錯誤';
+      showCloudMsg('error', `下載失敗：${msg}`);
+    } finally {
+      setIsCloudDownloading(false);
+    }
+  };
+
+  const uploadToCloud = async () => {
+    if (!selectedBank) { showCloudMsg('error', '請先選擇要上傳的銀行'); return; }
+    const bankSpec = rules[selectedBank];
+    if (!bankSpec || Object.keys(bankSpec).length === 0) {
+      showCloudMsg('error', `${selectedBank} 目前無規格可上傳`);
+      return;
+    }
+    setIsCloudUploading(true);
+    try {
+      const res = await fetch(`/api/cloud-specs?bank=${encodeURIComponent(selectedBank)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bankSpec),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error ?? `HTTP ${res.status}`);
+      }
+      showCloudMsg('success', `已上傳 ${selectedBank} 至雲端`);
+      // 重新整理列表
+      setCloudBanks([]);
+      setSelectedCloudBank('');
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : '未知錯誤';
+      showCloudMsg('error', `上傳失敗：${msg}`);
+    } finally {
+      setIsCloudUploading(false);
+    }
+  };
+
+  const deleteFromCloud = async () => {
+    if (!selectedCloudBank) { showCloudMsg('error', '請先選擇要刪除的規格'); return; }
+    if (!window.confirm(`確定要從雲端刪除「${selectedCloudBank}」的規格嗎？`)) return;
+    try {
+      const res = await fetch(`/api/cloud-specs?bank=${encodeURIComponent(selectedCloudBank)}`, {
+        method: 'DELETE',
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error ?? `HTTP ${res.status}`);
+      }
+      showCloudMsg('success', `已從雲端刪除 ${selectedCloudBank}`);
+      setCloudBanks(prev => prev.filter(b => b !== selectedCloudBank));
+      setSelectedCloudBank('');
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : '未知錯誤';
+      showCloudMsg('error', `刪除失敗：${msg}`);
+    }
+  };
+
   // ── 儲存 ──────────────────────────────────────────────────────────────────
 
   const handleSave = async () => {
@@ -363,6 +479,87 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
             <Upload className="w-3.5 h-3.5" /> 匯入 JSON
             <input type="file" accept=".json" className="hidden" onChange={importRules} />
           </label>
+        </div>
+
+        {/* 雲端規格庫 */}
+        <div className="bg-slate-800/60 border border-slate-700 rounded-xl overflow-hidden">
+          <div className="px-3 py-2 bg-slate-800/80 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Cloud className="w-3.5 h-3.5 text-sky-400" />
+              <span className="text-xs font-semibold text-slate-300">雲端規格庫</span>
+            </div>
+            <button
+              onClick={fetchCloudBanks}
+              disabled={isCloudFetching}
+              title="重新整理雲端列表"
+              className="p-1 rounded hover:bg-slate-700 text-slate-400 hover:text-slate-200 transition-colors disabled:opacity-50"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isCloudFetching ? 'animate-spin' : ''}`} />
+            </button>
+          </div>
+
+          <div className="px-3 py-2.5 space-y-2">
+            {/* 訊息列 */}
+            {cloudMsg && (
+              <div className={`flex items-center gap-1.5 text-xs px-2 py-1.5 rounded-lg ${
+                cloudMsg.type === 'success' ? 'bg-emerald-950/50 text-emerald-300 border border-emerald-800/40' :
+                cloudMsg.type === 'error'   ? 'bg-red-950/50 text-red-300 border border-red-800/40' :
+                                              'bg-blue-950/50 text-blue-300 border border-blue-800/40'
+              }`}>
+                {cloudMsg.type === 'success' ? <CheckCircle className="w-3 h-3 flex-shrink-0" /> :
+                 cloudMsg.type === 'error'   ? <AlertCircle  className="w-3 h-3 flex-shrink-0" /> :
+                                              <Cloud        className="w-3 h-3 flex-shrink-0" />}
+                <span className="flex-1">{cloudMsg.text}</span>
+                <button onClick={() => setCloudMsg(null)} className="flex-shrink-0 hover:opacity-70"><X className="w-3 h-3" /></button>
+              </div>
+            )}
+
+            {/* 下載區 */}
+            <div className="space-y-1.5">
+              <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">從雲端下載</p>
+              {cloudBanks.length > 0 ? (
+                <select
+                  value={selectedCloudBank}
+                  onChange={e => setSelectedCloudBank(e.target.value)}
+                  className="w-full bg-slate-700 text-xs text-slate-200 px-2 py-1.5 rounded focus:outline-none focus:ring-1 focus:ring-sky-500"
+                >
+                  {cloudBanks.map(b => <option key={b} value={b}>{b}</option>)}
+                </select>
+              ) : (
+                <p className="text-xs text-slate-500 italic">點選 ↺ 取得雲端列表</p>
+              )}
+              <div className="flex gap-1.5">
+                <button
+                  onClick={downloadFromCloud}
+                  disabled={isCloudDownloading || !selectedCloudBank}
+                  className="flex-1 flex items-center justify-center gap-1.5 text-xs px-2 py-1.5 bg-sky-700 hover:bg-sky-600 disabled:bg-slate-700 disabled:text-slate-500 text-white rounded transition-colors"
+                >
+                  <CloudDownload className={`w-3.5 h-3.5 ${isCloudDownloading ? 'animate-pulse' : ''}`} />
+                  {isCloudDownloading ? '下載中…' : '下載規格'}
+                </button>
+                <button
+                  onClick={deleteFromCloud}
+                  disabled={!selectedCloudBank}
+                  title="從雲端刪除此規格"
+                  className="px-2 py-1.5 rounded text-slate-500 hover:text-red-400 hover:bg-red-950/30 disabled:opacity-30 transition-colors"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            <div className="border-t border-slate-700/50 pt-2 space-y-1.5">
+              <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">上傳到雲端</p>
+              <button
+                onClick={uploadToCloud}
+                disabled={isCloudUploading || !selectedBank}
+                className="w-full flex items-center justify-center gap-1.5 text-xs px-2 py-1.5 bg-indigo-700 hover:bg-indigo-600 disabled:bg-slate-700 disabled:text-slate-500 text-white rounded transition-colors"
+              >
+                <CloudUpload className={`w-3.5 h-3.5 ${isCloudUploading ? 'animate-pulse' : ''}`} />
+                {isCloudUploading ? '上傳中…' : `上傳「${selectedBank || '—'}」至雲端`}
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* 銀行列表 */}

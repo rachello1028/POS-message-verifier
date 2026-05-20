@@ -9,8 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "^5.0.4",
     "@tailwindcss/vite": "^4.1.14",
+    "@vercel/blob": "^2.4.0",
+    "@vercel/node": "^5.8.3",
+    "@vitejs/plugin-react": "^5.0.4",
     "lucide-react": "^0.546.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
