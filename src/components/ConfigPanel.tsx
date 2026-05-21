@@ -158,8 +158,22 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
     setSelectedTrans(Object.keys(initialRules[bank] ?? {})[0] ?? '');
   }, [initialRules]);
 
-  const bankList = Object.keys(rules);
-  const transList = selectedBank ? Object.keys(rules[selectedBank] ?? {}) : [];
+  const bankList = Object.keys(rules).sort((a, b) => a.localeCompare(b, 'zh-TW'));
+  
+  // 交易類別排序：依優先權 + 中文自然排序
+  const transList = selectedBank
+    ? Object.keys(rules[selectedBank] ?? {}).sort((a, b) => {
+        const priority = ['一般銷售', '銷售', '預授權', '取消', '退貨', '退款', '結帳', '查詢'];
+        const getPriority = (name: string) => {
+          const idx = priority.findIndex(p => name.includes(p));
+          return idx === -1 ? priority.length : idx;
+        };
+        const pa = getPriority(a);
+        const pb = getPriority(b);
+        if (pa !== pb) return pa - pb;
+        return a.localeCompare(b, 'zh-TW');
+      })
+    : [];
   const currentConfig = selectedBank && selectedTrans
     ? normalizeConfig(rules[selectedBank]?.[selectedTrans] ?? { steps: [] })
     : null;
