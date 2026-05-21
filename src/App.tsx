@@ -40,7 +40,7 @@ Set-ItemProperty -Path $regPath -Name "(Default)" -Value "URL:POS Bridge Runner 
 Set-ItemProperty -Path $regPath -Name "URL Protocol" -Value ""
 $cmdPath = Join-Path $regPath "shell\\open\\command"
 New-Item -Path $cmdPath -Force | Out-Null
-Set-ItemProperty -Path $cmdPath -Name "(Default)" -Value "\`"$batPath\`""
+Set-ItemProperty -Path $cmdPath -Name "(Default)" -Value ('"{0}"' -f $batPath)
 Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。" -ForegroundColor Green`;
 
   const bridgeRef = useRef<AdbBridge | null>(null);
