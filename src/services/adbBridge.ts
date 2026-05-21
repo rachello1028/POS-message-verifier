@@ -262,8 +262,33 @@ export class AdbBridge {
     const expectedMti = expectedStep.mti.trim();
     console.log(`[Bridge] evaluateBuffer: actualMti="${actualMti}", expectedMti="${expectedMti}", step=${this.currentStepIdx}/${this.pendingSteps.length}`);
 
-    // MTI 不符合這一步，忽略
+    // MTI 不符合這一步
     if (actualMti && !actualMti.includes(expectedMti)) {
+      // 檢查是否是新的一筆交易開始（MTI 符合第一步驟）
+      const firstStepMti = this.pendingSteps[0].mti.trim();
+      if (actualMti.includes(firstStepMti)) {
+        console.log(`[Bridge] Detected new transaction start (MTI=${actualMti}), resetting to step 0`);
+        // 如果之前有累積的結果，先輸出為未完成的交易
+        if (this.accumulatedStepResults.length > 0) {
+          this.txCounter++;
+          const tx: TransactionResult = {
+            id: this.txCounter,
+            timestamp: new Date().toLocaleTimeString('zh-TW'),
+            bank: this.currentBank,
+            transactionType: this.currentTransType,
+            pass: false,
+            steps: [...this.accumulatedStepResults],
+          };
+          console.warn('[Bridge] Previous transaction incomplete, outputting partial result');
+          this.callbacks.onTransaction(tx);
+        }
+        // 重置並重新評估
+        this.currentStepIdx = 0;
+        this.accumulatedStepResults = [];
+        // 遞迴呼叫自己來處理這筆新交易
+        this.evaluateBuffer(parsed);
+        return;
+      }
       console.warn(`[Bridge] MTI mismatch, skip. actual="${actualMti}" expected="${expectedMti}"`);
       return;
     }
