@@ -280,6 +280,9 @@ async def handle_client(websocket, path=None) -> None:
                         'type': 'logcat_stopped'
                     }))
 
+                elif cmd == 'ping':
+                    await websocket.send(json.dumps({'type': 'pong'}))
+
             except json.JSONDecodeError:
                 pass
             except Exception as e:
@@ -312,7 +315,11 @@ async def main() -> None:
     print("=" * 50)
     print("按 Ctrl+C 停止服務\n")
 
-    async with websockets.serve(handle_client, '127.0.0.1', LISTEN_PORT):
+    async with websockets.serve(
+        handle_client, '127.0.0.1', LISTEN_PORT,
+        ping_interval=20,   # 每 20 秒發一次 WS 協定層 ping
+        ping_timeout=10,    # 10 秒內沒收到 pong 就強制關閉連線
+    ):
         await asyncio.Future()  # 永久執行
 
 

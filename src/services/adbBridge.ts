@@ -12,10 +12,16 @@ export interface BridgeCallbacks {
   onError: (msg: string) => void;
 }
 
+const HEARTBEAT_INTERVAL_MS = 25_000;  // 每 25 秒送一次 ping
+const HEARTBEAT_TIMEOUT_MS  = 10_000;  // 等不到 pong 就強制重連
+const RECONNECT_DELAY_MS    =  3_000;
+
 export class AdbBridge {
   private ws: WebSocket | null = null;
   private callbacks: BridgeCallbacks;
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+  private heartbeatTimer: ReturnType<typeof setInterval> | null = null;
+  private pongTimer: ReturnType<typeof setTimeout> | null = null;
 
   // 多段式交易狀態
   private pendingSteps: TransactionStep[] = [];
@@ -43,14 +49,17 @@ export class AdbBridge {
       this.ws.onopen = () => {
         if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
         this.callbacks.onStatus('connected', 'ADB Bridge 連線成功');
+        this.startHeartbeat();
       };
 
       this.ws.onclose = () => {
+        this.stopHeartbeat();
         this.callbacks.onStatus('disconnected', '連線已中斷');
         this.scheduleReconnect();
       };
 
       this.ws.onerror = () => {
+        this.stopHeartbeat();
         this.callbacks.onStatus('error', '無法連線至 ADB Bridge (請確認 python adb_bridge.py 已執行)');
       };
 
@@ -62,12 +71,38 @@ export class AdbBridge {
 
   disconnect(): void {
     if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
+    this.stopHeartbeat();
     this.ws?.close();
     this.ws = null;
   }
 
   private scheduleReconnect(): void {
-    this.reconnectTimer = setTimeout(() => this.connect(), 3000);
+    if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
+    this.reconnectTimer = setTimeout(() => this.connect(), RECONNECT_DELAY_MS);
+  }
+
+  // ── 心跳 (防殭屍連線) ───────────────────────────────────────────────────────
+
+  private startHeartbeat(): void {
+    this.stopHeartbeat();
+    this.heartbeatTimer = setInterval(() => {
+      if (this.ws?.readyState !== WebSocket.OPEN) {
+        this.stopHeartbeat();
+        return;
+      }
+      // 送出 JSON ping
+      this.ws.send(JSON.stringify({ command: 'ping' }));
+      // 若 10 秒內沒收到 pong → 視為殭屍連線，強制關閉重連
+      this.pongTimer = setTimeout(() => {
+        console.warn('[Bridge] Heartbeat timeout — 強制重連');
+        this.ws?.close();
+      }, HEARTBEAT_TIMEOUT_MS);
+    }, HEARTBEAT_INTERVAL_MS);
+  }
+
+  private stopHeartbeat(): void {
+    if (this.heartbeatTimer) { clearInterval(this.heartbeatTimer); this.heartbeatTimer = null; }
+    if (this.pongTimer)      { clearTimeout(this.pongTimer);       this.pongTimer = null; }
   }
 
   private send(data: object): void {
@@ -131,6 +166,10 @@ export class AdbBridge {
           break;
         case 'rules_saved':
           this.callbacks.onRulesSaved();
+          break;
+        case 'pong':
+          // 收到 pong：清除 pongTimer，心跳正常
+          if (this.pongTimer) { clearTimeout(this.pongTimer); this.pongTimer = null; }
           break;
         case 'logcat':
           this.processLogLine(data.message as string);
