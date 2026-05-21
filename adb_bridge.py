@@ -300,9 +300,57 @@ async def handle_client(websocket, path=None) -> None:
         print(f"[INFO] 客戶端離線 ({len(connected_clients)} 個)")
 
 
+# ─── Port 檢測 ────────────────────────────────────────────────────────────────
+
+def is_port_in_use(port: int) -> bool:
+    """檢測指定 port 是否被佔用"""
+    import socket
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        try:
+            s.bind(('127.0.0.1', port))
+            return False
+        except OSError:
+            return True
+
+
+def find_available_port(start_port: int, max_tries: int = 10) -> int:
+    """從 start_port 開始找可用的 port"""
+    for i in range(max_tries):
+        port = start_port + i
+        if not is_port_in_use(port):
+            return port
+    return -1
+
+
 # ─── 主程式 ───────────────────────────────────────────────────────────────────
 
 async def main() -> None:
+    global LISTEN_PORT
+    
+    # 檢測 port 是否被佔用
+    if is_port_in_use(LISTEN_PORT):
+        print(f"[警告] Port {LISTEN_PORT} 已被佔用！")
+        print("       可能是之前的 Bridge 還在運行。")
+        print()
+        
+        # 嘗試找下一個可用的 port
+        new_port = find_available_port(LISTEN_PORT + 1)
+        if new_port > 0:
+            print(f"[提示] 找到可用的 Port: {new_port}")
+            user_input = input(f"       是否使用 Port {new_port}？(Y/N，預設 Y): ").strip().upper()
+            if user_input != 'N':
+                LISTEN_PORT = new_port
+            else:
+                print("[提示] 請手動關閉佔用 Port 的程式後重試。")
+                print("       可嘗試: taskkill /F /IM python.exe")
+                input("按 Enter 結束...")
+                return
+        else:
+            print("[錯誤] 找不到可用的 Port，請手動關閉佔用的程式。")
+            print("       可嘗試: taskkill /F /IM python.exe")
+            input("按 Enter 結束...")
+            return
+    
     print("=" * 50)
     print("  POS 電文驗証工具 - ADB WebSocket Bridge")
     print(f"  監聽埠: ws://127.0.0.1:{LISTEN_PORT}")
