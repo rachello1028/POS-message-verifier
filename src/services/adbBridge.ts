@@ -204,6 +204,8 @@ export class AdbBridge {
           if (this.pongTimer) { clearTimeout(this.pongTimer); this.pongTimer = null; }
           break;
         case 'logcat':
+          // Debug: 顯示收到的每行 logcat
+          console.log('[Bridge] Logcat received:', data.message);
           this.processLogLine(data.message as string);
           break;
         case 'error':

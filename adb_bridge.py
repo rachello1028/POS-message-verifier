@@ -196,7 +196,15 @@ async def start_logcat(device_id: str = '') -> None:
                 break
 
             decoded = line.decode('utf-8', errors='ignore').strip()
-            if decoded and any(p in decoded for p in INCLUDE_PATTERNS):
+            if not decoded:
+                continue
+            
+            # Debug: 印出所有含有 ISO/電文相關字眼的訊息
+            debug_keywords = ['ISO', 'Field', 'Tag', 'Pack', 'Unpack', 'SEND', 'RECEIVE', 'MTI', '8583']
+            if any(kw.lower() in decoded.lower() for kw in debug_keywords):
+                print(f"[DEBUG-LOGCAT] {decoded[:200]}")
+            
+            if any(p in decoded for p in INCLUDE_PATTERNS):
                 await broadcast(json.dumps({'type': 'logcat', 'message': decoded}))
 
     except Exception as e:
