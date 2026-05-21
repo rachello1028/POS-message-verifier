@@ -18,6 +18,7 @@ export default function App() {
   const [isMonitoring, setIsMonitoring] = useState(false);
   const [showSetupModal, setShowSetupModal] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isBridgeLaunching, setIsBridgeLaunching] = useState(false);
 
   const psScript = `$dir = Get-Location
 $batPath = Join-Path $dir "start_bridge.bat"
@@ -47,7 +48,6 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
       onError: (msg) => console.error('[Bridge Error]', msg),
     });
     bridgeRef.current = bridge;
-    bridge.connect();
 
     return () => bridge.disconnect();
   }, []);
@@ -85,11 +85,17 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
   }, []);
 
   const handleStartBridge = useCallback(() => {
+    setIsBridgeLaunching(true);
     const a = document.createElement('a');
     a.href = 'pos-bridge-runner://run';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+    // 等 Bridge 程式啟動後再建立 WebSocket 連線
+    setTimeout(() => {
+      setIsBridgeLaunching(false);
+      bridgeRef.current?.connect();
+    }, 2500);
   }, []);
 
   const copyToClipboard = useCallback((text: string) => {
@@ -180,9 +186,12 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
             <div className="flex items-center gap-2 flex-shrink-0">
               <button
                 onClick={handleStartBridge}
-                className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors font-medium"
+                disabled={isBridgeLaunching}
+                className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-60 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-medium"
               >
-                <Zap className="w-3.5 h-3.5" /> 啟動 ADB Bridge
+                {isBridgeLaunching
+                  ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> 啟動中…</>
+                  : <><Zap className="w-3.5 h-3.5" /> 啟動 ADB Bridge</>}
               </button>
               <button
                 onClick={() => setShowSetupModal(true)}
