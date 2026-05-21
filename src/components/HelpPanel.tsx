@@ -74,7 +74,8 @@ function Tip({ type = 'info', children }: { type?: 'info' | 'warn'; children: Re
 // ── 下載工具包 ──────────────────────────────────────────────────────────────
 function DownloadSection() {
   const files = [
-    { name: 'adb_bridge.py',    desc: 'ADB WebSocket Bridge（Python）',    hint: '主要橋接程式，需每次啟動' },
+    { name: 'start_bridge.bat', desc: '一鍵啟動橋接程式（Windows）',        hint: '雙擊即可，自動安裝 websockets 並啟動 Bridge', highlight: true },
+    { name: 'adb_bridge.py',    desc: 'ADB WebSocket Bridge（Python）',    hint: '主要橋接程式，bat 會自動呼叫' },
     { name: 'pos_rules.json',   desc: '電文驗証規格設定檔',                hint: '可匯入規格設定管理頁面編輯' },
   ];
 
@@ -89,15 +90,23 @@ function DownloadSection() {
     <div className="space-y-2">
       <p className="text-slate-400 text-xs mb-3">下列檔案放置於工具根目錄，首次使用請先下載到本機：</p>
       {files.map(f => (
-        <div key={f.name} className="flex items-center justify-between px-3 py-2.5 bg-slate-800/60 rounded-lg border border-slate-700">
+        <div key={f.name} className={`flex items-center justify-between px-3 py-2.5 rounded-lg border ${
+          (f as { highlight?: boolean }).highlight
+            ? 'bg-amber-950/30 border-amber-700/50'
+            : 'bg-slate-800/60 border-slate-700'
+        }`}>
           <div>
-            <p className="font-mono text-amber-300 text-xs">{f.name}</p>
+            <p className={`font-mono text-xs ${(f as { highlight?: boolean }).highlight ? 'text-amber-300' : 'text-amber-300'}`}>{f.name}</p>
             <p className="text-slate-400 text-xs mt-0.5">{f.desc}</p>
             <p className="text-slate-500 text-xs">{f.hint}</p>
           </div>
           <button
             onClick={() => download(f.name)}
-            className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors flex-shrink-0 ml-4"
+            className={`flex items-center gap-1.5 text-xs px-3 py-1.5 text-white rounded-lg transition-colors flex-shrink-0 ml-4 ${
+              (f as { highlight?: boolean }).highlight
+                ? 'bg-amber-600 hover:bg-amber-500'
+                : 'bg-blue-600 hover:bg-blue-500'
+            }`}
           >
             <Download className="w-3.5 h-3.5" /> 下載
           </button>
@@ -154,9 +163,11 @@ export default function HelpPanel() {
             <Code>pip install websockets</Code>
           </Step>
           <Step n={2}>
-            下載 <Code>adb_bridge.py</Code>（見下方工具包），放到任意目錄後執行：
+            下載 <Code>start_bridge.bat</Code>（見下方工具包）與 <Code>adb_bridge.py</Code>
+            {' '}放到同一資料夾，<strong className="text-slate-100">雙擊 bat 即可一鍵啟動</strong>（首次會自動安裝 websockets）：
             <div className="mt-1.5 bg-slate-800 rounded-lg px-3 py-2 font-mono text-xs text-emerald-300">
-              python adb_bridge.py
+              雙擊 start_bridge.bat<br />
+              <span className="text-slate-500"># 或手動執行：python adb_bridge.py</span>
             </div>
           </Step>
           <Step n={3}>

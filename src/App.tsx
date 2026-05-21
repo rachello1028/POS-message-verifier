@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { CreditCard, FlaskConical, Settings, Wifi, WifiOff, Loader2, AlertTriangle, BookOpen } from 'lucide-react';
+import { CreditCard, FlaskConical, Settings, Wifi, WifiOff, Loader2, AlertTriangle, BookOpen, Terminal, Download, X } from 'lucide-react';
 import TestPanel from './components/TestPanel';
 import ConfigPanel from './components/ConfigPanel';
 import HelpPanel from './components/HelpPanel';
@@ -140,6 +140,40 @@ export default function App() {
           ))}
         </div>
       </div>
+
+      {/* ── Bridge 斷線提示橫幅 ──────────────────────────── */}
+      {(connStatus === 'disconnected' || connStatus === 'error') && activeTab !== 'help' && (
+        <div className="bg-amber-950/60 border-b border-amber-700/50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center gap-3 flex-wrap">
+            <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0" />
+            <span className="text-amber-200 text-sm flex-1">
+              ADB Bridge 未執行——請先在本機下載並執行橋接程式，網頁才能正常連線。
+            </span>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <a
+                href="/start_bridge.bat"
+                download="start_bridge.bat"
+                className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-amber-700 hover:bg-amber-600 text-white rounded-lg transition-colors"
+              >
+                <Download className="w-3.5 h-3.5" /> 下載 start_bridge.bat
+              </a>
+              <a
+                href="/adb_bridge.py"
+                download="adb_bridge.py"
+                className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg transition-colors"
+              >
+                <Download className="w-3.5 h-3.5" /> adb_bridge.py
+              </a>
+              <button
+                onClick={() => setActiveTab('help')}
+                className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg transition-colors"
+              >
+                <Terminal className="w-3.5 h-3.5" /> 查看說明
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── 主內容 ──────────────────────────────────────── */}
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
