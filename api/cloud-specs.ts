@@ -43,6 +43,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         access: 'public',
         contentType: 'application/json',
         addRandomSuffix: false,
+        allowOverwrite: true,  // 允許覆蓋現有檔案
       });
       return res.status(200).json({ ok: true, bank });
     }

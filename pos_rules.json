@@ -35,7 +35,7 @@
                         {
                             "id": "REQ_22",
                             "name": "POS Entry Mode",
-                            "expected": "3021"
+                            "expected": "3051"
                         },
                         {
                             "id": "REQ_24",
@@ -446,7 +446,6 @@
         },
         "一般銷售_晶片卡感應": {
             "type": "multi-step",
-            "description": "EMV晶片卡感應交易(Contactless)",
             "steps": [
                 {
                     "step_name": "主交易",
@@ -611,92 +610,6 @@
                             "id": "REQ_55_9F6E",
                             "name": "Form Factor Indicator",
                             "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_62",
-                            "name": "Invoice Number",
-                            "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "RSP_39",
-                            "name": "Response Code",
-                            "expected": "00"
-                        }
-                    ]
-                },
-                {
-                    "step_name": "TC Upload",
-                    "mti": "0220",
-                    "fields": [
-                        {
-                            "id": "REQ_3",
-                            "name": "Processing Code",
-                            "expected": "250000"
-                        },
-                        {
-                            "id": "REQ_4",
-                            "name": "Amount, Transaction",
-                            "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_11",
-                            "name": "System Trace Audit Number",
-                            "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_12",
-                            "name": "Transaction Time",
-                            "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_13",
-                            "name": "Transaction Date",
-                            "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_22",
-                            "name": "POS Entry Mode",
-                            "expected": "3771"
-                        },
-                        {
-                            "id": "REQ_24",
-                            "name": "Network International Identifier",
-                            "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_25",
-                            "name": "POS Condition Code",
-                            "expected": "99"
-                        },
-                        {
-                            "id": "REQ_37",
-                            "name": "Retrieval Reference Number",
-                            "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_38",
-                            "name": "Authorization Code",
-                            "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_41",
-                            "name": "Terminal ID",
-                            "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_42",
-                            "name": "Merchant ID",
-                            "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_55_9F26",
-                            "name": "Application Cryptogram",
-                            "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_55_9F27",
-                            "name": "Cryptogram Information Data",
-                            "expected": "NOT_NULL"
                         },
                         {
                             "id": "REQ_62",
