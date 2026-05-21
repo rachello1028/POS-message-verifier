@@ -223,6 +223,9 @@ export class AdbBridge {
    * 一直收集到 RECEIVE DATA UnPack END 才 flush，包含 REQ+RSP 兩個區塊
    */
   private processLogLine(line: string): void {
+    // Debug: 顯示當前狀態
+    console.log(`[Bridge] processLogLine: isCapturing=${this.isCapturing}, bufferLen=${this.logBuffer.length}, stepIdx=${this.currentStepIdx}/${this.pendingSteps.length}`);
+    
     if (line.includes('REAL SEND DATA Pack START')) {
       console.log('[Bridge] REQ START detected, begin capture');
       this.isCapturing = true;
@@ -243,6 +246,9 @@ export class AdbBridge {
         this.logBuffer = [];
         this.evaluateBuffer(parsed);
       }
+    } else {
+      // Debug: 如果不在 capturing 模式，顯示為什麼跳過
+      console.log('[Bridge] Not capturing, waiting for REQ START...');
     }
   }
 
