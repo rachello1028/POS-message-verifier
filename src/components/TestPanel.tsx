@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Play, Square, RefreshCw, ChevronDown, ChevronRight,
   CheckCircle2, XCircle, Wifi, WifiOff, Loader2, AlertCircle,
@@ -16,11 +16,12 @@ interface Props {
   onStartMonitor: (device: string, bank: string, transType: string, steps: TransactionStep[]) => void;
   onStopMonitor: () => void;
   onClearResults: () => void;
+  onUpdateTestTarget?: (bank: string, transType: string, steps: TransactionStep[]) => void;
 }
 
 export default function TestPanel({
   rules, devices, connStatus, transactions, isMonitoring,
-  onRefreshDevices, onStartMonitor, onStopMonitor, onClearResults,
+  onRefreshDevices, onStartMonitor, onStopMonitor, onClearResults, onUpdateTestTarget,
 }: Props) {
   const [selectedDevice, setSelectedDevice] = useState('');
   const [selectedBank, setSelectedBank] = useState('');
@@ -30,19 +31,28 @@ export default function TestPanel({
   const bankList = Object.keys(rules);
   const transList = selectedBank ? Object.keys(rules[selectedBank] ?? {}) : [];
 
-  // 當銀行切換時自動選第一個交易
-  const handleBankChange = (bank: string) => {
-    setSelectedBank(bank);
-    const firstTrans = Object.keys(rules[bank] ?? {})[0] ?? '';
-    setSelectedTrans(firstTrans);
-  };
-
   const getSteps = (bank: string, trans: string): TransactionStep[] => {
     const cfg = rules[bank]?.[trans];
     if (!cfg) return [];
     if (cfg.steps) return cfg.steps;
     // 向下相容舊版單段式格式
     return [{ step_name: '主交易', mti: cfg.mti ?? '0200', fields: cfg.fields ?? [] }];
+  };
+
+  // 監聽中切換交易類型時，自動同步到 bridge
+  useEffect(() => {
+    if (isMonitoring && selectedBank && selectedTrans && onUpdateTestTarget) {
+      const steps = getSteps(selectedBank, selectedTrans);
+      onUpdateTestTarget(selectedBank, selectedTrans, steps);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMonitoring, selectedBank, selectedTrans]);
+
+  // 當銀行切換時自動選第一個交易
+  const handleBankChange = (bank: string) => {
+    setSelectedBank(bank);
+    const firstTrans = Object.keys(rules[bank] ?? {})[0] ?? '';
+    setSelectedTrans(firstTrans);
   };
 
   const handleStart = () => {

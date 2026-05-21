@@ -102,6 +102,16 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
     setIsMonitoring(false);
   }, []);
 
+  // 監聽中切換交易類型時，同步更新 bridge 的 test target
+  const handleUpdateTestTarget = useCallback(
+    (bank: string, transType: string, steps: TransactionStep[]) => {
+      const b = bridgeRef.current;
+      if (!b) return;
+      b.setTestTarget(bank, transType, steps);
+    },
+    []
+  );
+
   const handleClearResults = useCallback(() => {
     setTransactions([]);
     bridgeRef.current?.resetTransaction();
@@ -303,6 +313,7 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
             onStartMonitor={handleStartMonitor}
             onStopMonitor={handleStopMonitor}
             onClearResults={handleClearResults}
+            onUpdateTestTarget={handleUpdateTestTarget}
           />
         )}
         {activeTab === 'config' && (
