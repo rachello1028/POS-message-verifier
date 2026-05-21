@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   Terminal, Wifi, FlaskConical, Settings, Copy,
   CheckCircle2, Download, ChevronDown, ChevronRight,
-  BookOpen, Zap, AlertTriangle, Info, Package
+  BookOpen, Zap, AlertTriangle, Info, Package, Check
 } from 'lucide-react';
 
 // ── 可折疊的區段 ────────────────────────────────────────────────────────────
@@ -67,6 +67,40 @@ function Tip({ type = 'info', children }: { type?: 'info' | 'warn'; children: Re
     <div className={`flex gap-2 px-3 py-2.5 rounded-lg border text-xs ${cls}`}>
       {icon}
       <span>{children}</span>
+    </div>
+  );
+}
+
+// ── Protocol 註冊指令區塊 ───────────────────────────────────────────────────
+function ProtocolRegisterScript() {
+  const [copied, setCopied] = useState(false);
+  const script = `$dir = Get-Location
+$batPath = Join-Path $dir "start_bridge.bat"
+$regPath = "HKCU:\\Software\\Classes\\pos-bridge-runner"
+New-Item -Path $regPath -Force | Out-Null
+Set-ItemProperty -Path $regPath -Name "(Default)" -Value "URL:POS Bridge Runner Protocol"
+Set-ItemProperty -Path $regPath -Name "URL Protocol" -Value ""
+$cmdPath = Join-Path $regPath "shell\\open\\command"
+New-Item -Path $cmdPath -Force | Out-Null
+Set-ItemProperty -Path $cmdPath -Name "(Default)" -Value "\\"\`"$batPath\\"\`""
+Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。" -ForegroundColor Green`;
+
+  const handleCopy = useCallback(() => {
+    navigator.clipboard.writeText(script).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }, [script]);
+
+  return (
+    <div className="relative mt-2">
+      <pre className="bg-slate-950 text-emerald-300 p-3 rounded-lg text-xs font-mono overflow-x-auto leading-relaxed whitespace-pre-wrap">{script}</pre>
+      <button
+        onClick={handleCopy}
+        className="absolute top-2 right-2 flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-lg font-medium transition-colors bg-slate-700/80 hover:bg-slate-600 text-slate-200"
+      >
+        {copied ? <><Check className="w-3 h-3" /> 已複製！</> : <><Copy className="w-3 h-3" /> 複製指令</>}
+      </button>
     </div>
   );
 }
@@ -164,9 +198,12 @@ export default function HelpPanel() {
           </Step>
           <Step n={2}>
             <strong className="text-slate-100">首次設定（只需做一次）</strong>
-            <br />
-            點擊橫幅右側的「首次設定」，依指示下載 <Code>start_bridge.bat</Code> 與 <Code>adb_bridge.py</Code> 放到同一固定資料夾，
-            再在該資料夾執行說明中提供的 PowerShell 指令，即可完成 <Code>pos-bridge-runner://</Code> 協議註冊。
+            <div className="mt-2 space-y-2">
+              <p>2-1. 下載 <a href="/start_bridge.bat" download className="text-blue-400 hover:text-blue-300 underline">start_bridge.bat</a> 與 <a href="/adb_bridge.py" download className="text-blue-400 hover:text-blue-300 underline">adb_bridge.py</a>，放到同一個固定資料夾（例如 <Code>D:\Tools\POS-Bridge\</Code>）</p>
+              <p>2-2. 在該資料夾的<strong className="text-slate-100">網址列</strong>輸入 <Code>powershell</Code> 按 Enter，開啟 PowerShell</p>
+              <p>2-3. 複製並貼上以下指令，按 Enter 執行：</p>
+              <ProtocolRegisterScript />
+            </div>
           </Step>
           <Step n={3}>
             <strong className="text-slate-100">每次啟動（點按鈕即可）</strong>
