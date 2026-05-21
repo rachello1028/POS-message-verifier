@@ -2927,7 +2927,7 @@
                 }
             ]
         },
-        "分期退貨_晶片卡": {
+        "分期退貨_晶片卡插卡": {
             "type": "multi-step",
             "description": "晶片卡分期退貨交易",
             "steps": [
@@ -3428,7 +3428,7 @@
                 }
             ]
         },
-        "紅利退貨_晶片卡": {
+        "紅利退貨_晶片卡插卡": {
             "type": "multi-step",
             "description": "晶片卡紅利退貨交易",
             "steps": [
@@ -4494,6 +4494,356 @@
                         {
                             "id": "REQ_42",
                             "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "取消銷售_晶片卡插卡": {
+            "type": "multi-step",
+            "steps": [
+                {
+                    "step_name": "主交易",
+                    "mti": "0200",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "020000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expired",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_15",
+                            "name": "Date, Year",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "POS Entry Mode",
+                            "expected": "3051"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "POS Condition Code",
+                            "expected": "99"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "Retrieval Reference Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Response Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_52",
+                            "name": "Pin Block",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55_5A",
+                            "name": "Application PAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "紅利退貨_晶片卡感應": {
+            "type": "multi-step",
+            "steps": [
+                {
+                    "step_name": "主交易",
+                    "mti": "0200",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "200000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_15",
+                            "name": "Date, Year",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "POS Entry Mode",
+                            "expected": "3771"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "POS Condition Code",
+                            "expected": "99"
+                        },
+                        {
+                            "id": "REQ_27",
+                            "name": "Cash Redemption Flag",
+                            "expected": "01"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55_5A",
+                            "name": "Application PAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "Redemption Related Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "取消銷售_晶片卡感應": {
+            "type": "multi-step",
+            "steps": [
+                {
+                    "step_name": "主交易",
+                    "mti": "0200",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "020000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expired",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_15",
+                            "name": "Date, Year",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "POS Entry Mode",
+                            "expected": "3771"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "POS Condition Code",
+                            "expected": "99"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "Retrieval Reference Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Response Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_52",
+                            "name": "Pin Block",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55_5A",
+                            "name": "Application PAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "分期退貨_晶片卡感應": {
+            "type": "multi-step",
+            "description": "晶片卡分期退貨交易",
+            "steps": [
+                {
+                    "step_name": "主交易",
+                    "mti": "0200",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "200000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_15",
+                            "name": "Date, Year",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "POS Entry Mode",
+                            "expected": "3051"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "POS Condition Code",
+                            "expected": "99"
+                        },
+                        {
+                            "id": "REQ_27",
+                            "name": "Installment Flag",
+                            "expected": "02"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55_5A",
+                            "name": "Application PAN",
                             "expected": "NOT_NULL"
                         },
                         {
