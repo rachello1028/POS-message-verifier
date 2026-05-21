@@ -1,7 +1,7 @@
 import type { AllRules, ConnectionStatus, TransactionResult, TransactionStep, StepResult } from '../types';
 import { parseIsoLog, verifyMessage } from './isoVerifier';
 
-const BRIDGE_URL = 'ws://127.0.0.1:8765';
+const DEFAULT_BRIDGE_URL = 'ws://127.0.0.1:8765';
 
 export interface BridgeCallbacks {
   onStatus: (status: ConnectionStatus, msg?: string) => void;
@@ -18,6 +18,7 @@ const RECONNECT_DELAY_MS    =  3_000;
 
 export class AdbBridge {
   private ws: WebSocket | null = null;
+  private url: string;
   private callbacks: BridgeCallbacks;
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   private heartbeatTimer: ReturnType<typeof setInterval> | null = null;
@@ -35,8 +36,9 @@ export class AdbBridge {
   private logBuffer: string[] = [];
   private isCapturing = false;
 
-  constructor(callbacks: BridgeCallbacks) {
+  constructor(callbacks: BridgeCallbacks, url?: string) {
     this.callbacks = callbacks;
+    this.url = url ?? DEFAULT_BRIDGE_URL;
   }
 
   connect(): void {
@@ -44,7 +46,7 @@ export class AdbBridge {
 
     this.callbacks.onStatus('connecting');
     try {
-      this.ws = new WebSocket(BRIDGE_URL);
+      this.ws = new WebSocket(this.url);
 
       this.ws.onopen = () => {
         if (this.reconnectTimer) clearTimeout(this.reconnectTimer);

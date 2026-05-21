@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { CreditCard, FlaskConical, Settings, Wifi, WifiOff, Loader2, AlertTriangle, BookOpen, Terminal, Download, X, Zap, Copy } from 'lucide-react';
+import { CreditCard, FlaskConical, Settings, Wifi, WifiOff, Loader2, AlertTriangle, BookOpen, Terminal, Download, X, Zap, Copy, Pencil, Check } from 'lucide-react';
 import TestPanel from './components/TestPanel';
 import ConfigPanel from './components/ConfigPanel';
 import HelpPanel from './components/HelpPanel';
@@ -19,6 +19,11 @@ export default function App() {
   const [showSetupModal, setShowSetupModal] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isBridgeLaunching, setIsBridgeLaunching] = useState(false);
+  const [bridgePort, setBridgePort] = useState<string>(
+    () => localStorage.getItem('pos-bridge-port') ?? '8765'
+  );
+  const [isEditingPort, setIsEditingPort] = useState(false);
+  const [portDraft, setPortDraft] = useState(bridgePort);
 
   const psScript = `$dir = Get-Location
 $batPath = Join-Path $dir "start_bridge.bat"
@@ -33,7 +38,7 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
 
   const bridgeRef = useRef<AdbBridge | null>(null);
 
-  // ── 初始化 Bridge ──────────────────────────────────────────────────────────
+  // ── 初始化 Bridge（port 變更時重建）────────────────────────────────────────
 
   useEffect(() => {
     const bridge = new AdbBridge({
@@ -46,11 +51,12 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
       onRulesSaved: () => {},
       onTransaction: (tx) => setTransactions(prev => [...prev, tx]),
       onError: (msg) => console.error('[Bridge Error]', msg),
-    });
+    }, `ws://127.0.0.1:${bridgePort}`);
     bridgeRef.current = bridge;
 
     return () => bridge.disconnect();
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bridgePort]);
 
   // ── 控制函式 ──────────────────────────────────────────────────────────────
 
@@ -97,6 +103,14 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
       bridgeRef.current?.connect();
     }, 2500);
   }, []);
+
+  const handleConfirmPort = useCallback(() => {
+    const p = portDraft.trim().replace(/\D/g, '');
+    if (!p) return;
+    setBridgePort(p);
+    localStorage.setItem('pos-bridge-port', p);
+    setIsEditingPort(false);
+  }, [portDraft]);
 
   const copyToClipboard = useCallback((text: string) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -180,8 +194,34 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
         <div className="bg-amber-950/60 border-b border-amber-700/50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center gap-3 flex-wrap">
             <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0" />
-            <span className="text-amber-200 text-sm flex-1">
+            <span className="text-amber-200 text-sm flex-1 flex items-center gap-2 flex-wrap">
               ADB Bridge 未執行，請點擊右側按鈕啟動。
+              <span className="flex items-center gap-1 text-amber-400 text-xs">
+                Port:
+                {isEditingPort ? (
+                  <>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={portDraft}
+                      onChange={e => setPortDraft(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter') handleConfirmPort(); if (e.key === 'Escape') setIsEditingPort(false); }}
+                      autoFocus
+                      className="w-16 px-1.5 py-0.5 bg-slate-800 border border-amber-500 rounded text-amber-200 text-xs font-mono focus:outline-none"
+                    />
+                    <button onClick={handleConfirmPort} className="text-emerald-400 hover:text-emerald-300">
+                      <Check className="w-3.5 h-3.5" />
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={() => { setPortDraft(bridgePort); setIsEditingPort(true); }}
+                    className="font-mono text-amber-200 hover:text-white flex items-center gap-0.5 underline decoration-dotted"
+                  >
+                    {bridgePort} <Pencil className="w-3 h-3" />
+                  </button>
+                )}
+              </span>
             </span>
             <div className="flex items-center gap-2 flex-shrink-0">
               <button
