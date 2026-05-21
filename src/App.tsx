@@ -13,9 +13,16 @@ export default function App() {
   const [connStatus, setConnStatus] = useState<ConnectionStatus>('disconnected');
   const [connMsg, setConnMsg] = useState('');
   const [devices, setDevices] = useState<string[]>([]);
-  const [rules, setRules] = useState<AllRules>(EMPTY_RULES);
+  const [rules, setRules] = useState<AllRules>(() => {
+    try {
+      const cached = localStorage.getItem('pos-rules-cache');
+      if (cached) return JSON.parse(cached) as AllRules;
+    } catch { /* ignore */ }
+    return EMPTY_RULES;
+  });
   const [transactions, setTransactions] = useState<TransactionResult[]>([]);
   const [isMonitoring, setIsMonitoring] = useState(false);
+  const [hasEverConnected, setHasEverConnected] = useState(false);
   const [showSetupModal, setShowSetupModal] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isBridgeLaunching, setIsBridgeLaunching] = useState(false);
@@ -45,9 +52,24 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
       onStatus: (status, msg) => {
         setConnStatus(status);
         if (msg) setConnMsg(msg);
+        if (status === 'connected') setHasEverConnected(true);
       },
       onDevices: (list) => setDevices(list),
-      onRules: (r) => setRules(r),
+      onRules: (r) => {
+        // 優先使用本地緩存（用戶匯入的）；若無緩存才採用 Bridge 傳來的
+        const cached = localStorage.getItem('pos-rules-cache');
+        if (cached) {
+          try {
+            const local = JSON.parse(cached) as AllRules;
+            setRules(local);
+            // 將本地版本同步回 Bridge 檔案
+            bridgeRef.current?.saveRules(local);
+            return;
+          } catch { /* ignore, fall through */ }
+        }
+        setRules(r);
+        localStorage.setItem('pos-rules-cache', JSON.stringify(r));
+      },
       onRulesSaved: () => {},
       onTransaction: (tx) => setTransactions(prev => [...prev, tx]),
       onError: (msg) => console.error('[Bridge Error]', msg),
@@ -87,13 +109,14 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
 
   const handleSaveRules = useCallback((updated: AllRules) => {
     setRules(updated);
+    localStorage.setItem('pos-rules-cache', JSON.stringify(updated));
     bridgeRef.current?.saveRules(updated);
   }, []);
 
   const handleStartBridge = useCallback(() => {
     setIsBridgeLaunching(true);
     const a = document.createElement('a');
-    a.href = 'pos-bridge-runner://run';
+    a.href = `pos-bridge-runner://run?port=${bridgePort}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -101,8 +124,14 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
     setTimeout(() => {
       setIsBridgeLaunching(false);
       bridgeRef.current?.connect();
+      // 再等 3 秒，若還是沒連上就提示用戶需要首次設定或手動啟動
+      setTimeout(() => {
+        if (bridgeRef.current && connStatus !== 'connected') {
+          setShowSetupModal(true);
+        }
+      }, 3000);
     }, 2500);
-  }, []);
+  }, [connStatus]);
 
   const handleConfirmPort = useCallback(() => {
     const p = portDraft.trim().replace(/\D/g, '');
@@ -195,7 +224,10 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center gap-3 flex-wrap">
             <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0" />
             <span className="text-amber-200 text-sm flex-1 flex items-center gap-2 flex-wrap">
-              ADB Bridge 未執行，請點擊右側按鈕啟動。
+              {hasEverConnected
+                ? <span>Bridge 連線已中斷{connMsg ? `（${connMsg}）` : ''}，請重新點擊啟動。</span>
+                : 'ADB Bridge 未執行，請點擊右側按鈕啟動。'
+              }
               <span className="flex items-center gap-1 text-amber-400 text-xs">
                 Port:
                 {isEditingPort ? (
@@ -233,6 +265,14 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
                   ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> 啟動中…</>
                   : <><Zap className="w-3.5 h-3.5" /> 啟動 ADB Bridge</>}
               </button>
+              <a
+                href="/start_bridge.bat"
+                download="start_bridge.bat"
+                className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-blue-700 hover:bg-blue-600 text-white rounded-lg transition-colors font-medium"
+                title="下載後放到固定資料夾，雙擊執行即可（需搭配 adb_bridge.py）"
+              >
+                <Download className="w-3.5 h-3.5" /> 下載工具
+              </a>
               <button
                 onClick={() => setShowSetupModal(true)}
                 className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg transition-colors"
@@ -318,6 +358,17 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
                   <Copy className="w-3.5 h-3.5" />
                   {copied ? '已複製！' : '複製指令'}
                 </button>
+              </div>
+
+              {/* 替代方案：手動啟動 */}
+              <div className="bg-amber-950/40 border border-amber-800/50 rounded-xl p-4">
+                <p className="text-amber-300 font-medium mb-1">替代方案：手動啟動（不需要註冊協定）</p>
+                <ol className="list-decimal list-inside space-y-1.5 text-slate-400 ml-1">
+                  <li>下載上述兩個檔案到同一個資料夾</li>
+                  <li>直接雙擊執行 <code className="bg-slate-700 px-1 rounded text-amber-300">start_bridge.bat</code></li>
+                  <li>等待終端機顯示「WebSocket Server started」</li>
+                  <li>回到網頁，重新整理頁面即可連線</li>
+                </ol>
               </div>
 
               <div className="bg-emerald-950/40 border border-emerald-800/50 rounded-xl p-4">

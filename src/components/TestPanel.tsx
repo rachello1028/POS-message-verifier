@@ -46,9 +46,10 @@ export default function TestPanel({
   };
 
   const handleStart = () => {
-    if (!selectedDevice || !selectedBank || !selectedTrans) return;
+    if (!selectedBank || !selectedTrans) return;
     const steps = getSteps(selectedBank, selectedTrans);
-    onStartMonitor(selectedDevice, selectedBank, selectedTrans, steps);
+    const deviceArg = selectedDevice === '__auto__' ? '' : selectedDevice;
+    onStartMonitor(deviceArg, selectedBank, selectedTrans, steps);
   };
 
   const toggleExpand = (id: number) => {
@@ -95,6 +96,7 @@ export default function TestPanel({
               className="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">— 請選擇設備 —</option>
+              <option value="__auto__">⚡ 自動偵測（第一台連線設備）</option>
               {devices.map(d => <option key={d} value={d}>{d}</option>)}
             </select>
             <button
@@ -160,6 +162,7 @@ export default function TestPanel({
           <button
             onClick={handleStart}
             disabled={!selectedDevice || !selectedBank || !selectedTrans || connStatus !== 'connected'}
+            title={!selectedDevice ? '請選擇設備或「自動偵測」' : undefined}
             className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-700 disabled:text-slate-500 text-white font-semibold rounded-lg transition-colors"
           >
             <Play className="w-4 h-4" /> 開始監聽
@@ -190,7 +193,7 @@ export default function TestPanel({
             <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
           </span>
           <span className="text-sm text-emerald-300 font-medium">
-            正在監聽 <span className="font-mono text-emerald-200">{selectedDevice}</span>
+            正在監聽 <span className="font-mono text-emerald-200">{selectedDevice === '__auto__' ? '自動偵測設備' : selectedDevice}</span>
             　→　{selectedBank} / {selectedTrans}
           </span>
         </div>

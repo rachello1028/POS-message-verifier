@@ -360,12 +360,15 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
       }
       const bankSpec = await res.json();
       // 將雲端規格合併進本地 rules（以雲端版本為主）
-      setRules(prev => ({
-        ...prev,
+      const merged = {
+        ...rules,
         [selectedCloudBank]: bankSpec,
-      }));
+      };
+      setRules(merged);
       setSelectedBank(selectedCloudBank);
       setSelectedTrans(Object.keys(bankSpec)[0] ?? '');
+      // 立即同步到 App.tsx，避免切換 tab 後規格遺失
+      onSave(merged);
       showCloudMsg('success', `已下載 ${selectedCloudBank}（${Object.keys(bankSpec).length} 個交易）`);
     } catch (err) {
       const msg = err instanceof Error ? err.message : '未知錯誤';
@@ -458,6 +461,8 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
         const bank = Object.keys(parsed)[0] ?? '';
         setSelectedBank(bank);
         setSelectedTrans(Object.keys(parsed[bank] ?? {})[0] ?? '');
+        // 立即同步到 App.tsx，避免切換 tab 後規格遺失
+        onSave(parsed);
       } catch { alert('JSON 格式錯誤，無法匯入'); }
     };
     reader.readAsText(file);

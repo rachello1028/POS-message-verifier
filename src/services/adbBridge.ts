@@ -23,6 +23,8 @@ export class AdbBridge {
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   private heartbeatTimer: ReturnType<typeof setInterval> | null = null;
   private pongTimer: ReturnType<typeof setTimeout> | null = null;
+  private reconnectCount = 0;
+  private static readonly MAX_RECONNECTS = 3;
 
   // 多段式交易狀態
   private pendingSteps: TransactionStep[] = [];
@@ -43,7 +45,7 @@ export class AdbBridge {
 
   connect(): void {
     if (this.ws?.readyState === WebSocket.OPEN) return;
-
+    this.reconnectCount = 0;
     this.callbacks.onStatus('connecting');
     try {
       this.ws = new WebSocket(this.url);
@@ -80,7 +82,35 @@ export class AdbBridge {
 
   private scheduleReconnect(): void {
     if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
-    this.reconnectTimer = setTimeout(() => this.connect(), RECONNECT_DELAY_MS);
+    this.reconnectCount++;
+    if (this.reconnectCount > AdbBridge.MAX_RECONNECTS) {
+      this.callbacks.onStatus('error', `重連失敗 ${AdbBridge.MAX_RECONNECTS} 次，已停止自動重連`);
+      return;
+    }
+    this.reconnectTimer = setTimeout(() => {
+      this.callbacks.onStatus('connecting');
+      try {
+        this.ws = new WebSocket(this.url);
+        this.ws.onopen = () => {
+          if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
+          this.reconnectCount = 0;
+          this.callbacks.onStatus('connected', 'ADB Bridge 連線成功');
+          this.startHeartbeat();
+        };
+        this.ws.onclose = () => {
+          this.stopHeartbeat();
+          this.callbacks.onStatus('disconnected', '連線已中斷');
+          this.scheduleReconnect();
+        };
+        this.ws.onerror = () => {
+          this.stopHeartbeat();
+          // onclose 會緊接著觸發，由 onclose 負責呼叫 scheduleReconnect
+        };
+        this.ws.onmessage = (e) => this.handleMessage(e);
+      } catch (err) {
+        this.callbacks.onStatus('error', String(err));
+      }
+    }, RECONNECT_DELAY_MS);
   }
 
   // ── 心跳 (防殭屍連線) ───────────────────────────────────────────────────────
