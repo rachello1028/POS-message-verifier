@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { CreditCard, FlaskConical, Settings, Wifi, WifiOff, Loader2, AlertTriangle, BookOpen, Terminal, Download, X } from 'lucide-react';
+import { CreditCard, FlaskConical, Settings, Wifi, WifiOff, Loader2, AlertTriangle, BookOpen, Terminal, Download, X, Zap, Copy } from 'lucide-react';
 import TestPanel from './components/TestPanel';
 import ConfigPanel from './components/ConfigPanel';
 import HelpPanel from './components/HelpPanel';
@@ -16,6 +16,19 @@ export default function App() {
   const [rules, setRules] = useState<AllRules>(EMPTY_RULES);
   const [transactions, setTransactions] = useState<TransactionResult[]>([]);
   const [isMonitoring, setIsMonitoring] = useState(false);
+  const [showSetupModal, setShowSetupModal] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const psScript = `$dir = Get-Location
+$batPath = Join-Path $dir "start_bridge.bat"
+$regPath = "HKCU:\\Software\\Classes\\pos-bridge-runner"
+New-Item -Path $regPath -Force | Out-Null
+Set-ItemProperty -Path $regPath -Name "(Default)" -Value "URL:POS Bridge Runner Protocol"
+Set-ItemProperty -Path $regPath -Name "URL Protocol" -Value ""
+$cmdPath = Join-Path $regPath "shell\\open\\command"
+New-Item -Path $cmdPath -Force | Out-Null
+Set-ItemProperty -Path $cmdPath -Name "(Default)" -Value "\`"$batPath\`""
+Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。" -ForegroundColor Green`;
 
   const bridgeRef = useRef<AdbBridge | null>(null);
 
@@ -69,6 +82,21 @@ export default function App() {
   const handleSaveRules = useCallback((updated: AllRules) => {
     setRules(updated);
     bridgeRef.current?.saveRules(updated);
+  }, []);
+
+  const handleStartBridge = useCallback(() => {
+    const a = document.createElement('a');
+    a.href = 'pos-bridge-runner://run';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }, []);
+
+  const copyToClipboard = useCallback((text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }).catch(() => {});
   }, []);
 
   // ── UI ───────────────────────────────────────────────────────────────────
@@ -147,23 +175,21 @@ export default function App() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center gap-3 flex-wrap">
             <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0" />
             <span className="text-amber-200 text-sm flex-1">
-              ADB Bridge 未執行——請先在本機下載並執行橋接程式，網頁才能正常連線。
+              ADB Bridge 未執行，請點擊右側按鈕啟動。
             </span>
             <div className="flex items-center gap-2 flex-shrink-0">
-              <a
-                href="/start_bridge.bat"
-                download="start_bridge.bat"
-                className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-amber-700 hover:bg-amber-600 text-white rounded-lg transition-colors"
+              <button
+                onClick={handleStartBridge}
+                className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors font-medium"
               >
-                <Download className="w-3.5 h-3.5" /> 下載 start_bridge.bat
-              </a>
-              <a
-                href="/adb_bridge.py"
-                download="adb_bridge.py"
+                <Zap className="w-3.5 h-3.5" /> 啟動 ADB Bridge
+              </button>
+              <button
+                onClick={() => setShowSetupModal(true)}
                 className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg transition-colors"
               >
-                <Download className="w-3.5 h-3.5" /> adb_bridge.py
-              </a>
+                首次設定
+              </button>
               <button
                 onClick={() => setActiveTab('help')}
                 className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg transition-colors"
@@ -210,6 +236,55 @@ export default function App() {
           </span>
         </div>
       </footer>
+
+      {/* ── 首次設定 Modal ────────────────────────────────── */}
+      {showSetupModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm" onClick={() => setShowSetupModal(false)}>
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
+            <div className="p-4 border-b border-slate-700 flex items-center justify-between">
+              <h2 className="text-base font-bold text-slate-100 flex items-center gap-2">
+                <Zap className="w-4 h-4 text-emerald-400" /> 首次設定：一鍵啟動 Bridge
+              </h2>
+              <button onClick={() => setShowSetupModal(false)} className="p-1 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-slate-200">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="p-6 overflow-y-auto space-y-5 text-sm text-slate-300">
+              <div className="bg-slate-800 border border-slate-700 rounded-xl p-4 space-y-1.5">
+                <p className="font-semibold text-slate-100">設定步驟（只需做一次）</p>
+                <ol className="list-decimal list-inside space-y-1.5 text-slate-400 ml-1">
+                  <li>下載 <a href="/start_bridge.bat" download="start_bridge.bat" className="text-blue-400 hover:text-blue-300 inline-flex items-center gap-1"><Download className="w-3 h-3" />start_bridge.bat</a> 與 <a href="/adb_bridge.py" download="adb_bridge.py" className="text-blue-400 hover:text-blue-300 inline-flex items-center gap-1"><Download className="w-3 h-3" />adb_bridge.py</a>，放到同一個固定資料夾（例如 <code className="bg-slate-700 px-1 rounded">D:\Tools\POS-Bridge\</code>）。</li>
+                  <li>在那個資料夾的<strong className="text-slate-200">網址列</strong>輸入 <code className="bg-slate-700 px-1 rounded">powershell</code> 按 Enter。</li>
+                  <li>在彈出的 PowerShell 視窗貼上以下指令，按 Enter。</li>
+                </ol>
+              </div>
+
+              <div className="relative group">
+                <pre className="bg-slate-950 text-emerald-300 p-4 rounded-xl text-xs font-mono overflow-x-auto leading-relaxed">{psScript}</pre>
+                <button
+                  onClick={() => copyToClipboard(psScript)}
+                  className="absolute top-2 right-2 flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-medium transition-colors bg-slate-700/80 hover:bg-slate-600 text-slate-200"
+                >
+                  <Copy className="w-3.5 h-3.5" />
+                  {copied ? '已複製！' : '複製指令'}
+                </button>
+              </div>
+
+              <div className="bg-emerald-950/40 border border-emerald-800/50 rounded-xl p-4">
+                <p className="text-emerald-300 font-medium mb-1">設定完成後</p>
+                <p className="text-slate-400">關閉此視窗，橫幅上的「啟動 ADB Bridge」按鈕就能直接啟動 Bridge，不需再手動找資料夾。</p>
+              </div>
+            </div>
+
+            <div className="p-4 border-t border-slate-700 flex justify-end">
+              <button onClick={() => setShowSetupModal(false)} className="px-5 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl text-sm font-medium transition-colors">
+                關閉
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

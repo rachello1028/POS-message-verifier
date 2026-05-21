@@ -74,8 +74,8 @@ function Tip({ type = 'info', children }: { type?: 'info' | 'warn'; children: Re
 // ── 下載工具包 ──────────────────────────────────────────────────────────────
 function DownloadSection() {
   const files = [
-    { name: 'start_bridge.bat', desc: '一鍵啟動橋接程式（Windows）',        hint: '雙擊即可，自動安裝 websockets 並啟動 Bridge', highlight: true },
-    { name: 'adb_bridge.py',    desc: 'ADB WebSocket Bridge（Python）',    hint: '主要橋接程式，bat 會自動呼叫' },
+    { name: 'start_bridge.bat', desc: '橋接程式啟動腳本（Windows）',        hint: '首次設定時下載，完成協議註冊後由網頁按鈕自動呼叫', highlight: true },
+    { name: 'adb_bridge.py',    desc: 'ADB WebSocket Bridge（Python）',    hint: '主要橋接程式，與 bat 放在同一資料夾' },
     { name: 'pos_rules.json',   desc: '電文驗証規格設定檔',                hint: '可匯入規格設定管理頁面編輯' },
   ];
 
@@ -113,8 +113,8 @@ function DownloadSection() {
         </div>
       ))}
       <Tip>
-        完整工具包含本頁面（網頁）+ <Code>adb_bridge.py</Code>（Python 橋接）
-        ，兩者需同時執行才能正常連線。
+        首次設定完成後，日常使用只需點擊頁面頂端橫幅的「啟動 ADB Bridge」按鈕，
+        無需手動找資料夾或雙擊檔案。
       </Tip>
     </div>
   );
@@ -163,28 +163,30 @@ export default function HelpPanel() {
             <Code>pip install websockets</Code>
           </Step>
           <Step n={2}>
-            下載 <Code>start_bridge.bat</Code>（見下方工具包）與 <Code>adb_bridge.py</Code>
-            {' '}放到同一資料夾，<strong className="text-slate-100">雙擊 bat 即可一鍵啟動</strong>（首次會自動安裝 websockets）：
-            <div className="mt-1.5 bg-slate-800 rounded-lg px-3 py-2 font-mono text-xs text-emerald-300">
-              雙擊 start_bridge.bat<br />
-              <span className="text-slate-500"># 或手動執行：python adb_bridge.py</span>
-            </div>
+            <strong className="text-slate-100">首次設定（只需做一次）</strong>
+            <br />
+            點擊橫幅右側的「首次設定」，依指示下載 <Code>start_bridge.bat</Code> 與 <Code>adb_bridge.py</Code> 放到同一固定資料夾，
+            再在該資料夾執行說明中提供的 PowerShell 指令，即可完成 <Code>pos-bridge-runner://</Code> 協議註冊。
           </Step>
           <Step n={3}>
-            確認橋接程式啟動後出現：
-            <div className="mt-1.5 bg-slate-800 rounded-lg px-3 py-2 font-mono text-xs text-slate-300">
-              [INFO] WebSocket server 已啟動於 ws://127.0.0.1:8765
-            </div>
+            <strong className="text-slate-100">每次啟動（點按鈕即可）</strong>
+            <br />
+            Bridge 未執行時，頁面頂端會出現提示橫幅。點擊
+            <span className="inline-flex items-center gap-1 bg-emerald-700 text-white text-xs px-1.5 py-0.5 rounded mx-1">
+              <Zap className="w-3 h-3" /> 啟動 ADB Bridge
+            </span>
+            按鈕，Windows 會自動呼叫本機的橋接程式，無需手動找資料夾執行。
           </Step>
           <Step n={4}>
-            打開本頁面，Header 右上角顯示
+            Header 右上角顯示
             <span className="inline-flex items-center gap-1 text-emerald-400 text-xs mx-1">
               <Wifi className="w-3 h-3" /> Bridge 已連線
             </span>
-            即表示連線成功。
+            即表示連線成功，可開始測試。
           </Step>
           <Tip type="warn">
-            若顯示「連線失敗」，請先確認 <Code>adb_bridge.py</Code> 正在執行，且防火牆未封鎖 <Code>127.0.0.1:8765</Code>。
+            若點擊「啟動 ADB Bridge」後仍未連線，請確認首次設定已完成（協議已註冊），
+            且 <Code>adb_bridge.py</Code> 與 <Code>start_bridge.bat</Code> 放在登記時的同一資料夾。
           </Tip>
         </div>
       </Section>
