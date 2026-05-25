@@ -332,7 +332,7 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
             POS 電文驗証平台 &mdash; ISO 8583 規格化驗証工具
           </span>
           <span className="text-xs text-slate-600">
-            &copy; {new Date().getFullYear()} Rachel Lo. All rights reserved.
+            Designed &amp; Architected by Rachel Lo
           </span>
         </div>
       </footer>
