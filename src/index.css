@@ -1,12 +1,322 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 
+/* ========================================
+   POS 電文驗證平台 — 設計系統
+   Based on ECR Transaction Master Design System
+   ======================================== */
+
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
+/* ── 色彩 Token 系統 ─────────────────────────────────────── */
+
+:root {
+  /* 中性層級 */
+  --canvas: #f8fafc;
+  --surface: #f1f5f9;
+  --surface-2: #ffffff;
+  --surface-3: #e2e8f0;
+  --fg: #0f172a;
+  --fg-muted: #475569;
+  --fg-subtle: #64748b;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+
+  /* 主色 — Morandi 藍 */
+  --primary: #3b597a;
+  --primary-strong: #324c68;
+
+  /* Accent 色彩 */
+  --blue-ink: #1d4ed8;
+  --blue-soft: #dbeafe;
+  --blue-line: #93c5fd;
+
+  --emerald-ink: #047857;
+  --emerald-soft: #d1fae5;
+  --emerald-line: #6ee7b7;
+
+  --red-ink: #b91c1c;
+  --red-soft: #fee2e2;
+  --red-line: #fca5a5;
+
+  --amber-ink: #b45309;
+  --amber-soft: #fef3c7;
+  --amber-line: #fcd34d;
+
+  --pink-ink: #be185d;
+  --pink-soft: #fce7f3;
+  --pink-line: #f9a8d4;
+
+  --indigo-ink: #4338ca;
+  --indigo-soft: #e0e7ff;
+  --indigo-line: #a5b4fc;
+}
+
+.dark, :root {
+  /* 深色模式預設（本專案以深色為主） */
+  --canvas: #020617;
+  --surface: #1e293b;
+  --surface-2: #0f172a;
+  --surface-3: #334155;
+  --fg: #f1f5f9;
+  --fg-muted: #cbd5e1;
+  --fg-subtle: #94a3b8;
+  --border: #334155;
+  --border-strong: #475569;
+
+  /* 主色 — Morandi 藍 */
+  --primary: #5b7fa6;
+  --primary-strong: #4a6e94;
+
+  /* Accent 色彩（深色模式翻轉） */
+  --blue-ink: #93c5fd;
+  --blue-soft: rgba(59, 130, 246, 0.15);
+  --blue-line: rgba(59, 130, 246, 0.3);
+
+  --emerald-ink: #6ee7b7;
+  --emerald-soft: rgba(16, 185, 129, 0.15);
+  --emerald-line: rgba(16, 185, 129, 0.3);
+
+  --red-ink: #fca5a5;
+  --red-soft: rgba(239, 68, 68, 0.15);
+  --red-line: rgba(239, 68, 68, 0.3);
+
+  --amber-ink: #fcd34d;
+  --amber-soft: rgba(245, 158, 11, 0.15);
+  --amber-line: rgba(245, 158, 11, 0.3);
+
+  --pink-ink: #f9a8d4;
+  --pink-soft: rgba(236, 72, 153, 0.15);
+  --pink-line: rgba(236, 72, 153, 0.3);
+
+  --indigo-ink: #a5b4fc;
+  --indigo-soft: rgba(99, 102, 241, 0.15);
+  --indigo-line: rgba(99, 102, 241, 0.3);
+}
+
+/* ── 按鈕系統（四級語意）─────────────────────────────────── */
+
+.btn-primary {
+  @apply px-4 py-2 rounded-lg text-sm font-medium transition-colors;
+  background: #3b82f6;
+  color: white;
+}
+.btn-primary:hover {
+  background: #2563eb;
+}
+.btn-primary:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+.btn-secondary {
+  @apply px-4 py-2 rounded-lg text-sm font-medium transition-colors;
+  background: var(--surface);
+  color: var(--fg-muted);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover {
+  background: var(--surface-3);
+  color: var(--fg);
+}
+
+.btn-danger {
+  @apply px-4 py-2 rounded-lg text-sm font-medium transition-colors;
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--red-ink);
+  border: 1px solid var(--red-line);
+}
+.btn-danger:hover {
+  background: rgba(239, 68, 68, 0.25);
+}
+
+.btn-success {
+  @apply px-4 py-2 rounded-lg text-sm font-medium transition-colors;
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--emerald-ink);
+  border: 1px solid var(--emerald-line);
+}
+.btn-success:hover {
+  background: rgba(16, 185, 129, 0.25);
+}
+
+/* ── Toolbar 按鈕統一化 ─────────────────────────────────── */
+
+.toolbar-btn {
+  @apply h-[34px] px-3 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--fg-muted);
+}
+.toolbar-btn:hover {
+  background: var(--surface-3);
+  color: var(--fg);
+}
+.toolbar-btn.active {
+  background: var(--blue-soft);
+  color: var(--blue-ink);
+  border-color: var(--blue-line);
+}
+
+/* ── 狀態徽章 ─────────────────────────────────────────── */
+
+.badge {
+  @apply text-xs px-2.5 py-1 rounded-full font-medium;
+}
+.badge-success {
+  background: var(--emerald-soft);
+  color: var(--emerald-ink);
+  border: 1px solid var(--emerald-line);
+}
+.badge-error {
+  background: var(--red-soft);
+  color: var(--red-ink);
+  border: 1px solid var(--red-line);
+}
+.badge-warning {
+  background: var(--amber-soft);
+  color: var(--amber-ink);
+  border: 1px solid var(--amber-line);
+}
+.badge-info {
+  background: var(--blue-soft);
+  color: var(--blue-ink);
+  border: 1px solid var(--blue-line);
+}
+
+/* ── 左側條指示器 ────────────────────────────────────────── */
+
+.card-indicator {
+  @apply border rounded-lg;
+  background: var(--surface);
+  border-color: var(--border);
+  border-left-width: 4px;
+}
+.card-indicator-success {
+  border-left-color: #10b981;
+}
+.card-indicator-error {
+  border-left-color: #ef4444;
+}
+.card-indicator-warning {
+  border-left-color: #f59e0b;
+}
+.card-indicator-info {
+  border-left-color: #3b82f6;
+}
+
+/* ── 警示橫幅 ─────────────────────────────────────────── */
+
+.alert-banner {
+  @apply border px-4 py-2.5 rounded-lg;
+}
+.alert-banner-warning {
+  background: rgba(245, 158, 11, 0.06);
+  border-color: rgba(245, 158, 11, 0.2);
+}
+.alert-banner-error {
+  background: rgba(239, 68, 68, 0.06);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+.alert-banner-success {
+  background: rgba(16, 185, 129, 0.06);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+/* ── 表單控件 ─────────────────────────────────────────── */
+
+input, select, textarea {
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  color: var(--fg);
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(91, 127, 166, 0.2);
+}
+input::placeholder, textarea::placeholder {
+  color: #64748b;
+}
+input:disabled, select:disabled, textarea:disabled {
+  background: var(--surface);
+  color: var(--fg-muted);
+  cursor: not-allowed;
+}
+
+/* ── Checkbox 自訂外觀 ──────────────────────────────────── */
+
+input[type="checkbox"] {
+  @apply w-4 h-4 rounded cursor-pointer;
+  accent-color: var(--primary);
+}
+
+/* ── Scrollbar 美化 ─────────────────────────────────────── */
+
 * {
   scrollbar-width: thin;
-  scrollbar-color: #334155 transparent;
+  scrollbar-color: var(--surface-3) transparent;
+}
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--surface-3);
+  border-radius: 3px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--border-strong);
+}
+
+/* ── Ghost Chips（交易按鈕牆）───────────────────────────── */
+
+.ghost-chip {
+  @apply text-xs px-2.5 py-1 rounded-md font-medium transition-colors cursor-pointer;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  color: var(--fg-muted);
+}
+.ghost-chip:hover {
+  background: var(--surface-3);
+  color: var(--fg);
+  border-color: var(--fg-subtle);
+}
+.ghost-chip.selected {
+  @apply bg-blue-600 text-white border-blue-600;
+}
+
+/* ── 面板 Header ─────────────────────────────────────────── */
+
+.panel-header {
+  @apply px-4 py-3;
+  background: transparent;
+  border-bottom: 1px solid var(--border);
+}
+.panel-header h2 {
+  color: var(--fg);
+  @apply text-base font-semibold;
+}
+
+/* ── 表格樣式 ─────────────────────────────────────────── */
+
+.data-table {
+  @apply w-full text-sm;
+}
+.data-table th {
+  @apply text-left px-3 py-2 font-medium;
+  background: var(--surface);
+  color: var(--fg-muted);
+}
+.data-table td {
+  @apply px-3 py-2;
+  border-top: 1px solid var(--border);
+}
+.data-table tr:hover td {
+  background: var(--surface);
 }

@@ -168,10 +168,10 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
 
   const StatusBadge = () => {
     const map: Record<ConnectionStatus, { icon: React.ReactNode; label: string; cls: string }> = {
-      connected:    { icon: <Wifi className="w-3.5 h-3.5" />,                          label: 'Bridge 已連線',   cls: 'text-emerald-400' },
-      connecting:   { icon: <Loader2 className="w-3.5 h-3.5 animate-spin" />,          label: '連線中…',        cls: 'text-amber-400'   },
-      disconnected: { icon: <WifiOff className="w-3.5 h-3.5" />,                       label: 'Bridge 未連線',   cls: 'text-slate-500'   },
-      error:        { icon: <AlertTriangle className="w-3.5 h-3.5" />,                  label: '連線失敗',        cls: 'text-red-400'     },
+      connected:    { icon: <Wifi className="w-3.5 h-3.5" />,                          label: 'Bridge 已連線',   cls: 'text-[var(--emerald-ink)]' },
+      connecting:   { icon: <Loader2 className="w-3.5 h-3.5 animate-spin" />,          label: '連線中…',        cls: 'text-[var(--amber-ink)]'   },
+      disconnected: { icon: <WifiOff className="w-3.5 h-3.5" />,                       label: 'Bridge 未連線',   cls: 'text-[var(--fg-subtle)]'   },
+      error:        { icon: <AlertTriangle className="w-3.5 h-3.5" />,                  label: '連線失敗',        cls: 'text-[var(--red-ink)]'     },
     };
     const { icon, label, cls } = map[connStatus];
     return (
@@ -182,18 +182,18 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans flex flex-col">
+    <div className="min-h-screen bg-[var(--canvas)] text-[var(--fg)] font-sans flex flex-col">
       {/* ── Header ──────────────────────────────────────── */}
-      <header className="border-b border-slate-800 bg-slate-900/80 backdrop-blur-sm sticky top-0 z-10">
+      <header className="border-b border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-[var(--primary)] rounded-lg flex items-center justify-center">
                 <CreditCard className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="font-bold text-base text-slate-100 leading-tight">POS 電文驗証平台</h1>
-                <p className="text-xs text-slate-500">ISO 8583 規格化驗証工具</p>
+                <h1 className="font-bold text-base text-[var(--fg)] leading-tight">POS 電文驗証平台</h1>
+                <p className="text-xs text-[var(--fg-subtle)]">ISO 8583 規格化驗証工具</p>
               </div>
             </div>
             <StatusBadge />
@@ -203,22 +203,22 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
 
       {/* ── Tabs ────────────────────────────────────────── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
-        <div className="flex gap-1 bg-slate-900 border border-slate-800 rounded-xl p-1 w-fit">
+        <div className="flex gap-1 bg-[var(--surface)] border border-[var(--border)] rounded-xl p-1 w-fit">
           {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                 activeTab === tab.id
-                  ? 'bg-blue-600 text-white shadow-md'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                  ? 'bg-[var(--primary)] text-white shadow-md'
+                  : 'text-[var(--fg-muted)] hover:text-[var(--fg)] hover:bg-[var(--surface-3)]'
               }`}
             >
               {tab.icon}
               {tab.label}
               {tab.id === 'test' && transactions.length > 0 && (
                 <span className={`ml-1 text-xs px-1.5 py-0.5 rounded-full ${
-                  activeTab === 'test' ? 'bg-blue-500' : 'bg-slate-700'
+                  activeTab === 'test' ? 'bg-[var(--primary-strong)]' : 'bg-[var(--surface-3)]'
                 }`}>
                   {transactions.length}
                 </span>
@@ -230,10 +230,10 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
 
       {/* ── Bridge 斷線提示橫幅 ──────────────────────────── */}
       {(connStatus === 'disconnected' || connStatus === 'error') && activeTab !== 'help' && (
-        <div className="bg-amber-950/60 border-b border-amber-700/50">
+        <div className="alert-banner-warning border-b border-amber-500/20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center gap-3 flex-wrap">
             <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0" />
-            <span className="text-amber-200 text-sm flex-1 flex items-center gap-2 flex-wrap">
+            <span className="text-amber-300 text-sm flex-1 flex items-center gap-2 flex-wrap">
               {hasEverConnected
                 ? <span>Bridge 連線已中斷{connMsg ? `（${connMsg}）` : ''}，請重新點擊啟動。</span>
                 : 'ADB Bridge 未執行，請點擊右側按鈕啟動。'
@@ -249,9 +249,9 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
                       onChange={e => setPortDraft(e.target.value)}
                       onKeyDown={e => { if (e.key === 'Enter') handleConfirmPort(); if (e.key === 'Escape') setIsEditingPort(false); }}
                       autoFocus
-                      className="w-16 px-1.5 py-0.5 bg-slate-800 border border-amber-500 rounded text-amber-200 text-xs font-mono focus:outline-none"
+                      className="w-16 px-1.5 py-0.5 bg-[var(--surface-2)] border border-amber-500 rounded text-amber-200 text-xs font-mono focus:outline-none"
                     />
-                    <button onClick={handleConfirmPort} className="text-emerald-400 hover:text-emerald-300">
+                    <button onClick={handleConfirmPort} className="text-[var(--emerald-ink)] hover:opacity-80">
                       <Check className="w-3.5 h-3.5" />
                     </button>
                   </>
@@ -269,7 +269,7 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
               <button
                 onClick={handleStartBridge}
                 disabled={isBridgeLaunching}
-                className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-60 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-medium"
+                className="btn-success flex items-center gap-1.5 text-xs px-3 py-1.5 disabled:opacity-60 disabled:cursor-not-allowed rounded-lg"
               >
                 {isBridgeLaunching
                   ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> 啟動中…</>
@@ -278,20 +278,20 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
               <a
                 href="/start_bridge.bat"
                 download="start_bridge.bat"
-                className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-blue-700 hover:bg-blue-600 text-white rounded-lg transition-colors font-medium"
+                className="btn-primary flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg"
                 title="下載後放到固定資料夾，雙擊執行即可（需搭配 adb_bridge.py）"
               >
                 <Download className="w-3.5 h-3.5" /> 下載工具
               </a>
               <button
                 onClick={() => setShowSetupModal(true)}
-                className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg transition-colors"
+                className="toolbar-btn text-xs"
               >
                 首次設定
               </button>
               <button
                 onClick={() => setActiveTab('help')}
-                className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg transition-colors"
+                className="toolbar-btn text-xs"
               >
                 <Terminal className="w-3.5 h-3.5" /> 查看說明
               </button>
@@ -326,12 +326,12 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
       </main>
 
       {/* ── Footer ──────────────────────────────────────── */}
-      <footer className="border-t border-slate-800 bg-slate-900/60 mt-auto">
+      <footer className="border-t border-[var(--border)] bg-[var(--surface)]/60 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-10 flex items-center justify-between">
-          <span className="text-xs text-slate-600">
+          <span className="text-xs text-[var(--fg-subtle)]">
             POS 電文驗証平台 &mdash; ISO 8583 規格化驗証工具
           </span>
-          <span className="text-xs text-slate-600">
+          <span className="text-xs text-[var(--fg-subtle)]">
             Designed &amp; Architected by Rachel Lo
           </span>
         </div>
