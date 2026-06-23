@@ -1,0 +1,649 @@
+{
+  "彰銀CHB電子簽單": {
+    "_description": "彰銀 EDC ERM 電子簽單上傳電文規格 v2.1",
+    "_note": "MTI 0300 Request / 0310 Response, Processing Code 003000",
+    
+    "電簽上傳_一般銷售": {
+      "type": "multi-step",
+      "description": "一般銷售交易電子簽單上傳",
+      "steps": [
+        {
+          "step_name": "電簽上傳",
+          "mti": "0300",
+          "fields": [
+            { "id": "REQ_2", "name": "Primary Account Number", "expected": "NOT_NULL" },
+            { "id": "REQ_3", "name": "Processing Code", "expected": "003000" },
+            { "id": "REQ_4", "name": "Amount, Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_11", "name": "System Trace Audit Number", "expected": "NOT_NULL" },
+            { "id": "REQ_12", "name": "Time, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_13", "name": "Date, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_14", "name": "Date, Expiration", "expected": "NOT_NULL" },
+            { "id": "REQ_37", "name": "Retrieval Reference Number", "expected": "NOT_NULL" },
+            { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
+            { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
+            { "id": "REQ_42", "name": "Card Acceptor Identification Code", "expected": "NOT_NULL" },
+            { "id": "REQ_57", "name": "Electronic Signing Image Data", "expected": "IF_EXIST:NOT_NULL" },
+            { "id": "REQ_60", "name": "Batch Number", "expected": "NOT_NULL" },
+            { "id": "REQ_62", "name": "Electronic Signing Data", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_00", "name": "Transaction Type", "expected": "001" },
+            { "id": "REQ_62_TAG_01", "name": "Transaction Mode", "expected": "REGEX:[SCWMF]" },
+            { "id": "REQ_62_TAG_02", "name": "Card Type", "expected": "REGEX:[VMJCS]" },
+            { "id": "REQ_62_TAG_04", "name": "Invoice No", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_08", "name": "Unsign Flag", "expected": "REGEX:[01]" },
+            { "id": "REQ_62_TAG_0A", "name": "Merchant Chinese Name 1", "expected": "NOT_NULL" },
+            { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+          ]
+        }
+      ]
+    },
+
+    "電簽上傳_退貨": {
+      "type": "multi-step",
+      "description": "退貨交易電子簽單上傳",
+      "steps": [
+        {
+          "step_name": "電簽上傳",
+          "mti": "0300",
+          "fields": [
+            { "id": "REQ_2", "name": "Primary Account Number", "expected": "NOT_NULL" },
+            { "id": "REQ_3", "name": "Processing Code", "expected": "003000" },
+            { "id": "REQ_4", "name": "Amount, Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_11", "name": "System Trace Audit Number", "expected": "NOT_NULL" },
+            { "id": "REQ_12", "name": "Time, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_13", "name": "Date, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_14", "name": "Date, Expiration", "expected": "NOT_NULL" },
+            { "id": "REQ_37", "name": "Retrieval Reference Number", "expected": "NOT_NULL" },
+            { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
+            { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
+            { "id": "REQ_42", "name": "Card Acceptor Identification Code", "expected": "NOT_NULL" },
+            { "id": "REQ_57", "name": "Electronic Signing Image Data", "expected": "IF_EXIST:NOT_NULL" },
+            { "id": "REQ_60", "name": "Batch Number", "expected": "NOT_NULL" },
+            { "id": "REQ_62", "name": "Electronic Signing Data", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_00", "name": "Transaction Type", "expected": "002" },
+            { "id": "REQ_62_TAG_01", "name": "Transaction Mode", "expected": "REGEX:[SCWMF]" },
+            { "id": "REQ_62_TAG_02", "name": "Card Type", "expected": "REGEX:[VMJCS]" },
+            { "id": "REQ_62_TAG_04", "name": "Invoice No", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_08", "name": "Unsign Flag", "expected": "REGEX:[01]" },
+            { "id": "REQ_62_TAG_0A", "name": "Merchant Chinese Name 1", "expected": "NOT_NULL" },
+            { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+          ]
+        }
+      ]
+    },
+
+    "電簽上傳_離線銷售": {
+      "type": "multi-step",
+      "description": "離線銷售交易電子簽單上傳",
+      "steps": [
+        {
+          "step_name": "電簽上傳",
+          "mti": "0300",
+          "fields": [
+            { "id": "REQ_2", "name": "Primary Account Number", "expected": "NOT_NULL" },
+            { "id": "REQ_3", "name": "Processing Code", "expected": "003000" },
+            { "id": "REQ_4", "name": "Amount, Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_11", "name": "System Trace Audit Number", "expected": "NOT_NULL" },
+            { "id": "REQ_12", "name": "Time, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_13", "name": "Date, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_14", "name": "Date, Expiration", "expected": "NOT_NULL" },
+            { "id": "REQ_37", "name": "Retrieval Reference Number", "expected": "NOT_NULL" },
+            { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
+            { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
+            { "id": "REQ_42", "name": "Card Acceptor Identification Code", "expected": "NOT_NULL" },
+            { "id": "REQ_57", "name": "Electronic Signing Image Data", "expected": "IF_EXIST:NOT_NULL" },
+            { "id": "REQ_60", "name": "Batch Number", "expected": "NOT_NULL" },
+            { "id": "REQ_62", "name": "Electronic Signing Data", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_00", "name": "Transaction Type", "expected": "003" },
+            { "id": "REQ_62_TAG_01", "name": "Transaction Mode", "expected": "REGEX:[SCWMF]" },
+            { "id": "REQ_62_TAG_02", "name": "Card Type", "expected": "REGEX:[VMJCS]" },
+            { "id": "REQ_62_TAG_04", "name": "Invoice No", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_08", "name": "Unsign Flag", "expected": "REGEX:[01]" },
+            { "id": "REQ_62_TAG_0A", "name": "Merchant Chinese Name 1", "expected": "NOT_NULL" },
+            { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+          ]
+        }
+      ]
+    },
+
+    "電簽上傳_預授權": {
+      "type": "multi-step",
+      "description": "預授權交易電子簽單上傳",
+      "steps": [
+        {
+          "step_name": "電簽上傳",
+          "mti": "0300",
+          "fields": [
+            { "id": "REQ_2", "name": "Primary Account Number", "expected": "NOT_NULL" },
+            { "id": "REQ_3", "name": "Processing Code", "expected": "003000" },
+            { "id": "REQ_4", "name": "Amount, Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_11", "name": "System Trace Audit Number", "expected": "NOT_NULL" },
+            { "id": "REQ_12", "name": "Time, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_13", "name": "Date, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_14", "name": "Date, Expiration", "expected": "NOT_NULL" },
+            { "id": "REQ_37", "name": "Retrieval Reference Number", "expected": "NOT_NULL" },
+            { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
+            { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
+            { "id": "REQ_42", "name": "Card Acceptor Identification Code", "expected": "NOT_NULL" },
+            { "id": "REQ_57", "name": "Electronic Signing Image Data", "expected": "IF_EXIST:NOT_NULL" },
+            { "id": "REQ_60", "name": "Batch Number", "expected": "NOT_NULL" },
+            { "id": "REQ_62", "name": "Electronic Signing Data", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_00", "name": "Transaction Type", "expected": "004" },
+            { "id": "REQ_62_TAG_01", "name": "Transaction Mode", "expected": "REGEX:[SCWMF]" },
+            { "id": "REQ_62_TAG_02", "name": "Card Type", "expected": "REGEX:[VMJCS]" },
+            { "id": "REQ_62_TAG_04", "name": "Invoice No", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_08", "name": "Unsign Flag", "expected": "REGEX:[01]" },
+            { "id": "REQ_62_TAG_0A", "name": "Merchant Chinese Name 1", "expected": "NOT_NULL" },
+            { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+          ]
+        }
+      ]
+    },
+
+    "電簽上傳_預授權完成": {
+      "type": "multi-step",
+      "description": "預授權完成交易電子簽單上傳",
+      "steps": [
+        {
+          "step_name": "電簽上傳",
+          "mti": "0300",
+          "fields": [
+            { "id": "REQ_2", "name": "Primary Account Number", "expected": "NOT_NULL" },
+            { "id": "REQ_3", "name": "Processing Code", "expected": "003000" },
+            { "id": "REQ_4", "name": "Amount, Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_11", "name": "System Trace Audit Number", "expected": "NOT_NULL" },
+            { "id": "REQ_12", "name": "Time, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_13", "name": "Date, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_14", "name": "Date, Expiration", "expected": "NOT_NULL" },
+            { "id": "REQ_37", "name": "Retrieval Reference Number", "expected": "NOT_NULL" },
+            { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
+            { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
+            { "id": "REQ_42", "name": "Card Acceptor Identification Code", "expected": "NOT_NULL" },
+            { "id": "REQ_57", "name": "Electronic Signing Image Data", "expected": "IF_EXIST:NOT_NULL" },
+            { "id": "REQ_60", "name": "Batch Number", "expected": "NOT_NULL" },
+            { "id": "REQ_62", "name": "Electronic Signing Data", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_00", "name": "Transaction Type", "expected": "005" },
+            { "id": "REQ_62_TAG_01", "name": "Transaction Mode", "expected": "REGEX:[SCWMF]" },
+            { "id": "REQ_62_TAG_02", "name": "Card Type", "expected": "REGEX:[VMJCS]" },
+            { "id": "REQ_62_TAG_04", "name": "Invoice No", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_08", "name": "Unsign Flag", "expected": "REGEX:[01]" },
+            { "id": "REQ_62_TAG_0A", "name": "Merchant Chinese Name 1", "expected": "NOT_NULL" },
+            { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+          ]
+        }
+      ]
+    },
+
+    "電簽上傳_分期銷售": {
+      "type": "multi-step",
+      "description": "分期銷售交易電子簽單上傳（含分期欄位）",
+      "steps": [
+        {
+          "step_name": "電簽上傳",
+          "mti": "0300",
+          "fields": [
+            { "id": "REQ_2", "name": "Primary Account Number", "expected": "NOT_NULL" },
+            { "id": "REQ_3", "name": "Processing Code", "expected": "003000" },
+            { "id": "REQ_4", "name": "Amount, Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_11", "name": "System Trace Audit Number", "expected": "NOT_NULL" },
+            { "id": "REQ_12", "name": "Time, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_13", "name": "Date, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_14", "name": "Date, Expiration", "expected": "NOT_NULL" },
+            { "id": "REQ_37", "name": "Retrieval Reference Number", "expected": "NOT_NULL" },
+            { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
+            { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
+            { "id": "REQ_42", "name": "Card Acceptor Identification Code", "expected": "NOT_NULL" },
+            { "id": "REQ_57", "name": "Electronic Signing Image Data", "expected": "IF_EXIST:NOT_NULL" },
+            { "id": "REQ_60", "name": "Batch Number", "expected": "NOT_NULL" },
+            { "id": "REQ_62", "name": "Electronic Signing Data", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_00", "name": "Transaction Type", "expected": "011" },
+            { "id": "REQ_62_TAG_01", "name": "Transaction Mode", "expected": "REGEX:[SCWMF]" },
+            { "id": "REQ_62_TAG_02", "name": "Card Type", "expected": "REGEX:[VMJCS]" },
+            { "id": "REQ_62_TAG_04", "name": "Invoice No", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_08", "name": "Unsign Flag", "expected": "REGEX:[01]" },
+            { "id": "REQ_62_TAG_0A", "name": "Merchant Chinese Name 1", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_20", "name": "Installment Period", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_21", "name": "Installment Down Payment", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_22", "name": "Installment Payment", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_23", "name": "Installment Fee", "expected": "NOT_NULL" },
+            { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+          ]
+        }
+      ]
+    },
+
+    "電簽上傳_分期退貨": {
+      "type": "multi-step",
+      "description": "分期退貨交易電子簽單上傳（含分期欄位）",
+      "steps": [
+        {
+          "step_name": "電簽上傳",
+          "mti": "0300",
+          "fields": [
+            { "id": "REQ_2", "name": "Primary Account Number", "expected": "NOT_NULL" },
+            { "id": "REQ_3", "name": "Processing Code", "expected": "003000" },
+            { "id": "REQ_4", "name": "Amount, Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_11", "name": "System Trace Audit Number", "expected": "NOT_NULL" },
+            { "id": "REQ_12", "name": "Time, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_13", "name": "Date, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_14", "name": "Date, Expiration", "expected": "NOT_NULL" },
+            { "id": "REQ_37", "name": "Retrieval Reference Number", "expected": "NOT_NULL" },
+            { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
+            { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
+            { "id": "REQ_42", "name": "Card Acceptor Identification Code", "expected": "NOT_NULL" },
+            { "id": "REQ_57", "name": "Electronic Signing Image Data", "expected": "IF_EXIST:NOT_NULL" },
+            { "id": "REQ_60", "name": "Batch Number", "expected": "NOT_NULL" },
+            { "id": "REQ_62", "name": "Electronic Signing Data", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_00", "name": "Transaction Type", "expected": "012" },
+            { "id": "REQ_62_TAG_01", "name": "Transaction Mode", "expected": "REGEX:[SCWMF]" },
+            { "id": "REQ_62_TAG_02", "name": "Card Type", "expected": "REGEX:[VMJCS]" },
+            { "id": "REQ_62_TAG_04", "name": "Invoice No", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_08", "name": "Unsign Flag", "expected": "REGEX:[01]" },
+            { "id": "REQ_62_TAG_0A", "name": "Merchant Chinese Name 1", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_20", "name": "Installment Period", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_21", "name": "Installment Down Payment", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_22", "name": "Installment Payment", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_23", "name": "Installment Fee", "expected": "NOT_NULL" },
+            { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+          ]
+        }
+      ]
+    },
+
+    "電簽上傳_紅利銷售": {
+      "type": "multi-step",
+      "description": "紅利銷售交易電子簽單上傳（含紅利欄位）",
+      "steps": [
+        {
+          "step_name": "電簽上傳",
+          "mti": "0300",
+          "fields": [
+            { "id": "REQ_2", "name": "Primary Account Number", "expected": "NOT_NULL" },
+            { "id": "REQ_3", "name": "Processing Code", "expected": "003000" },
+            { "id": "REQ_4", "name": "Amount, Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_11", "name": "System Trace Audit Number", "expected": "NOT_NULL" },
+            { "id": "REQ_12", "name": "Time, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_13", "name": "Date, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_14", "name": "Date, Expiration", "expected": "NOT_NULL" },
+            { "id": "REQ_37", "name": "Retrieval Reference Number", "expected": "NOT_NULL" },
+            { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
+            { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
+            { "id": "REQ_42", "name": "Card Acceptor Identification Code", "expected": "NOT_NULL" },
+            { "id": "REQ_57", "name": "Electronic Signing Image Data", "expected": "IF_EXIST:NOT_NULL" },
+            { "id": "REQ_60", "name": "Batch Number", "expected": "NOT_NULL" },
+            { "id": "REQ_62", "name": "Electronic Signing Data", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_00", "name": "Transaction Type", "expected": "021" },
+            { "id": "REQ_62_TAG_01", "name": "Transaction Mode", "expected": "REGEX:[SCWMF]" },
+            { "id": "REQ_62_TAG_02", "name": "Card Type", "expected": "REGEX:[VMJCS]" },
+            { "id": "REQ_62_TAG_04", "name": "Invoice No", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_08", "name": "Unsign Flag", "expected": "REGEX:[01]" },
+            { "id": "REQ_62_TAG_0A", "name": "Merchant Chinese Name 1", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_30", "name": "Redeem Balance Point Sign", "expected": "REGEX:[PN]" },
+            { "id": "REQ_62_TAG_31", "name": "Redeem Point", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_32", "name": "Redeem Balance Point", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_33", "name": "Redeem Amount", "expected": "NOT_NULL" },
+            { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+          ]
+        }
+      ]
+    },
+
+    "電簽上傳_紅利退貨": {
+      "type": "multi-step",
+      "description": "紅利退貨交易電子簽單上傳（含紅利欄位）",
+      "steps": [
+        {
+          "step_name": "電簽上傳",
+          "mti": "0300",
+          "fields": [
+            { "id": "REQ_2", "name": "Primary Account Number", "expected": "NOT_NULL" },
+            { "id": "REQ_3", "name": "Processing Code", "expected": "003000" },
+            { "id": "REQ_4", "name": "Amount, Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_11", "name": "System Trace Audit Number", "expected": "NOT_NULL" },
+            { "id": "REQ_12", "name": "Time, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_13", "name": "Date, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_14", "name": "Date, Expiration", "expected": "NOT_NULL" },
+            { "id": "REQ_37", "name": "Retrieval Reference Number", "expected": "NOT_NULL" },
+            { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
+            { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
+            { "id": "REQ_42", "name": "Card Acceptor Identification Code", "expected": "NOT_NULL" },
+            { "id": "REQ_57", "name": "Electronic Signing Image Data", "expected": "IF_EXIST:NOT_NULL" },
+            { "id": "REQ_60", "name": "Batch Number", "expected": "NOT_NULL" },
+            { "id": "REQ_62", "name": "Electronic Signing Data", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_00", "name": "Transaction Type", "expected": "022" },
+            { "id": "REQ_62_TAG_01", "name": "Transaction Mode", "expected": "REGEX:[SCWMF]" },
+            { "id": "REQ_62_TAG_02", "name": "Card Type", "expected": "REGEX:[VMJCS]" },
+            { "id": "REQ_62_TAG_04", "name": "Invoice No", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_08", "name": "Unsign Flag", "expected": "REGEX:[01]" },
+            { "id": "REQ_62_TAG_0A", "name": "Merchant Chinese Name 1", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_30", "name": "Redeem Balance Point Sign", "expected": "REGEX:[PN]" },
+            { "id": "REQ_62_TAG_31", "name": "Redeem Point", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_32", "name": "Redeem Balance Point", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_33", "name": "Redeem Amount", "expected": "NOT_NULL" },
+            { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+          ]
+        }
+      ]
+    },
+
+    "電簽上傳_小費": {
+      "type": "multi-step",
+      "description": "小費交易電子簽單上傳（含原始金額欄位）",
+      "steps": [
+        {
+          "step_name": "電簽上傳",
+          "mti": "0300",
+          "fields": [
+            { "id": "REQ_2", "name": "Primary Account Number", "expected": "NOT_NULL" },
+            { "id": "REQ_3", "name": "Processing Code", "expected": "003000" },
+            { "id": "REQ_4", "name": "Amount, Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_11", "name": "System Trace Audit Number", "expected": "NOT_NULL" },
+            { "id": "REQ_12", "name": "Time, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_13", "name": "Date, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_14", "name": "Date, Expiration", "expected": "NOT_NULL" },
+            { "id": "REQ_37", "name": "Retrieval Reference Number", "expected": "NOT_NULL" },
+            { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
+            { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
+            { "id": "REQ_42", "name": "Card Acceptor Identification Code", "expected": "NOT_NULL" },
+            { "id": "REQ_57", "name": "Electronic Signing Image Data", "expected": "IF_EXIST:NOT_NULL" },
+            { "id": "REQ_60", "name": "Batch Number", "expected": "NOT_NULL" },
+            { "id": "REQ_62", "name": "Electronic Signing Data", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_00", "name": "Transaction Type", "expected": "031" },
+            { "id": "REQ_62_TAG_01", "name": "Transaction Mode", "expected": "REGEX:[SCWMF]" },
+            { "id": "REQ_62_TAG_02", "name": "Card Type", "expected": "REGEX:[VMJCS]" },
+            { "id": "REQ_62_TAG_04", "name": "Invoice No", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_06", "name": "Adjust / Tip Amount", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_08", "name": "Unsign Flag", "expected": "REGEX:[01]" },
+            { "id": "REQ_62_TAG_0A", "name": "Merchant Chinese Name 1", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_40", "name": "Original Amount", "expected": "NOT_NULL" },
+            { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+          ]
+        }
+      ]
+    },
+
+    "電簽上傳_調帳": {
+      "type": "multi-step",
+      "description": "調帳交易電子簽單上傳（含原始金額欄位）",
+      "steps": [
+        {
+          "step_name": "電簽上傳",
+          "mti": "0300",
+          "fields": [
+            { "id": "REQ_2", "name": "Primary Account Number", "expected": "NOT_NULL" },
+            { "id": "REQ_3", "name": "Processing Code", "expected": "003000" },
+            { "id": "REQ_4", "name": "Amount, Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_11", "name": "System Trace Audit Number", "expected": "NOT_NULL" },
+            { "id": "REQ_12", "name": "Time, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_13", "name": "Date, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_14", "name": "Date, Expiration", "expected": "NOT_NULL" },
+            { "id": "REQ_37", "name": "Retrieval Reference Number", "expected": "NOT_NULL" },
+            { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
+            { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
+            { "id": "REQ_42", "name": "Card Acceptor Identification Code", "expected": "NOT_NULL" },
+            { "id": "REQ_57", "name": "Electronic Signing Image Data", "expected": "IF_EXIST:NOT_NULL" },
+            { "id": "REQ_60", "name": "Batch Number", "expected": "NOT_NULL" },
+            { "id": "REQ_62", "name": "Electronic Signing Data", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_00", "name": "Transaction Type", "expected": "032" },
+            { "id": "REQ_62_TAG_01", "name": "Transaction Mode", "expected": "REGEX:[SCWMF]" },
+            { "id": "REQ_62_TAG_02", "name": "Card Type", "expected": "REGEX:[VMJCS]" },
+            { "id": "REQ_62_TAG_04", "name": "Invoice No", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_06", "name": "Adjust / Tip Amount", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_08", "name": "Unsign Flag", "expected": "REGEX:[01]" },
+            { "id": "REQ_62_TAG_0A", "name": "Merchant Chinese Name 1", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_40", "name": "Original Amount", "expected": "NOT_NULL" },
+            { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+          ]
+        }
+      ]
+    },
+
+    "電簽上傳_SmartPay銷售": {
+      "type": "multi-step",
+      "description": "SmartPay 銷售交易電子簽單上傳",
+      "steps": [
+        {
+          "step_name": "電簽上傳",
+          "mti": "0300",
+          "fields": [
+            { "id": "REQ_2", "name": "Primary Account Number", "expected": "NOT_NULL" },
+            { "id": "REQ_3", "name": "Processing Code", "expected": "003000" },
+            { "id": "REQ_4", "name": "Amount, Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_11", "name": "System Trace Audit Number", "expected": "NOT_NULL" },
+            { "id": "REQ_12", "name": "Time, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_13", "name": "Date, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_14", "name": "Date, Expiration", "expected": "NOT_NULL" },
+            { "id": "REQ_37", "name": "Retrieval Reference Number", "expected": "NOT_NULL" },
+            { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
+            { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
+            { "id": "REQ_42", "name": "Card Acceptor Identification Code", "expected": "NOT_NULL" },
+            { "id": "REQ_57", "name": "Electronic Signing Image Data", "expected": "IF_EXIST:NOT_NULL" },
+            { "id": "REQ_60", "name": "Batch Number", "expected": "NOT_NULL" },
+            { "id": "REQ_62", "name": "Electronic Signing Data", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_00", "name": "Transaction Type", "expected": "091" },
+            { "id": "REQ_62_TAG_01", "name": "Transaction Mode", "expected": "REGEX:[SCWMF]" },
+            { "id": "REQ_62_TAG_02", "name": "Card Type", "expected": "S" },
+            { "id": "REQ_62_TAG_04", "name": "Invoice No", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_08", "name": "Unsign Flag", "expected": "REGEX:[01]" },
+            { "id": "REQ_62_TAG_0A", "name": "Merchant Chinese Name 1", "expected": "NOT_NULL" },
+            { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+          ]
+        }
+      ]
+    },
+
+    "電簽上傳_銀聯交易": {
+      "type": "multi-step",
+      "description": "銀聯卡交易電子簽單上傳（含CUP欄位）",
+      "steps": [
+        {
+          "step_name": "電簽上傳",
+          "mti": "0300",
+          "fields": [
+            { "id": "REQ_2", "name": "Primary Account Number", "expected": "NOT_NULL" },
+            { "id": "REQ_3", "name": "Processing Code", "expected": "003000" },
+            { "id": "REQ_4", "name": "Amount, Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_11", "name": "System Trace Audit Number", "expected": "NOT_NULL" },
+            { "id": "REQ_12", "name": "Time, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_13", "name": "Date, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_14", "name": "Date, Expiration", "expected": "NOT_NULL" },
+            { "id": "REQ_37", "name": "Retrieval Reference Number", "expected": "NOT_NULL" },
+            { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
+            { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
+            { "id": "REQ_42", "name": "Card Acceptor Identification Code", "expected": "NOT_NULL" },
+            { "id": "REQ_57", "name": "Electronic Signing Image Data", "expected": "IF_EXIST:NOT_NULL" },
+            { "id": "REQ_60", "name": "Batch Number", "expected": "NOT_NULL" },
+            { "id": "REQ_62", "name": "Electronic Signing Data", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_00", "name": "Transaction Type", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_01", "name": "Transaction Mode", "expected": "REGEX:[SCWMF]" },
+            { "id": "REQ_62_TAG_02", "name": "Card Type", "expected": "C" },
+            { "id": "REQ_62_TAG_04", "name": "Invoice No", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_08", "name": "Unsign Flag", "expected": "REGEX:[01]" },
+            { "id": "REQ_62_TAG_0A", "name": "Merchant Chinese Name 1", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_10", "name": "CUP Settle Date", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_11", "name": "CUP Transaction Datetime", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_12", "name": "CUP Transaction ID", "expected": "NOT_NULL" },
+            { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+          ]
+        }
+      ]
+    },
+
+    "電簽上傳_取消銷售": {
+      "type": "multi-step",
+      "description": "取消銷售交易電子簽單上傳",
+      "steps": [
+        {
+          "step_name": "電簽上傳",
+          "mti": "0300",
+          "fields": [
+            { "id": "REQ_2", "name": "Primary Account Number", "expected": "NOT_NULL" },
+            { "id": "REQ_3", "name": "Processing Code", "expected": "003000" },
+            { "id": "REQ_4", "name": "Amount, Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_11", "name": "System Trace Audit Number", "expected": "NOT_NULL" },
+            { "id": "REQ_12", "name": "Time, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_13", "name": "Date, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_14", "name": "Date, Expiration", "expected": "NOT_NULL" },
+            { "id": "REQ_37", "name": "Retrieval Reference Number", "expected": "NOT_NULL" },
+            { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
+            { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
+            { "id": "REQ_42", "name": "Card Acceptor Identification Code", "expected": "NOT_NULL" },
+            { "id": "REQ_57", "name": "Electronic Signing Image Data", "expected": "IF_EXIST:NOT_NULL" },
+            { "id": "REQ_60", "name": "Batch Number", "expected": "NOT_NULL" },
+            { "id": "REQ_62", "name": "Electronic Signing Data", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_00", "name": "Transaction Type", "expected": "401" },
+            { "id": "REQ_62_TAG_01", "name": "Transaction Mode", "expected": "REGEX:[SCWMF]" },
+            { "id": "REQ_62_TAG_02", "name": "Card Type", "expected": "REGEX:[VMJCS]" },
+            { "id": "REQ_62_TAG_04", "name": "Invoice No", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_08", "name": "Unsign Flag", "expected": "REGEX:[01]" },
+            { "id": "REQ_62_TAG_0A", "name": "Merchant Chinese Name 1", "expected": "NOT_NULL" },
+            { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+          ]
+        }
+      ]
+    },
+
+    "電簽上傳_取消退貨": {
+      "type": "multi-step",
+      "description": "取消退貨交易電子簽單上傳",
+      "steps": [
+        {
+          "step_name": "電簽上傳",
+          "mti": "0300",
+          "fields": [
+            { "id": "REQ_2", "name": "Primary Account Number", "expected": "NOT_NULL" },
+            { "id": "REQ_3", "name": "Processing Code", "expected": "003000" },
+            { "id": "REQ_4", "name": "Amount, Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_11", "name": "System Trace Audit Number", "expected": "NOT_NULL" },
+            { "id": "REQ_12", "name": "Time, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_13", "name": "Date, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_14", "name": "Date, Expiration", "expected": "NOT_NULL" },
+            { "id": "REQ_37", "name": "Retrieval Reference Number", "expected": "NOT_NULL" },
+            { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
+            { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
+            { "id": "REQ_42", "name": "Card Acceptor Identification Code", "expected": "NOT_NULL" },
+            { "id": "REQ_57", "name": "Electronic Signing Image Data", "expected": "IF_EXIST:NOT_NULL" },
+            { "id": "REQ_60", "name": "Batch Number", "expected": "NOT_NULL" },
+            { "id": "REQ_62", "name": "Electronic Signing Data", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_00", "name": "Transaction Type", "expected": "402" },
+            { "id": "REQ_62_TAG_01", "name": "Transaction Mode", "expected": "REGEX:[SCWMF]" },
+            { "id": "REQ_62_TAG_02", "name": "Card Type", "expected": "REGEX:[VMJCS]" },
+            { "id": "REQ_62_TAG_04", "name": "Invoice No", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_08", "name": "Unsign Flag", "expected": "REGEX:[01]" },
+            { "id": "REQ_62_TAG_0A", "name": "Merchant Chinese Name 1", "expected": "NOT_NULL" },
+            { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+          ]
+        }
+      ]
+    },
+
+    "電簽上傳_取消分期銷售": {
+      "type": "multi-step",
+      "description": "取消分期銷售交易電子簽單上傳",
+      "steps": [
+        {
+          "step_name": "電簽上傳",
+          "mti": "0300",
+          "fields": [
+            { "id": "REQ_2", "name": "Primary Account Number", "expected": "NOT_NULL" },
+            { "id": "REQ_3", "name": "Processing Code", "expected": "003000" },
+            { "id": "REQ_4", "name": "Amount, Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_11", "name": "System Trace Audit Number", "expected": "NOT_NULL" },
+            { "id": "REQ_12", "name": "Time, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_13", "name": "Date, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_14", "name": "Date, Expiration", "expected": "NOT_NULL" },
+            { "id": "REQ_37", "name": "Retrieval Reference Number", "expected": "NOT_NULL" },
+            { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
+            { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
+            { "id": "REQ_42", "name": "Card Acceptor Identification Code", "expected": "NOT_NULL" },
+            { "id": "REQ_57", "name": "Electronic Signing Image Data", "expected": "IF_EXIST:NOT_NULL" },
+            { "id": "REQ_60", "name": "Batch Number", "expected": "NOT_NULL" },
+            { "id": "REQ_62", "name": "Electronic Signing Data", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_00", "name": "Transaction Type", "expected": "411" },
+            { "id": "REQ_62_TAG_01", "name": "Transaction Mode", "expected": "REGEX:[SCWMF]" },
+            { "id": "REQ_62_TAG_02", "name": "Card Type", "expected": "REGEX:[VMJCS]" },
+            { "id": "REQ_62_TAG_04", "name": "Invoice No", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_08", "name": "Unsign Flag", "expected": "REGEX:[01]" },
+            { "id": "REQ_62_TAG_0A", "name": "Merchant Chinese Name 1", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_20", "name": "Installment Period", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_21", "name": "Installment Down Payment", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_22", "name": "Installment Payment", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_23", "name": "Installment Fee", "expected": "NOT_NULL" },
+            { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+          ]
+        }
+      ]
+    },
+
+    "電簽上傳_取消紅利銷售": {
+      "type": "multi-step",
+      "description": "取消紅利銷售交易電子簽單上傳",
+      "steps": [
+        {
+          "step_name": "電簽上傳",
+          "mti": "0300",
+          "fields": [
+            { "id": "REQ_2", "name": "Primary Account Number", "expected": "NOT_NULL" },
+            { "id": "REQ_3", "name": "Processing Code", "expected": "003000" },
+            { "id": "REQ_4", "name": "Amount, Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_11", "name": "System Trace Audit Number", "expected": "NOT_NULL" },
+            { "id": "REQ_12", "name": "Time, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_13", "name": "Date, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_14", "name": "Date, Expiration", "expected": "NOT_NULL" },
+            { "id": "REQ_37", "name": "Retrieval Reference Number", "expected": "NOT_NULL" },
+            { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
+            { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
+            { "id": "REQ_42", "name": "Card Acceptor Identification Code", "expected": "NOT_NULL" },
+            { "id": "REQ_57", "name": "Electronic Signing Image Data", "expected": "IF_EXIST:NOT_NULL" },
+            { "id": "REQ_60", "name": "Batch Number", "expected": "NOT_NULL" },
+            { "id": "REQ_62", "name": "Electronic Signing Data", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_00", "name": "Transaction Type", "expected": "421" },
+            { "id": "REQ_62_TAG_01", "name": "Transaction Mode", "expected": "REGEX:[SCWMF]" },
+            { "id": "REQ_62_TAG_02", "name": "Card Type", "expected": "REGEX:[VMJCS]" },
+            { "id": "REQ_62_TAG_04", "name": "Invoice No", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_08", "name": "Unsign Flag", "expected": "REGEX:[01]" },
+            { "id": "REQ_62_TAG_0A", "name": "Merchant Chinese Name 1", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_30", "name": "Redeem Balance Point Sign", "expected": "REGEX:[PN]" },
+            { "id": "REQ_62_TAG_31", "name": "Redeem Point", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_32", "name": "Redeem Balance Point", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_33", "name": "Redeem Amount", "expected": "NOT_NULL" },
+            { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+          ]
+        }
+      ]
+    },
+
+    "電簽上傳_SmartPay取消": {
+      "type": "multi-step",
+      "description": "SmartPay 取消交易電子簽單上傳",
+      "steps": [
+        {
+          "step_name": "電簽上傳",
+          "mti": "0300",
+          "fields": [
+            { "id": "REQ_2", "name": "Primary Account Number", "expected": "NOT_NULL" },
+            { "id": "REQ_3", "name": "Processing Code", "expected": "003000" },
+            { "id": "REQ_4", "name": "Amount, Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_11", "name": "System Trace Audit Number", "expected": "NOT_NULL" },
+            { "id": "REQ_12", "name": "Time, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_13", "name": "Date, Local Transaction", "expected": "NOT_NULL" },
+            { "id": "REQ_14", "name": "Date, Expiration", "expected": "NOT_NULL" },
+            { "id": "REQ_37", "name": "Retrieval Reference Number", "expected": "NOT_NULL" },
+            { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
+            { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
+            { "id": "REQ_42", "name": "Card Acceptor Identification Code", "expected": "NOT_NULL" },
+            { "id": "REQ_57", "name": "Electronic Signing Image Data", "expected": "IF_EXIST:NOT_NULL" },
+            { "id": "REQ_60", "name": "Batch Number", "expected": "NOT_NULL" },
+            { "id": "REQ_62", "name": "Electronic Signing Data", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_00", "name": "Transaction Type", "expected": "490" },
+            { "id": "REQ_62_TAG_01", "name": "Transaction Mode", "expected": "REGEX:[SCWMF]" },
+            { "id": "REQ_62_TAG_02", "name": "Card Type", "expected": "S" },
+            { "id": "REQ_62_TAG_04", "name": "Invoice No", "expected": "NOT_NULL" },
+            { "id": "REQ_62_TAG_08", "name": "Unsign Flag", "expected": "REGEX:[01]" },
+            { "id": "REQ_62_TAG_0A", "name": "Merchant Chinese Name 1", "expected": "NOT_NULL" },
+            { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+          ]
+        }
+      ]
+    }
+  }
+}
