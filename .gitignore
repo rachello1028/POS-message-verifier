@@ -6,3 +6,6 @@ dist/
 .env.local
 .env*.local
 .vercel
+
+# 本地工作紀錄
+memory/
