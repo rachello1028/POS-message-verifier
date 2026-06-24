@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Play, Square, RefreshCw, ChevronDown, ChevronRight,
   CheckCircle2, XCircle, Wifi, WifiOff, Loader2, AlertCircle,
-  Trash2, Smartphone, Building2, FileText
+  Trash2, Smartphone, Building2, FileText, Camera, FileSpreadsheet, FileJson
 } from 'lucide-react';
 import type { AllRules, TransactionResult, ConnectionStatus, TransactionStep } from '../types';
+import { downloadReport } from '../services/reportGenerator';
+import { captureElement } from '../services/screenshotService';
 
 interface Props {
   rules: AllRules;
@@ -27,6 +29,25 @@ export default function TestPanel({
   const [selectedBank, setSelectedBank] = useState('');
   const [selectedTrans, setSelectedTrans] = useState('');
   const [expandedTx, setExpandedTx] = useState<Set<number>>(new Set());
+  const [isExporting, setIsExporting] = useState(false);
+  const resultsRef = useRef<HTMLDivElement>(null);
+
+  const handleExport = useCallback((format: 'html' | 'csv' | 'json') => {
+    if (transactions.length === 0) return;
+    downloadReport(format, transactions, { bank: selectedBank, transType: selectedTrans });
+  }, [transactions, selectedBank, selectedTrans]);
+
+  const handleScreenshot = useCallback(async () => {
+    if (!resultsRef.current || transactions.length === 0) return;
+    setIsExporting(true);
+    try {
+      await captureElement(resultsRef.current, `pos-report-${selectedBank}-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}.png`);
+    } catch (err) {
+      console.error('截圖失敗:', err);
+    } finally {
+      setIsExporting(false);
+    }
+  }, [transactions, selectedBank]);
 
   const bankList = Object.keys(rules).sort((a, b) => a.localeCompare(b, 'zh-TW'));
   
@@ -243,8 +264,41 @@ export default function TestPanel({
         </div>
       )}
 
+      {/* 匯出工具列 */}
+      {transactions.length > 0 && (
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-xs text-[var(--fg-subtle)] mr-1">匯出：</span>
+          <button
+            onClick={handleScreenshot}
+            disabled={isExporting}
+            className="toolbar-btn flex items-center gap-1.5 text-xs px-3 py-1.5"
+          >
+            {isExporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Camera className="w-3.5 h-3.5" />}
+            截圖
+          </button>
+          <button
+            onClick={() => handleExport('html')}
+            className="toolbar-btn flex items-center gap-1.5 text-xs px-3 py-1.5"
+          >
+            <FileText className="w-3.5 h-3.5" /> HTML 報告
+          </button>
+          <button
+            onClick={() => handleExport('csv')}
+            className="toolbar-btn flex items-center gap-1.5 text-xs px-3 py-1.5"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5" /> CSV
+          </button>
+          <button
+            onClick={() => handleExport('json')}
+            className="toolbar-btn flex items-center gap-1.5 text-xs px-3 py-1.5"
+          >
+            <FileJson className="w-3.5 h-3.5" /> JSON
+          </button>
+        </div>
+      )}
+
       {/* 交易結果列表 */}
-      <div className="space-y-3">
+      <div ref={resultsRef} className="space-y-3">
         {transactions.slice().reverse().map(tx => {
           const isExpanded = expandedTx.has(tx.id);
           return (
