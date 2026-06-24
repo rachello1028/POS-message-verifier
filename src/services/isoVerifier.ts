@@ -75,8 +75,8 @@ export function parseIsoLog(logText: string): Record<string, string> {
       parentField = nameRaw;
       blockData[parentField] = val;
     } else if (line.includes('Tag') && parentField) {
-      // Sub-tag：55_9F26
       blockData[`${parentField}_${nameRaw}`] = val;
+      blockData[`${parentField}_TAG_${nameRaw}`] = val;
     } else if (parentField) {
       // Sub-field（無 Field/Tag 關鍵字）：58_M6, 58_MA, 58_QJ
       blockData[`${parentField}_${nameRaw}`] = val;
