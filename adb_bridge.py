@@ -174,6 +174,22 @@ async def start_logcat(device_id: str = '') -> None:
             pass
         logcat_process = None
 
+    # 清除舊的 logcat buffer（非同步，不阻塞 event loop）
+    clear_cmd = [ADB_PATH]
+    if device_id:
+        clear_cmd += ['-s', device_id]
+    clear_cmd += ['logcat', '-c']
+    try:
+        clear_proc = await asyncio.create_subprocess_exec(
+            *clear_cmd,
+            stdout=asyncio.subprocess.DEVNULL,
+            stderr=asyncio.subprocess.DEVNULL
+        )
+        await asyncio.wait_for(clear_proc.wait(), timeout=3)
+        print("[INFO] Logcat buffer 已清除")
+    except Exception as e:
+        print(f"[WARN] 清除 logcat buffer 失敗: {e}")
+
     cmd = [ADB_PATH]
     if device_id:
         cmd += ['-s', device_id]
