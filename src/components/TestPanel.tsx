@@ -86,7 +86,7 @@ export default function TestPanel({
   };
 
   const statusConfig: Record<ConnectionStatus, { icon: React.ReactNode; text: string; cls: string }> = {
-    connected:    { icon: <Wifi className="w-4 h-4" />,     text: 'Bridge 已連線',   cls: 'text-[var(--emerald-ink)] bg-[var(--emerald-soft)] border-[var(--emerald-line)]' },
+    connected:    { icon: <Wifi className="w-4 h-4" />,     text: 'Bridge 已連線',   cls: 'text-[var(--emerald-ink)] bg-transparent border-[var(--emerald-line)]/30' },
     connecting:   { icon: <Loader2 className="w-4 h-4 animate-spin" />, text: '連線中…', cls: 'text-[var(--amber-ink)] bg-[var(--amber-soft)] border-[var(--amber-line)]' },
     disconnected: { icon: <WifiOff className="w-4 h-4" />,  text: 'Bridge 未連線',   cls: 'text-[var(--fg-subtle)] bg-[var(--surface)] border-[var(--border)]' },
     error:        { icon: <AlertCircle className="w-4 h-4" />, text: '連線錯誤',      cls: 'text-[var(--red-ink)] bg-[var(--red-soft)] border-[var(--red-line)]' },
@@ -212,14 +212,15 @@ export default function TestPanel({
 
       {/* 監聽中指示 */}
       {isMonitoring && (
-        <div className="card-indicator card-indicator-success flex items-center gap-3 px-4 py-3">
-          <span className="relative flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+        <div className="flex items-center gap-3 px-4 py-2.5 rounded-lg border border-[var(--emerald-line)]/30 bg-transparent">
+          <span className="relative flex h-2.5 w-2.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
           </span>
-          <span className="text-sm text-[var(--emerald-ink)] font-medium">
+          <span className="text-sm text-[var(--fg-muted)] font-medium">
             正在監聽 <span className="font-mono text-[var(--fg)]">{selectedDevice === '__auto__' ? '自動偵測設備' : selectedDevice}</span>
-            　→　{selectedBank} / {selectedTrans}
+            <span className="mx-1.5 text-[var(--fg-subtle)]">→</span>
+            <span className="text-[var(--emerald-ink)]">{selectedBank} / {selectedTrans}</span>
           </span>
         </div>
       )}
@@ -305,18 +306,24 @@ export default function TestPanel({
                           <span>調編: <span className="text-[var(--fg)] font-mono">{step.trace}</span></span>
                         </div>
                       </div>
-                      <div className="space-y-1.5">
+                      <div className="space-y-1">
                         {step.fields.map((f, fi) => (
                           <div
                             key={fi}
-                            className={`flex items-start gap-2 px-3 py-1.5 rounded-lg text-xs ${
+                            className={`flex items-start gap-2 px-3 py-1.5 rounded text-xs font-mono ${
                               f.pass
-                                ? 'bg-[var(--emerald-soft)] text-[var(--emerald-ink)]'
-                                : 'bg-[var(--red-soft)] text-[var(--red-ink)]'
+                                ? 'bg-[var(--surface-2)] border border-transparent text-[var(--fg-muted)]'
+                                : 'bg-[var(--red-soft)] border border-[var(--red-line)] text-[var(--red-ink)] font-semibold shadow-[0_0_12px_rgba(239,68,68,0.15)]'
                             }`}
                           >
-                            <span className="flex-shrink-0 mt-0.5">{f.pass ? '✅' : '❌'}</span>
-                            <span className="flex-1">{f.message}</span>
+                            <span className={`flex-shrink-0 mt-0.5 ${f.pass ? 'opacity-50' : ''}`}>{f.pass ? '✓' : '✗'}</span>
+                            <span className="flex-1">
+                              {f.pass ? (
+                                <>{f.message.split('：').slice(0, 1).join('')}：<span className="text-[var(--emerald-ink)]">{f.message.split('：').slice(1).join('：')}</span></>
+                              ) : (
+                                f.message
+                              )}
+                            </span>
                           </div>
                         ))}
                       </div>
