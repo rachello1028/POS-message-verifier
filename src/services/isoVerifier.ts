@@ -94,6 +94,7 @@ export function parseIsoLog(logText: string): Record<string, string> {
  *   MUST_NOT_EXIST   → 欄位不得出現
  *   IF_EXIST:VALUE   → 選填；若出現則值必須包含 VALUE
  *   IF_EXIST:NOT_NULL→ 選填；若出現則不得為空
+ *   REGEX:pattern    → 欄位值須符合正規表達式
  *   (具體值)         → 欄位值必須包含此字串
  */
 export function verifyMessage(
@@ -142,6 +143,26 @@ export function verifyMessage(
         } else {
           pass = false;
           message = `選填欄位值錯誤：${displayName}，預期含 "${target}"，實際 "${actual}"`;
+        }
+      }
+
+    } else if (fExp.startsWith('REGEX:')) {
+      const pattern = fExp.slice('REGEX:'.length).trim();
+      if (!exists || !actual) {
+        pass = false;
+        message = `找不到欄位或值為空：${displayName}`;
+      } else {
+        try {
+          const re = new RegExp(pattern);
+          if (re.test(actual)) {
+            message = `符合正規式：${displayName} = "${actual}"`;
+          } else {
+            pass = false;
+            message = `正規式不符：${displayName}，預期符合 /${pattern}/，實際 "${actual}"`;
+          }
+        } catch {
+          pass = false;
+          message = `正規式語法錯誤：${displayName}，pattern="${pattern}"`;
         }
       }
 
