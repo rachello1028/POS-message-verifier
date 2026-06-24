@@ -19,12 +19,13 @@ interface Props {
   onStartMonitor: (device: string, bank: string, transType: string, steps: TransactionStep[]) => void;
   onStopMonitor: () => void;
   onClearResults: () => void;
+  onDeleteTransaction: (id: number) => void;
   onUpdateTestTarget?: (bank: string, transType: string, steps: TransactionStep[]) => void;
 }
 
 export default function TestPanel({
   rules, devices, connStatus, transactions, isMonitoring,
-  onRefreshDevices, onStartMonitor, onStopMonitor, onClearResults, onUpdateTestTarget,
+  onRefreshDevices, onStartMonitor, onStopMonitor, onClearResults, onDeleteTransaction, onUpdateTestTarget,
 }: Props) {
   const [selectedDevice, setSelectedDevice] = useState('');
   const [selectedBank, setSelectedBank] = useState('');
@@ -391,6 +392,13 @@ export default function TestPanel({
                     {tx.steps[0] && ` · 授權碼: ${tx.steps[0].auth} · 序號: ${tx.steps[0].rrn}`}
                   </div>
                 </div>
+                <button
+                  onClick={(e) => { e.stopPropagation(); onDeleteTransaction(tx.id); }}
+                  className="p-1.5 rounded-md hover:bg-[var(--red-soft)] text-[var(--fg-subtle)] hover:text-[var(--red-ink)] transition-colors flex-shrink-0"
+                  title="刪除此筆交易"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
                 {isExpanded
                   ? <ChevronDown className="w-4 h-4 text-[var(--fg-muted)] flex-shrink-0" />
                   : <ChevronRight className="w-4 h-4 text-[var(--fg-muted)] flex-shrink-0" />

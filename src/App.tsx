@@ -336,6 +336,7 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
             onStartMonitor={handleStartMonitor}
             onStopMonitor={handleStopMonitor}
             onClearResults={handleClearResults}
+            onDeleteTransaction={(id) => setTransactions(prev => prev.filter(tx => tx.id !== id))}
             onUpdateTestTarget={handleUpdateTestTarget}
           />
         )}
