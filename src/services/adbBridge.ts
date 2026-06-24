@@ -161,6 +161,10 @@ export class AdbBridge {
     this.send({ command: 'save_rules', data: rules });
   }
 
+  setTxCounter(n: number): void {
+    this.txCounter = n;
+  }
+
   /** 設定要監測的交易（告知 bridge 當前銀行/交易種類及步驟） */
   setTestTarget(bank: string, transType: string, steps: TransactionStep[]): void {
     this.currentBank = bank;

@@ -23,7 +23,12 @@ export default function App() {
     } catch { /* ignore */ }
     return EMPTY_RULES;
   });
-  const [transactions, setTransactions] = useState<TransactionResult[]>([]);
+  const [transactions, setTransactions] = useState<TransactionResult[]>(() => {
+    try {
+      const cached = sessionStorage.getItem('pos-transactions');
+      return cached ? JSON.parse(cached) : [];
+    } catch { return []; }
+  });
   const [isMonitoring, setIsMonitoring] = useState(false);
   const [hasEverConnected, setHasEverConnected] = useState(false);
   const [showSetupModal, setShowSetupModal] = useState(false);
@@ -47,6 +52,12 @@ Set-ItemProperty -Path $cmdPath -Name "(Default)" -Value ('"{0}"' -f $batPath)
 Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。" -ForegroundColor Green`;
 
   const bridgeRef = useRef<AdbBridge | null>(null);
+
+  // ── 交易結果持久化（sessionStorage，F5 保留、關分頁清除）────────────────────
+
+  useEffect(() => {
+    sessionStorage.setItem('pos-transactions', JSON.stringify(transactions));
+  }, [transactions]);
 
   // ── 主題切換 ───────────────────────────────────────────────────────────────
 
@@ -89,6 +100,18 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
       onError: (msg) => console.error('[Bridge Error]', msg),
     }, `ws://127.0.0.1:${bridgePort}`);
     bridgeRef.current = bridge;
+
+    // 從 sessionStorage 恢復的交易 ID 接續，避免新交易 ID 重複
+    try {
+      const cached = sessionStorage.getItem('pos-transactions');
+      if (cached) {
+        const restored = JSON.parse(cached) as TransactionResult[];
+        if (restored.length > 0) {
+          const maxId = Math.max(...restored.map(t => t.id));
+          bridge.setTxCounter(maxId);
+        }
+      }
+    } catch { /* ignore */ }
 
     return () => bridge.disconnect();
   // eslint-disable-next-line react-hooks/exhaustive-deps
