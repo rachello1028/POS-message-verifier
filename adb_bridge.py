@@ -136,8 +136,9 @@ def load_rules() -> dict:
 
 
 def save_rules(rules: dict) -> None:
+    content = json.dumps(rules, ensure_ascii=False, indent=4)
     with open(RULES_FILE, 'w', encoding='utf-8') as f:
-        json.dump(rules, f, ensure_ascii=False, indent=4)
+        f.write(content)
 
 
 # ─── ADB 工具 ─────────────────────────────────────────────────────────────────
@@ -172,13 +173,6 @@ async def start_logcat(device_id: str = '') -> None:
         except Exception:
             pass
         logcat_process = None
-
-    # 清除 logcat buffer
-    clear_cmd = [ADB_PATH]
-    if device_id:
-        clear_cmd += ['-s', device_id]
-    clear_cmd += ['logcat', '-c']
-    subprocess.run(clear_cmd, capture_output=True)
 
     cmd = [ADB_PATH]
     if device_id:
@@ -246,8 +240,10 @@ async def handle_client(websocket, path=None) -> None:
     await websocket.send(json.dumps({
         'type': 'rules', 'data': load_rules()
     }))
+    loop = asyncio.get_event_loop()
+    devs = await loop.run_in_executor(None, get_devices)
     await websocket.send(json.dumps({
-        'type': 'devices', 'data': get_devices()
+        'type': 'devices', 'data': devs
     }))
 
     try:
@@ -256,9 +252,14 @@ async def handle_client(websocket, path=None) -> None:
                 data = json.loads(raw)
                 cmd = data.get('command', '')
 
+                if cmd != 'ping':
+                    print(f"[CMD] 收到指令: {cmd}")
+
                 if cmd == 'get_devices':
+                    loop = asyncio.get_event_loop()
+                    devs = await loop.run_in_executor(None, get_devices)
                     await websocket.send(json.dumps({
-                        'type': 'devices', 'data': get_devices()
+                        'type': 'devices', 'data': devs
                     }))
 
                 elif cmd == 'get_rules':
@@ -267,7 +268,8 @@ async def handle_client(websocket, path=None) -> None:
                     }))
 
                 elif cmd == 'save_rules':
-                    save_rules(data.get('data', {}))
+                    loop = asyncio.get_event_loop()
+                    await loop.run_in_executor(None, save_rules, data.get('data', {}))
                     await websocket.send(json.dumps({
                         'type': 'rules_saved', 'message': '規格已儲存'
                     }))

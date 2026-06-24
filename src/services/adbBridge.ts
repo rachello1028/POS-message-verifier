@@ -203,9 +203,13 @@ export class AdbBridge {
           // 收到 pong：清除 pongTimer，心跳正常
           if (this.pongTimer) { clearTimeout(this.pongTimer); this.pongTimer = null; }
           break;
+        case 'logcat_started':
+          console.log('[Bridge] Logcat started on device:', data.device);
+          break;
+        case 'logcat_stopped':
+          console.log('[Bridge] Logcat stopped');
+          break;
         case 'logcat':
-          // Debug: 顯示收到的每行 logcat
-          console.log('[Bridge] Logcat received:', data.message);
           this.processLogLine(data.message as string);
           break;
         case 'error':
@@ -223,11 +227,7 @@ export class AdbBridge {
    * 一直收集到 RECEIVE DATA UnPack END 才 flush，包含 REQ+RSP 兩個區塊
    */
   private processLogLine(line: string): void {
-    // Debug: 顯示當前狀態
-    console.log(`[Bridge] processLogLine: isCapturing=${this.isCapturing}, bufferLen=${this.logBuffer.length}, stepIdx=${this.currentStepIdx}/${this.pendingSteps.length}`);
-    
     if (line.includes('REAL SEND DATA Pack START')) {
-      console.log('[Bridge] REQ START detected, begin capture');
       this.isCapturing = true;
       this.logBuffer = [line];
       return;
@@ -236,38 +236,26 @@ export class AdbBridge {
     if (this.isCapturing) {
       this.logBuffer.push(line);
 
-      // RSP 結尾 → flush 整個 buffer（此時 buffer 已包含 REQ+RSP 所有行）
       if (line.includes('RECEIVE DATA UnPack END')) {
-        console.log(`[Bridge] RSP END detected, flushing buffer (${this.logBuffer.length} lines)`);
         this.isCapturing = false;
         const parsed = parseIsoLog(this.logBuffer.join('\n'));
-        console.log('[Bridge] parseIsoLog result keys:', Object.keys(parsed));
-        console.log('[Bridge] parsed dump:', JSON.stringify(parsed));
         this.logBuffer = [];
         this.evaluateBuffer(parsed);
       }
-    } else {
-      // Debug: 如果不在 capturing 模式，顯示為什麼跳過
-      console.log('[Bridge] Not capturing, waiting for REQ START...');
     }
   }
 
   private evaluateBuffer(parsed: Record<string, string>): void {
-    if (this.pendingSteps.length === 0) {
-      console.warn('[Bridge] evaluateBuffer: pendingSteps is empty, skip');
-      return;
-    }
+    if (this.pendingSteps.length === 0) return;
     const actualMti = (parsed['REQ_.MTI'] ?? '').replace('0x', '').trim();
     const expectedStep = this.pendingSteps[this.currentStepIdx];
     const expectedMti = expectedStep.mti.trim();
-    console.log(`[Bridge] evaluateBuffer: actualMti="${actualMti}", expectedMti="${expectedMti}", step=${this.currentStepIdx}/${this.pendingSteps.length}`);
 
     // MTI 不符合這一步
     if (actualMti && !actualMti.includes(expectedMti)) {
       // 檢查是否是新的一筆交易開始（MTI 符合第一步驟）
       const firstStepMti = this.pendingSteps[0].mti.trim();
       if (actualMti.includes(firstStepMti)) {
-        console.log(`[Bridge] Detected new transaction start (MTI=${actualMti}), resetting to step 0`);
         // 如果之前有累積的結果，先輸出為未完成的交易
         if (this.accumulatedStepResults.length > 0) {
           this.txCounter++;
@@ -279,7 +267,6 @@ export class AdbBridge {
             pass: false,
             steps: [...this.accumulatedStepResults],
           };
-          console.warn('[Bridge] Previous transaction incomplete, outputting partial result');
           this.callbacks.onTransaction(tx);
         }
         // 重置並重新評估
@@ -289,7 +276,6 @@ export class AdbBridge {
         this.evaluateBuffer(parsed);
         return;
       }
-      console.warn(`[Bridge] MTI mismatch, skip. actual="${actualMti}" expected="${expectedMti}"`);
       return;
     }
 
