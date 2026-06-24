@@ -55,8 +55,8 @@
   --indigo-line: #a5b4fc;
 }
 
-.dark, :root {
-  /* 深色模式預設（本專案以深色為主） */
+.dark {
+  /* 深色模式 */
   --canvas: #020617;
   --surface: #1e293b;
   --surface-2: #0f172a;
@@ -288,7 +288,9 @@ input[type="checkbox"] {
   border-color: var(--fg-subtle);
 }
 .ghost-chip.selected {
-  @apply bg-blue-600 text-white border-blue-600;
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
 }
 
 /* ── 面板 Header ─────────────────────────────────────────── */

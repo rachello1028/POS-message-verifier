@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { CreditCard, FlaskConical, Settings, Wifi, WifiOff, Loader2, AlertTriangle, BookOpen, Terminal, Download, X, Zap, Copy, Pencil, Check } from 'lucide-react';
+import { CreditCard, FlaskConical, Settings, Wifi, WifiOff, Loader2, AlertTriangle, BookOpen, Terminal, Download, X, Zap, Copy, Pencil, Check, Sun, Moon } from 'lucide-react';
 import TestPanel from './components/TestPanel';
 import ConfigPanel from './components/ConfigPanel';
 import HelpPanel from './components/HelpPanel';
@@ -9,6 +9,9 @@ import { AdbBridge } from './services/adbBridge';
 const EMPTY_RULES: AllRules = {};
 
 export default function App() {
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    return (localStorage.getItem('pos-theme') as 'dark' | 'light') ?? 'dark';
+  });
   const [activeTab, setActiveTab] = useState<'test' | 'config' | 'help'>('test');
   const [connStatus, setConnStatus] = useState<ConnectionStatus>('disconnected');
   const [connMsg, setConnMsg] = useState('');
@@ -44,6 +47,17 @@ Set-ItemProperty -Path $cmdPath -Name "(Default)" -Value ('"{0}"' -f $batPath)
 Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。" -ForegroundColor Green`;
 
   const bridgeRef = useRef<AdbBridge | null>(null);
+
+  // ── 主題切換 ───────────────────────────────────────────────────────────────
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    localStorage.setItem('pos-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  }, []);
 
   // ── 初始化 Bridge（port 變更時重建）────────────────────────────────────────
 
@@ -196,7 +210,16 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
                 <p className="text-xs text-[var(--fg-subtle)]">ISO 8583 規格化驗証工具</p>
               </div>
             </div>
-            <StatusBadge />
+            <div className="flex items-center gap-2">
+              <StatusBadge />
+              <button
+                onClick={toggleTheme}
+                className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors hover:bg-[var(--surface-3)] text-[var(--fg-muted)]"
+                title={theme === 'dark' ? '切換淺色模式' : '切換深色模式'}
+              >
+                {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -339,57 +362,56 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
 
       {/* ── 首次設定 Modal ────────────────────────────────── */}
       {showSetupModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm" onClick={() => setShowSetupModal(false)}>
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
-            <div className="p-4 border-b border-slate-700 flex items-center justify-between">
-              <h2 className="text-base font-bold text-slate-100 flex items-center gap-2">
-                <Zap className="w-4 h-4 text-emerald-400" /> 首次設定：一鍵啟動 Bridge
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShowSetupModal(false)}>
+          <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
+            <div className="p-4 border-b border-[var(--border)] flex items-center justify-between">
+              <h2 className="text-base font-bold text-[var(--fg)] flex items-center gap-2">
+                <Zap className="w-4 h-4 text-[var(--emerald-ink)]" /> 首次設定：一鍵啟動 Bridge
               </h2>
-              <button onClick={() => setShowSetupModal(false)} className="p-1 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-slate-200">
+              <button onClick={() => setShowSetupModal(false)} className="p-1 hover:bg-[var(--surface-3)] rounded-lg transition-colors text-[var(--fg-muted)]">
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="p-6 overflow-y-auto space-y-5 text-sm text-slate-300">
-              <div className="bg-slate-800 border border-slate-700 rounded-xl p-4 space-y-1.5">
-                <p className="font-semibold text-slate-100">設定步驟（只需做一次）</p>
-                <ol className="list-decimal list-inside space-y-1.5 text-slate-400 ml-1">
-                  <li>下載 <a href="/start_bridge.bat" download="start_bridge.bat" className="text-blue-400 hover:text-blue-300 inline-flex items-center gap-1"><Download className="w-3 h-3" />start_bridge.bat</a> 與 <a href="/adb_bridge.py" download="adb_bridge.py" className="text-blue-400 hover:text-blue-300 inline-flex items-center gap-1"><Download className="w-3 h-3" />adb_bridge.py</a>，放到同一個固定資料夾（例如 <code className="bg-slate-700 px-1 rounded">D:\Tools\POS-Bridge\</code>）。</li>
-                  <li>在那個資料夾的<strong className="text-slate-200">網址列</strong>輸入 <code className="bg-slate-700 px-1 rounded">powershell</code> 按 Enter。</li>
+            <div className="p-6 overflow-y-auto space-y-5 text-sm text-[var(--fg-muted)]">
+              <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-xl p-4 space-y-1.5">
+                <p className="font-semibold text-[var(--fg)]">設定步驟（只需做一次）</p>
+                <ol className="list-decimal list-inside space-y-1.5 text-[var(--fg-subtle)] ml-1">
+                  <li>下載 <a href="/start_bridge.bat" download="start_bridge.bat" className="text-[var(--blue-ink)] hover:underline inline-flex items-center gap-1"><Download className="w-3 h-3" />start_bridge.bat</a> 與 <a href="/adb_bridge.py" download="adb_bridge.py" className="text-[var(--blue-ink)] hover:underline inline-flex items-center gap-1"><Download className="w-3 h-3" />adb_bridge.py</a>，放到同一個固定資料夾（例如 <code className="bg-[var(--surface-3)] px-1 rounded">D:\Tools\POS-Bridge\</code>）。</li>
+                  <li>在那個資料夾的<strong className="text-[var(--fg)]">網址列</strong>輸入 <code className="bg-[var(--surface-3)] px-1 rounded">powershell</code> 按 Enter。</li>
                   <li>在彈出的 PowerShell 視窗貼上以下指令，按 Enter。</li>
                 </ol>
               </div>
 
               <div className="relative group">
-                <pre className="bg-slate-950 text-emerald-300 p-4 rounded-xl text-xs font-mono overflow-x-auto leading-relaxed">{psScript}</pre>
+                <pre className="bg-[var(--canvas)] text-[var(--emerald-ink)] p-4 rounded-xl text-xs font-mono overflow-x-auto leading-relaxed border border-[var(--border)]">{psScript}</pre>
                 <button
                   onClick={() => copyToClipboard(psScript)}
-                  className="absolute top-2 right-2 flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-medium transition-colors bg-slate-700/80 hover:bg-slate-600 text-slate-200"
+                  className="absolute top-2 right-2 flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-medium transition-colors bg-[var(--surface-3)]/80 hover:bg-[var(--surface-3)] text-[var(--fg-muted)]"
                 >
                   <Copy className="w-3.5 h-3.5" />
                   {copied ? '已複製！' : '複製指令'}
                 </button>
               </div>
 
-              {/* 替代方案：手動啟動 */}
-              <div className="bg-amber-950/40 border border-amber-800/50 rounded-xl p-4">
-                <p className="text-amber-300 font-medium mb-1">替代方案：手動啟動（不需要註冊協定）</p>
-                <ol className="list-decimal list-inside space-y-1.5 text-slate-400 ml-1">
+              <div className="bg-[var(--amber-soft)] border border-[var(--amber-line)] rounded-xl p-4">
+                <p className="text-[var(--amber-ink)] font-medium mb-1">替代方案：手動啟動（不需要註冊協定）</p>
+                <ol className="list-decimal list-inside space-y-1.5 text-[var(--fg-subtle)] ml-1">
                   <li>下載上述兩個檔案到同一個資料夾</li>
-                  <li>直接雙擊執行 <code className="bg-slate-700 px-1 rounded text-amber-300">start_bridge.bat</code></li>
+                  <li>直接雙擊執行 <code className="bg-[var(--surface-3)] px-1 rounded text-[var(--amber-ink)]">start_bridge.bat</code></li>
                   <li>等待終端機顯示「WebSocket Server started」</li>
                   <li>回到網頁，重新整理頁面即可連線</li>
                 </ol>
               </div>
 
-              <div className="bg-emerald-950/40 border border-emerald-800/50 rounded-xl p-4">
-                <p className="text-emerald-300 font-medium mb-1">設定完成後</p>
-                <p className="text-slate-400">關閉此視窗，橫幅上的「啟動 ADB Bridge」按鈕就能直接啟動 Bridge，不需再手動找資料夾。</p>
+              <div className="bg-[var(--emerald-soft)] border border-[var(--emerald-line)] rounded-xl p-4">
+                <p className="text-[var(--emerald-ink)] font-medium mb-1">設定完成後</p>
+                <p className="text-[var(--fg-subtle)]">關閉此視窗，橫幅上的「啟動 ADB Bridge」按鈕就能直接啟動 Bridge，不需再手動找資料夾。</p>
               </div>
             </div>
 
-            <div className="p-4 border-t border-slate-700 flex justify-end">
-              <button onClick={() => setShowSetupModal(false)} className="px-5 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl text-sm font-medium transition-colors">
+            <div className="p-4 border-t border-[var(--border)] flex justify-end">
+              <button onClick={() => setShowSetupModal(false)} className="btn-secondary">
                 關閉
               </button>
             </div>

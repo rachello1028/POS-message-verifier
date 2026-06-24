@@ -65,6 +65,9 @@ export default function TestPanel({
     if (latest.id <= lastAutoCapId.current) return;
     lastAutoCapId.current = latest.id;
 
+    // 先展開卡片，再截圖
+    setExpandedTx(prev => new Set(prev).add(latest.id));
+
     requestAnimationFrame(() => {
       setTimeout(async () => {
         const el = txCardRefs.current.get(latest.id);
@@ -75,7 +78,7 @@ export default function TestPanel({
         } catch (err) {
           console.error('自動截圖失敗:', err);
         }
-      }, 500);
+      }, 800);
     });
   }, [transactions, selectedBank, selectedTrans]);
 

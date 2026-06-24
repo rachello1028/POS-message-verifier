@@ -30,7 +30,7 @@ function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
 
 export async function captureElement(el: HTMLElement, filename?: string): Promise<void> {
   const canvas = await html2canvas(el, {
-    backgroundColor: '#020617',
+    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--canvas').trim() || '#020617',
     scale: 2,
     logging: false,
     useCORS: true,
@@ -74,7 +74,7 @@ export async function autoCaptureTxCard(
   const name = `${bank}_${transType}_TX${txId}_${ds}_${ts}.png`;
 
   const canvas = await html2canvas(cardEl, {
-    backgroundColor: '#020617',
+    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--canvas').trim() || '#020617',
     scale: 2,
     logging: false,
     useCORS: true,

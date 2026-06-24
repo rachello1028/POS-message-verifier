@@ -775,9 +775,11 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
               <Info className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
               <div>
                 <span className="font-mono text-[var(--amber-ink)]">NOT_NULL</span> 必填且有值 ·{' '}
+                <span className="font-mono text-[var(--amber-ink)]">MUST_EXIST</span> 必填但值可為空 ·{' '}
                 <span className="font-mono text-[var(--amber-ink)]">MUST_NOT_EXIST</span> 不得出現 ·{' '}
                 <span className="font-mono text-[var(--amber-ink)]">IF_EXIST:值</span> 選填；出現時需符合 ·{' '}
                 <span className="font-mono text-[var(--amber-ink)]">IF_EXIST:NOT_NULL</span> 選填；出現不得為空 ·{' '}
+                <span className="font-mono text-[var(--amber-ink)]">REGEX:pattern</span> 正規式比對 ·{' '}
                 具體值則直接填入（如 <span className="font-mono text-[var(--amber-ink)]">000000</span>）
               </div>
             </div>
