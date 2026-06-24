@@ -90,6 +90,7 @@ export function parseIsoLog(logText: string): Record<string, string> {
  * 依規格驗証已解析的電文
  *
  * 支援的 expected 模式：
+ *   MUST_EXIST       → 欄位必須存在（值可為空）
  *   NOT_NULL         → 欄位必須存在且不為空
  *   MUST_NOT_EXIST   → 欄位不得出現
  *   IF_EXIST:VALUE   → 選填；若出現則值必須包含 VALUE
@@ -118,7 +119,15 @@ export function verifyMessage(
     let pass = true;
     let message = '';
 
-    if (fExp === 'MUST_NOT_EXIST') {
+    if (fExp === 'MUST_EXIST') {
+      if (!exists) {
+        pass = false;
+        message = `欄位缺失：${displayName}（必須送出，但未出現）`;
+      } else {
+        message = `欄位存在：${displayName} = "${actual || '(空值)'}"`;
+      }
+
+    } else if (fExp === 'MUST_NOT_EXIST') {
       if (exists) {
         pass = false;
         message = `違規夾帶：${displayName}（不應送出，實際帶了 "${actual}"）`;

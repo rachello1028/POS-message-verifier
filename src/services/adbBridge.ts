@@ -288,7 +288,7 @@ export class AdbBridge {
       fields: results,
       auth: parsed['RSP_38'] ?? parsed['38'] ?? '—',
       rrn: parsed['RSP_37'] ?? parsed['37'] ?? '—',
-      trace: parsed['REQ_62'] ?? parsed['62'] ?? '—',
+      trace: this.extractTrace(parsed),
     };
 
     this.accumulatedStepResults.push(stepResult);
@@ -314,5 +314,20 @@ export class AdbBridge {
       this.currentStepIdx = 0;
       this.accumulatedStepResults = [];
     }
+  }
+
+  private extractTrace(parsed: Record<string, string>): string {
+    const tagKey = Object.keys(parsed).find(k =>
+      /^REQ_62_TAG_04\b/.test(k) || /^REQ_62_04\b/.test(k)
+    );
+    if (tagKey) {
+      const raw = parsed[tagKey];
+      const m = raw.match(/\(([^)]+)\)/);
+      if (m) return m[1];
+      return raw;
+    }
+    const f11 = parsed['REQ_11'] ?? parsed['11'];
+    if (f11) return f11;
+    return '—';
   }
 }

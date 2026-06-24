@@ -2,11 +2,12 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Play, Square, RefreshCw, ChevronDown, ChevronRight,
   CheckCircle2, XCircle, Wifi, WifiOff, Loader2, AlertCircle,
-  Trash2, Smartphone, Building2, FileText, Camera, FileSpreadsheet, FileJson
+  Trash2, Smartphone, Building2, FileText, Camera, FileSpreadsheet, FileJson,
+  FolderOpen, Table
 } from 'lucide-react';
 import type { AllRules, TransactionResult, ConnectionStatus, TransactionStep } from '../types';
 import { downloadReport } from '../services/reportGenerator';
-import { captureElement } from '../services/screenshotService';
+import { captureElement, pickSaveDirectory, hasSaveDirectory, getSaveDirName, autoCaptureTxCard } from '../services/screenshotService';
 
 interface Props {
   rules: AllRules;
@@ -30,12 +31,21 @@ export default function TestPanel({
   const [selectedTrans, setSelectedTrans] = useState('');
   const [expandedTx, setExpandedTx] = useState<Set<number>>(new Set());
   const [isExporting, setIsExporting] = useState(false);
+  const [saveDirName, setSaveDirName] = useState(getSaveDirName());
+  const [screenshotNames, setScreenshotNames] = useState<Map<number, string>>(new Map());
   const resultsRef = useRef<HTMLDivElement>(null);
+  const txCardRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+  const lastAutoCapId = useRef(0);
 
-  const handleExport = useCallback((format: 'html' | 'csv' | 'json') => {
+  const handlePickDir = useCallback(async () => {
+    const ok = await pickSaveDirectory();
+    if (ok) setSaveDirName(getSaveDirName());
+  }, []);
+
+  const handleExport = useCallback((format: 'html' | 'csv' | 'json' | 'excel' | 'caselist') => {
     if (transactions.length === 0) return;
-    downloadReport(format, transactions, { bank: selectedBank, transType: selectedTrans });
-  }, [transactions, selectedBank, selectedTrans]);
+    downloadReport(format, transactions, { bank: selectedBank, transType: selectedTrans }, screenshotNames);
+  }, [transactions, selectedBank, selectedTrans, screenshotNames]);
 
   const handleScreenshot = useCallback(async () => {
     if (!resultsRef.current || transactions.length === 0) return;
@@ -48,6 +58,26 @@ export default function TestPanel({
       setIsExporting(false);
     }
   }, [transactions, selectedBank]);
+
+  useEffect(() => {
+    if (transactions.length === 0) return;
+    const latest = transactions[transactions.length - 1];
+    if (latest.id <= lastAutoCapId.current) return;
+    lastAutoCapId.current = latest.id;
+
+    requestAnimationFrame(() => {
+      setTimeout(async () => {
+        const el = txCardRefs.current.get(latest.id);
+        if (!el) return;
+        try {
+          const name = await autoCaptureTxCard(el, selectedBank, selectedTrans, latest.id);
+          setScreenshotNames(prev => new Map(prev).set(latest.id, name));
+        } catch (err) {
+          console.error('自動截圖失敗:', err);
+        }
+      }, 500);
+    });
+  }, [transactions, selectedBank, selectedTrans]);
 
   const bankList = Object.keys(rules).sort((a, b) => a.localeCompare(b, 'zh-TW'));
   
@@ -202,8 +232,19 @@ export default function TestPanel({
         );
       })()}
 
-      {/* 按鈕 */}
-      <div className="flex gap-3">
+      {/* 截圖目錄 + 按鈕 */}
+      <div className="flex items-center gap-3 flex-wrap">
+        <button
+          onClick={handlePickDir}
+          className={`toolbar-btn flex items-center gap-1.5 text-xs px-3 py-2 ${
+            saveDirName ? 'border-[var(--emerald-line)]/50 text-[var(--emerald-ink)]' : ''
+          }`}
+          title="選擇截圖自動存放的目錄"
+        >
+          <FolderOpen className="w-3.5 h-3.5" />
+          {saveDirName ? `📂 ${saveDirName}` : '選擇截圖目錄'}
+        </button>
+
         {!isMonitoring ? (
           <button
             onClick={handleStart}
@@ -283,10 +324,22 @@ export default function TestPanel({
             <FileText className="w-3.5 h-3.5" /> HTML 報告
           </button>
           <button
+            onClick={() => handleExport('excel')}
+            className="toolbar-btn flex items-center gap-1.5 text-xs px-3 py-1.5 text-[var(--emerald-ink)]"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5" /> Excel
+          </button>
+          <button
+            onClick={() => handleExport('caselist')}
+            className="toolbar-btn flex items-center gap-1.5 text-xs px-3 py-1.5"
+          >
+            <Table className="w-3.5 h-3.5" /> 案例清單
+          </button>
+          <button
             onClick={() => handleExport('csv')}
             className="toolbar-btn flex items-center gap-1.5 text-xs px-3 py-1.5"
           >
-            <FileSpreadsheet className="w-3.5 h-3.5" /> CSV
+            <FileSpreadsheet className="w-3.5 h-3.5" /> CSV 詳細
           </button>
           <button
             onClick={() => handleExport('json')}
@@ -304,6 +357,7 @@ export default function TestPanel({
           return (
             <div
               key={tx.id}
+              ref={el => { if (el) txCardRefs.current.set(tx.id, el); }}
               className={`card-indicator rounded-xl overflow-hidden ${
                 tx.pass
                   ? 'card-indicator-success'

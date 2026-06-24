@@ -1,6 +1,6 @@
 import type { TransactionResult, FieldResult } from '../types';
 
-export type ExportFormat = 'html' | 'csv' | 'json';
+export type ExportFormat = 'html' | 'csv' | 'json' | 'excel' | 'caselist';
 
 function formatNow(): string {
   return new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' });
@@ -263,7 +263,7 @@ document.addEventListener('click', e => {
 </html>`;
 }
 
-// ─── CSV Export ───────────────────────────────────────────────────────────────
+// ─── CSV (原始詳細) ──────────────────────────────────────────────────────────
 
 export function generateCSV(transactions: TransactionResult[]): string {
   const headers = [
@@ -281,26 +281,94 @@ export function generateCSV(transactions: TransactionResult[]): string {
         no++;
         const sf = sanitizeField(f);
         rows.push([
-          String(no),
-          String(tx.id),
-          tx.timestamp,
-          tx.bank,
-          tx.transactionType,
-          tx.pass ? '通過' : '失敗',
-          step.stepName,
-          step.mti,
-          step.pass ? '通過' : '失敗',
-          step.auth,
-          step.rrn,
-          sf.fieldId,
-          sf.fieldName,
-          sf.expected,
-          sf.actual,
-          sf.pass ? '通過' : '失敗',
-          sf.message,
+          String(no), String(tx.id), tx.timestamp, tx.bank, tx.transactionType,
+          tx.pass ? '通過' : '失敗', step.stepName, step.mti,
+          step.pass ? '通過' : '失敗', step.auth, step.rrn,
+          sf.fieldId, sf.fieldName, sf.expected, sf.actual,
+          sf.pass ? '通過' : '失敗', sf.message,
         ].map(escCsv).join(','));
       }
     }
+  }
+  return rows.join('\n');
+}
+
+// ─── Excel 報告（對齊 ECR 格式）─────────────────────────────────────────────
+
+export function generateExcel(
+  transactions: TransactionResult[],
+  screenshotNames?: Map<number, string>
+): string {
+  const headers = [
+    'No.', '測試案例ID', '交易類別', '交易類型代碼', '交易金額',
+    '卡號', '回應碼', '預期結果', '實際結果', '測試時間',
+    '授權碼', '序號', '備註',
+  ];
+
+  const rows: string[] = [headers.map(escCsv).join(',')];
+
+  for (const tx of transactions) {
+    const step = tx.steps[0];
+    if (!step) continue;
+
+    const findField = (prefix: string) => {
+      const f = step.fields.find(f => f.fieldId.startsWith(prefix));
+      return f ? sanitizeField(f) : null;
+    };
+
+    const cardField = findField('REQ_2');
+    const amountField = findField('REQ_4');
+    const rcField = findField('RSP_39');
+
+    const amount = amountField?.actual ?? '';
+    const formattedAmount = amount ? `$${(parseInt(amount, 10) / 100).toLocaleString()}` : '';
+
+    rows.push([
+      String(tx.id),
+      `TX_${String(tx.id).padStart(3, '0')}`,
+      tx.transactionType,
+      step.mti,
+      formattedAmount,
+      cardField?.actual ?? '',
+      rcField?.actual ?? '',
+      '電文驗証通過',
+      tx.pass ? 'Pass' : 'Fail',
+      tx.timestamp,
+      step.auth,
+      step.rrn,
+      screenshotNames?.get(tx.id) ?? '',
+    ].map(escCsv).join(','));
+  }
+
+  return rows.join('\n');
+}
+
+// ─── 案例清單（精簡版）─────────────────────────────────────────────────────
+
+export function generateCaseList(transactions: TransactionResult[]): string {
+  const headers = [
+    'No.', '交易類別', '卡種', '過卡', '交易金額', '預期結果', '結果',
+  ];
+
+  const rows: string[] = [headers.map(escCsv).join(',')];
+
+  for (const tx of transactions) {
+    const step = tx.steps[0];
+    if (!step) continue;
+
+    const amountField = step.fields.find(f => f.fieldId.startsWith('REQ_4'));
+    const amount = amountField?.actual ?? '';
+    const formattedAmount = amount ? `$${(parseInt(amount, 10) / 100).toLocaleString()}` : '';
+
+    rows.push([
+      String(tx.id),
+      tx.transactionType,
+      '',
+      '',
+      formattedAmount,
+      '電文驗証通過',
+      tx.pass ? 'Pass' : 'Fail',
+    ].map(escCsv).join(','));
   }
 
   return rows.join('\n');
@@ -352,7 +420,8 @@ export function downloadBlob(content: string, filename: string, mimeType: string
 export function downloadReport(
   format: ExportFormat,
   transactions: TransactionResult[],
-  meta: { bank: string; transType: string }
+  meta: { bank: string; transType: string },
+  screenshotNames?: Map<number, string>
 ): void {
   const ts = new Date().toISOString().slice(0, 10).replace(/-/g, '');
   const base = `pos-report-${meta.bank}-${ts}`;
@@ -363,6 +432,12 @@ export function downloadReport(
       break;
     case 'csv':
       downloadBlob(generateCSV(transactions), `${base}.csv`, 'text/csv;charset=utf-8');
+      break;
+    case 'excel':
+      downloadBlob(generateExcel(transactions, screenshotNames), `${base}-excel.csv`, 'text/csv;charset=utf-8');
+      break;
+    case 'caselist':
+      downloadBlob(generateCaseList(transactions), `${base}-cases.csv`, 'text/csv;charset=utf-8');
       break;
     case 'json':
       downloadBlob(generateJSON(transactions, meta), `${base}.json`, 'application/json;charset=utf-8');
