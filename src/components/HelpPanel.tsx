@@ -110,7 +110,7 @@ function DownloadSection() {
   const files = [
     { name: 'start_bridge.bat', desc: '橋接程式啟動腳本（Windows）',        hint: '首次設定時下載，完成協議註冊後由網頁按鈕自動呼叫', highlight: true },
     { name: 'adb_bridge.py',    desc: 'ADB WebSocket Bridge（Python）',    hint: '主要橋接程式，與 bat 放在同一資料夾' },
-    { name: 'pos_rules.json',   desc: '電文驗証規格設定檔',                hint: '可匯入規格設定管理頁面編輯' },
+    { name: 'pos_rules.json',   desc: '電文驗証規格設定檔（範例）',          hint: '每家銀行獨立 JSON 存於 rules/ 資料夾，可在規格設定頁匯入' },
   ];
 
   const download = (filename: string) => {
@@ -321,7 +321,7 @@ export default function HelpPanel() {
             </p>
           </div>
           <Tip>
-            設定完成後記得點「<Code>儲存規格</Code>」，規格會同步存入 <Code>pos_rules.json</Code>，
+            設定完成後記得點「<Code>儲存規格</Code>」，每家銀行會獨立存入 <Code>rules/</Code> 資料夾，
             下次啟動工具時自動載入。
           </Tip>
         </div>

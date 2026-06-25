@@ -26,7 +26,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--port', type=int, default=8765, help='WebSocket 監聽埠號')
 args = parser.parse_args()
 LISTEN_PORT = args.port
-RULES_FILE = os.path.join(os.path.dirname(__file__), "pos_rules.json")
+RULES_DIR = os.path.join(os.path.dirname(__file__), "rules")
 
 connected_clients: set = set()
 logcat_process = None
@@ -125,19 +125,31 @@ DEFAULT_RULES = {
 # ─── 規格檔管理 ───────────────────────────────────────────────────────────────
 
 def load_rules() -> dict:
-    if os.path.exists(RULES_FILE):
+    os.makedirs(RULES_DIR, exist_ok=True)
+    merged = {}
+    files = sorted(f for f in os.listdir(RULES_DIR) if f.endswith('.json'))
+    if not files:
+        save_rules(DEFAULT_RULES)
+        return DEFAULT_RULES
+    for fname in files:
+        fpath = os.path.join(RULES_DIR, fname)
         try:
-            with open(RULES_FILE, 'r', encoding='utf-8') as f:
-                return json.load(f)
+            with open(fpath, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                merged.update(data)
         except Exception as e:
-            print(f"[WARN] 讀取規格檔失敗: {e}，使用預設值")
-    save_rules(DEFAULT_RULES)
-    return DEFAULT_RULES
+            print(f"[WARN] 讀取 {fname} 失敗: {e}")
+    return merged if merged else DEFAULT_RULES
 
 
 def save_rules(rules: dict) -> None:
-    with open(RULES_FILE, 'w', encoding='utf-8') as f:
-        json.dump(rules, f, ensure_ascii=False, indent=4)
+    os.makedirs(RULES_DIR, exist_ok=True)
+    for bank_name, bank_data in rules.items():
+        fname = bank_name + '.json'
+        fpath = os.path.join(RULES_DIR, fname)
+        content = json.dumps({bank_name: bank_data}, ensure_ascii=False, indent=4)
+        with open(fpath, 'w', encoding='utf-8') as f:
+            f.write(content)
 
 
 # ─── ADB 工具 ─────────────────────────────────────────────────────────────────

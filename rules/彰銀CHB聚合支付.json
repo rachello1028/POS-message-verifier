@@ -1,0 +1,769 @@
+{
+    "彰銀CHB聚合支付": {
+        "_description": "彰銀 EDC IMPS 聚合支付電文規格 v2.6",
+        "_note": "包含台灣Pay/街口/LINE Pay/微信支付被掃、退貨、結帳、取得QR Code、查詢、FISC安全碼、CHBI端末機管理、授權結果通知",
+        "台灣Pay被掃": {
+            "type": "multi-step",
+            "description": "台灣Pay QR Code 被掃交易 (TWPay Passive Scan)",
+            "steps": [
+                {
+                    "step_name": "台灣Pay被掃",
+                    "mti": "0200",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "006100"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "818"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_47",
+                            "name": "Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58",
+                            "name": "Additional Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "街口支付被掃": {
+            "type": "multi-step",
+            "description": "街口支付 QR Code 被掃交易 (JKO PAY Passive Scan)",
+            "steps": [
+                {
+                    "step_name": "街口支付被掃",
+                    "mti": "0200",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "006200"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "818"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_47",
+                            "name": "Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58",
+                            "name": "Additional Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "LINE Pay被掃": {
+            "type": "multi-step",
+            "description": "LINE Pay QR Code 被掃交易 (LINE Pay Passive Scan)",
+            "steps": [
+                {
+                    "step_name": "LINE Pay被掃",
+                    "mti": "0200",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "006300"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "818"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_47",
+                            "name": "Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58",
+                            "name": "Additional Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "微信支付被掃": {
+            "type": "multi-step",
+            "description": "微信支付 QR Code 被掃交易 (WeChat Pay Passive Scan)",
+            "steps": [
+                {
+                    "step_name": "微信支付被掃",
+                    "mti": "0200",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "006400"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "818"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_47",
+                            "name": "Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58",
+                            "name": "Additional Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "退貨": {
+            "type": "multi-step",
+            "description": "聚合支付退貨交易 (Refund)",
+            "steps": [
+                {
+                    "step_name": "退貨",
+                    "mti": "0200",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "206000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "818"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_47",
+                            "name": "Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "結帳": {
+            "type": "multi-step",
+            "description": "聚合支付結帳交易 (Settle)",
+            "steps": [
+                {
+                    "step_name": "結帳",
+                    "mti": "0500",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "920000"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "818"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "取得英特拉QR Code": {
+            "type": "multi-step",
+            "description": "取得英特拉 QR Code (Get QR Code of Intella)",
+            "steps": [
+                {
+                    "step_name": "取得QR Code",
+                    "mti": "0800",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "006200"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "818"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_47",
+                            "name": "Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58",
+                            "name": "Additional Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "查詢": {
+            "type": "multi-step",
+            "description": "聚合支付查詢交易 (Inquiry)",
+            "steps": [
+                {
+                    "step_name": "查詢",
+                    "mti": "0800",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "023000"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "818"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_47",
+                            "name": "Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "FISC取得安全碼": {
+            "type": "multi-step",
+            "description": "財金取得安全碼 (FISC Get Secure Code)",
+            "steps": [
+                {
+                    "step_name": "取得安全碼",
+                    "mti": "0800",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "000172"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "818"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "CHBI端末機註冊": {
+            "type": "multi-step",
+            "description": "財好收端末機註冊 (CHBI Registration of EDC)",
+            "steps": [
+                {
+                    "step_name": "端末機註冊",
+                    "mti": "0800",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "382901"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "818"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58",
+                            "name": "Additional Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "CHBI端末機註銷": {
+            "type": "multi-step",
+            "description": "財好收端末機註銷 (CHBI Cancel of EDC)",
+            "steps": [
+                {
+                    "step_name": "端末機註銷",
+                    "mti": "0800",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "382902"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "818"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "CHBI端末機確認": {
+            "type": "multi-step",
+            "description": "財好收端末機確認 (CHBI Confirm of EDC)",
+            "steps": [
+                {
+                    "step_name": "端末機確認",
+                    "mti": "0800",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "382903"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "818"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "CHBI更換密鑰": {
+            "type": "multi-step",
+            "description": "財好收端末機更換密鑰 (CHBI Changing Key of EDC)",
+            "steps": [
+                {
+                    "step_name": "更換密鑰",
+                    "mti": "0800",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "382904"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "818"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "授權結果通知": {
+            "type": "multi-step",
+            "description": "信用卡/金融卡授權結果通知 (Authorization Notify of Credit Card / SmartPay)",
+            "steps": [
+                {
+                    "step_name": "授權結果通知",
+                    "mti": "0320",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "003000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_12",
+                            "name": "Time, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_13",
+                            "name": "Date, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "Retrieval Reference Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_39",
+                            "name": "Response Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58",
+                            "name": "Additional Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

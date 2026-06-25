@@ -456,13 +456,15 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
   // ── 匯入/匯出 ─────────────────────────────────────────────────────────────
 
   const exportRules = () => {
-    const blob = new Blob([JSON.stringify(rules, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'pos_rules.json';
-    a.click();
-    URL.revokeObjectURL(url);
+    for (const [bankName, bankData] of Object.entries(rules)) {
+      const blob = new Blob([JSON.stringify({ [bankName]: bankData }, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${bankName}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
   };
 
   const importRules = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -472,12 +474,12 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
     reader.onload = ev => {
       try {
         const parsed = JSON.parse(ev.target?.result as string) as AllRules;
-        setRules(parsed);
+        const merged = { ...rules, ...parsed };
+        setRules(merged);
         const bank = Object.keys(parsed)[0] ?? '';
         setSelectedBank(bank);
         setSelectedTrans(Object.keys(parsed[bank] ?? {})[0] ?? '');
-        // 立即同步到 App.tsx，避免切換 tab 後規格遺失
-        onSave(parsed);
+        onSave(merged);
       } catch { alert('JSON 格式錯誤，無法匯入'); }
     };
     reader.readAsText(file);
