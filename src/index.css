@@ -213,8 +213,8 @@
   @apply border px-4 py-2.5 rounded-lg;
 }
 .alert-banner-warning {
-  background: rgba(245, 158, 11, 0.06);
-  border-color: rgba(245, 158, 11, 0.2);
+  background: var(--amber-soft);
+  border-color: var(--amber-line);
 }
 .alert-banner-error {
   background: rgba(239, 68, 68, 0.06);

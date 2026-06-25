@@ -153,14 +153,13 @@ export default function TestPanel({
 
   return (
     <div className="space-y-6">
-      {/* ── 狀態列 ─────────────────────────────────────────── */}
-      <div className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium ${sc.cls}`}>
-        {sc.icon}
-        <span>{sc.text}</span>
-        {connStatus === 'error' && (
-          <span className="ml-2 text-xs opacity-70">請確認 <code className="font-mono bg-black/30 px-1 rounded">python adb_bridge.py</code> 已在背景執行</span>
-        )}
-      </div>
+      {/* ── 狀態列（已連線或連線中才顯示，斷線/錯誤由 App 的警示橫幅處理）── */}
+      {(connStatus === 'connected' || connStatus === 'connecting') && (
+        <div className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium ${sc.cls}`}>
+          {sc.icon}
+          <span>{sc.text}</span>
+        </div>
+      )}
 
       {/* ── 控制面板 ────────────────────────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -254,7 +253,11 @@ export default function TestPanel({
             onClick={handleStart}
             disabled={!selectedDevice || !selectedBank || !selectedTrans || connStatus !== 'connected'}
             title={!selectedDevice ? '請選擇設備或「自動偵測」' : undefined}
-            className="btn-success flex items-center gap-2 px-5 py-2.5 disabled:opacity-40 disabled:cursor-not-allowed font-semibold"
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
+              !selectedDevice || !selectedBank || !selectedTrans || connStatus !== 'connected'
+                ? 'bg-[var(--surface)] text-[var(--fg-subtle)] border border-[var(--border)] cursor-not-allowed'
+                : 'btn-success'
+            }`}
           >
             <Play className="w-4 h-4" /> 開始監聽
           </button>

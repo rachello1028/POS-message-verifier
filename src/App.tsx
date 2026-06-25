@@ -278,13 +278,13 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
       {(connStatus === 'disconnected' || connStatus === 'error') && activeTab !== 'help' && (
         <div className="alert-banner-warning border-b border-amber-500/20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center gap-3 flex-wrap">
-            <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0" />
-            <span className="text-amber-300 text-sm flex-1 flex items-center gap-2 flex-wrap">
+            <AlertTriangle className="w-4 h-4 text-[var(--amber-ink)] flex-shrink-0" />
+            <span className="text-[var(--amber-ink)] text-sm flex-1 flex items-center gap-2 flex-wrap">
               {hasEverConnected
                 ? <span>Bridge 連線已中斷{connMsg ? `（${connMsg}）` : ''}，請重新點擊啟動。</span>
                 : 'ADB Bridge 未執行，請點擊右側按鈕啟動。'
               }
-              <span className="flex items-center gap-1 text-amber-400 text-xs">
+              <span className="flex items-center gap-1 text-[var(--amber-ink)] text-xs opacity-80">
                 Port:
                 {isEditingPort ? (
                   <>
@@ -295,7 +295,7 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
                       onChange={e => setPortDraft(e.target.value)}
                       onKeyDown={e => { if (e.key === 'Enter') handleConfirmPort(); if (e.key === 'Escape') setIsEditingPort(false); }}
                       autoFocus
-                      className="w-16 px-1.5 py-0.5 bg-[var(--surface-2)] border border-amber-500 rounded text-amber-200 text-xs font-mono focus:outline-none"
+                      className="w-16 px-1.5 py-0.5 bg-[var(--surface-2)] border border-[var(--amber-line)] rounded text-[var(--fg)] text-xs font-mono focus:outline-none"
                     />
                     <button onClick={handleConfirmPort} className="text-[var(--emerald-ink)] hover:opacity-80">
                       <Check className="w-3.5 h-3.5" />
@@ -304,7 +304,7 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
                 ) : (
                   <button
                     onClick={() => { setPortDraft(bridgePort); setIsEditingPort(true); }}
-                    className="font-mono text-amber-200 hover:text-white flex items-center gap-0.5 underline decoration-dotted"
+                    className="font-mono text-[var(--fg)] hover:opacity-80 flex items-center gap-0.5 underline decoration-dotted"
                   >
                     {bridgePort} <Pencil className="w-3 h-3" />
                   </button>
