@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { CreditCard, FlaskConical, Settings, Wifi, WifiOff, Loader2, AlertTriangle, BookOpen, Terminal, Download, X, Zap, Copy, Pencil, Check, Sun, Moon } from 'lucide-react';
+import { CreditCard, FlaskConical, Settings, Wifi, WifiOff, Loader2, AlertTriangle, BookOpen, Terminal, Download, X, Zap, Copy, Pencil, Check, CheckCircle2, Sun, Moon } from 'lucide-react';
 import TestPanel from './components/TestPanel';
 import ConfigPanel from './components/ConfigPanel';
 import HelpPanel from './components/HelpPanel';
@@ -315,7 +315,7 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
               <button
                 onClick={handleStartBridge}
                 disabled={isBridgeLaunching}
-                className="btn-success flex items-center gap-1.5 text-xs px-3 py-1.5 disabled:opacity-60 disabled:cursor-not-allowed rounded-lg"
+                className="btn-primary flex items-center gap-1.5 text-xs px-3 py-1.5 disabled:opacity-60 disabled:cursor-not-allowed rounded-lg"
               >
                 {isBridgeLaunching
                   ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> 啟動中…</>
@@ -324,7 +324,7 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
               <a
                 href="/start_bridge.bat"
                 download="start_bridge.bat"
-                className="btn-primary flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg"
+                className="toolbar-btn text-xs"
                 title="下載後放到固定資料夾，雙擊執行即可（需搭配 adb_bridge.py）"
               >
                 <Download className="w-3.5 h-3.5" /> 下載工具
@@ -408,30 +408,30 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
               </div>
 
               <div className="relative group">
-                <pre className="bg-[var(--canvas)] text-[var(--emerald-ink)] p-4 rounded-xl text-xs font-mono overflow-x-auto leading-relaxed border border-[var(--border)]">{psScript}</pre>
+                <pre className="bg-[#0b0f19] text-[#38bdf8] p-4 rounded-xl text-xs font-mono overflow-x-auto leading-relaxed border border-[#1e293b]">{psScript}</pre>
                 <button
                   onClick={() => copyToClipboard(psScript)}
-                  className="absolute top-2 right-2 flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-medium transition-colors bg-[var(--surface-3)]/80 hover:bg-[var(--surface-3)] text-[var(--fg-muted)]"
+                  className="absolute top-2 right-2 flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-medium transition-colors bg-[#1e293b]/80 hover:bg-[#334155] text-slate-300"
                 >
                   <Copy className="w-3.5 h-3.5" />
                   {copied ? '已複製！' : '複製指令'}
                 </button>
               </div>
 
-              <div className="bg-[var(--amber-soft)] border border-[var(--amber-line)] rounded-xl p-4">
+              <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-xl p-4">
                 <p className="text-[var(--amber-ink)] font-medium mb-1">替代方案：手動啟動（不需要註冊協定）</p>
                 <ol className="list-decimal list-inside space-y-1.5 text-[var(--fg-subtle)] ml-1">
                   <li>下載上述兩個檔案到同一個資料夾</li>
-                  <li>直接雙擊執行 <code className="bg-[var(--surface-3)] px-1 rounded text-[var(--amber-ink)]">start_bridge.bat</code></li>
+                  <li>直接雙擊執行 <code className="bg-[#0b0f19] text-[#38bdf8] px-1.5 py-0.5 rounded text-xs font-mono">start_bridge.bat</code></li>
                   <li>等待終端機顯示「WebSocket Server started」</li>
                   <li>回到網頁，重新整理頁面即可連線</li>
                 </ol>
               </div>
 
-              <div className="bg-[var(--emerald-soft)] border border-[var(--emerald-line)] rounded-xl p-4">
-                <p className="text-[var(--emerald-ink)] font-medium mb-1">設定完成後</p>
-                <p className="text-[var(--fg-subtle)]">關閉此視窗，橫幅上的「啟動 ADB Bridge」按鈕就能直接啟動 Bridge，不需再手動找資料夾。</p>
-              </div>
+              <p className="text-xs text-[var(--emerald-ink)] flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0" />
+                設定完成後，關閉此視窗即可從橫幅的按鈕直接啟動 Bridge。
+              </p>
             </div>
 
             <div className="p-4 border-t border-[var(--border)] flex justify-end">

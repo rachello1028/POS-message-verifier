@@ -136,6 +136,7 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
   const [renameValue, setRenameValue] = useState('');
 
   // ── 雲端規格庫狀態 ────────────────────────────────────────────────────────
+  const [isCloudExpanded, setIsCloudExpanded] = useState(false);
   const [cloudBanks, setCloudBanks] = useState<string[]>([]);
   const [selectedCloudBank, setSelectedCloudBank] = useState('');
   const [cloudMsg, setCloudMsg] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
@@ -500,99 +501,107 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
           </label>
         </div>
 
-        {/* 雲端規格庫 */}
-        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl overflow-hidden">
-          <div className="px-3 py-2 bg-[var(--surface-2)] flex items-center justify-between">
+        {/* 雲端規格庫（可折疊） */}
+        <div className="pb-3 mb-3 border-b border-[var(--border)]">
+          <button
+            onClick={() => setIsCloudExpanded(!isCloudExpanded)}
+            className="w-full flex items-center justify-between py-1 text-left"
+          >
             <div className="flex items-center gap-2">
               <Cloud className="w-3.5 h-3.5 text-[var(--blue-ink)]" />
               <span className="text-xs font-semibold text-[var(--fg-muted)]">雲端規格庫</span>
             </div>
-            <button
-              onClick={fetchCloudBanks}
-              disabled={isCloudFetching}
-              title="重新整理雲端列表"
-              className="toolbar-btn p-1"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${isCloudFetching ? 'animate-spin' : ''}`} />
-            </button>
-          </div>
-
-          <div className="px-3 py-2.5 space-y-2">
-            {/* 訊息列 */}
-            {cloudMsg && (
-              <div className={`flex items-center gap-1.5 text-xs px-2 py-1.5 rounded-lg ${
-                cloudMsg.type === 'success' ? 'bg-[var(--emerald-soft)] text-[var(--emerald-ink)] border border-[var(--emerald-line)]' :
-                cloudMsg.type === 'error'   ? 'bg-[var(--red-soft)] text-[var(--red-ink)] border border-[var(--red-line)]' :
-                                              'bg-[var(--blue-soft)] text-[var(--blue-ink)] border border-[var(--blue-line)]'
-              }`}>
-                {cloudMsg.type === 'success' ? <CheckCircle className="w-3 h-3 flex-shrink-0" /> :
-                 cloudMsg.type === 'error'   ? <AlertCircle  className="w-3 h-3 flex-shrink-0" /> :
-                                              <Cloud        className="w-3 h-3 flex-shrink-0" />}
-                <span className="flex-1">{cloudMsg.text}</span>
-                <button onClick={() => setCloudMsg(null)} className="flex-shrink-0 hover:opacity-70"><X className="w-3 h-3" /></button>
-              </div>
-            )}
-
-            {/* 下載區 */}
-            <div className="space-y-1.5">
-              <p className="text-[10px] text-[var(--fg-subtle)] uppercase tracking-wider font-semibold">從雲端下載</p>
-              {cloudBanks.length > 0 ? (
-                <select
-                  value={selectedCloudBank}
-                  onChange={e => setSelectedCloudBank(e.target.value)}
-                  className="w-full bg-[var(--surface-2)] text-xs text-[var(--fg)] px-2 py-1.5 rounded focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
-                >
-                  {cloudBanks.map(b => <option key={b} value={b}>{b}</option>)}
-                </select>
-              ) : (
-                <p className="text-xs text-[var(--fg-subtle)] italic">點選 ↺ 取得雲端列表</p>
-              )}
-              <div className="flex gap-1.5">
-                <button
-                  onClick={downloadFromCloud}
-                  disabled={isCloudDownloading || !selectedCloudBank}
-                  className="flex-1 btn-primary flex items-center justify-center gap-1.5 text-xs px-2 py-1.5 disabled:opacity-40"
-                >
-                  <CloudDownload className={`w-3.5 h-3.5 ${isCloudDownloading ? 'animate-pulse' : ''}`} />
-                  {isCloudDownloading ? '下載中…' : '下載規格'}
-                </button>
-                <button
-                  onClick={deleteFromCloud}
-                  disabled={!selectedCloudBank}
-                  title="從雲端刪除此規格"
-                  className="px-2 py-1.5 rounded text-[var(--fg-subtle)] hover:text-[var(--red-ink)] hover:bg-[var(--red-soft)] disabled:opacity-30 transition-colors"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-
-            <div className="border-t border-[var(--border)] pt-2 space-y-1.5">
-              <p className="text-[10px] text-[var(--fg-subtle)] uppercase tracking-wider font-semibold">上傳到雲端</p>
+            <div className="flex items-center gap-1">
               <button
-                onClick={uploadToCloud}
-                disabled={isCloudUploading || !selectedBank}
-                className="w-full btn-secondary flex items-center justify-center gap-1.5 text-xs px-2 py-1.5 disabled:opacity-40"
+                onClick={e => { e.stopPropagation(); fetchCloudBanks(); }}
+                disabled={isCloudFetching}
+                title="重新整理雲端列表"
+                className="toolbar-btn p-1"
               >
-                <CloudUpload className={`w-3.5 h-3.5 ${isCloudUploading ? 'animate-pulse' : ''}`} />
-                {isCloudUploading ? '上傳中…' : `上傳「${selectedBank || '—'}」至雲端`}
+                <RefreshCw className={`w-3.5 h-3.5 ${isCloudFetching ? 'animate-spin' : ''}`} />
               </button>
+              {isCloudExpanded
+                ? <ChevronUp className="w-3.5 h-3.5 text-[var(--fg-subtle)]" />
+                : <ChevronDown className="w-3.5 h-3.5 text-[var(--fg-subtle)]" />}
             </div>
-          </div>
+          </button>
+
+          {isCloudExpanded && (
+            <div className="mt-2 space-y-2">
+              {cloudMsg && (
+                <div className={`flex items-center gap-1.5 text-xs px-2 py-1.5 rounded-lg ${
+                  cloudMsg.type === 'success' ? 'bg-[var(--emerald-soft)] text-[var(--emerald-ink)] border border-[var(--emerald-line)]' :
+                  cloudMsg.type === 'error'   ? 'bg-[var(--red-soft)] text-[var(--red-ink)] border border-[var(--red-line)]' :
+                                                'bg-[var(--blue-soft)] text-[var(--blue-ink)] border border-[var(--blue-line)]'
+                }`}>
+                  {cloudMsg.type === 'success' ? <CheckCircle className="w-3 h-3 flex-shrink-0" /> :
+                   cloudMsg.type === 'error'   ? <AlertCircle  className="w-3 h-3 flex-shrink-0" /> :
+                                                <Cloud        className="w-3 h-3 flex-shrink-0" />}
+                  <span className="flex-1">{cloudMsg.text}</span>
+                  <button onClick={() => setCloudMsg(null)} className="flex-shrink-0 hover:opacity-70"><X className="w-3 h-3" /></button>
+                </div>
+              )}
+
+              <div className="space-y-1.5">
+                <p className="text-[10px] text-[var(--fg-subtle)] uppercase tracking-wider font-semibold">從雲端下載</p>
+                {cloudBanks.length > 0 ? (
+                  <select
+                    value={selectedCloudBank}
+                    onChange={e => setSelectedCloudBank(e.target.value)}
+                    className="w-full bg-[var(--surface-2)] text-xs text-[var(--fg)] px-2 py-1.5 rounded focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
+                  >
+                    {cloudBanks.map(b => <option key={b} value={b}>{b}</option>)}
+                  </select>
+                ) : (
+                  <p className="text-xs text-[var(--fg-subtle)] italic">點選 ↺ 取得雲端列表</p>
+                )}
+                <div className="flex gap-1.5">
+                  <button
+                    onClick={downloadFromCloud}
+                    disabled={isCloudDownloading || !selectedCloudBank}
+                    className="flex-1 btn-primary flex items-center justify-center gap-1.5 text-xs px-2 py-1.5 disabled:opacity-40"
+                  >
+                    <CloudDownload className={`w-3.5 h-3.5 ${isCloudDownloading ? 'animate-pulse' : ''}`} />
+                    {isCloudDownloading ? '下載中…' : '下載規格'}
+                  </button>
+                  <button
+                    onClick={deleteFromCloud}
+                    disabled={!selectedCloudBank}
+                    title="從雲端刪除此規格"
+                    className="px-2 py-1.5 rounded text-[var(--fg-subtle)] hover:text-[var(--red-ink)] hover:bg-[var(--red-soft)] disabled:opacity-30 transition-colors"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="border-t border-[var(--border)] pt-2 space-y-1.5">
+                <p className="text-[10px] text-[var(--fg-subtle)] uppercase tracking-wider font-semibold">上傳到雲端</p>
+                <button
+                  onClick={uploadToCloud}
+                  disabled={isCloudUploading || !selectedBank}
+                  className="w-full btn-secondary flex items-center justify-center gap-1.5 text-xs px-2 py-1.5 disabled:opacity-40"
+                >
+                  <CloudUpload className={`w-3.5 h-3.5 ${isCloudUploading ? 'animate-pulse' : ''}`} />
+                  {isCloudUploading ? '上傳中…' : `上傳「${selectedBank || '—'}」至雲端`}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* 銀行列表 */}
-        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl overflow-hidden">
-          <div className="px-3 py-2 bg-[var(--surface-2)] flex items-center gap-2">
+        <div className="pb-3 mb-3 border-b border-[var(--border)]">
+          <div className="flex items-center gap-2 mb-2">
             <Building2 className="w-3.5 h-3.5 text-[var(--fg-muted)]" />
             <span className="text-xs font-semibold text-[var(--fg-muted)]">銀行 / 客戶</span>
           </div>
-          <div className="divide-y divide-[var(--border)] max-h-60 overflow-y-auto">
+          <div className="max-h-60 overflow-y-auto rounded-lg border border-[var(--border)]">
             {bankList.map(bank => (
               <button
                 key={bank}
                 onClick={() => { setSelectedBank(bank); setSelectedTrans(Object.keys(rules[bank] ?? {})[0] ?? ''); }}
-                className={`w-full text-left flex items-center justify-between px-3 py-2 text-sm transition-colors ${
+                className={`w-full text-left flex items-center justify-between px-3 py-2 text-sm transition-colors border-b border-[var(--border)] last:border-b-0 ${
                   selectedBank === bank ? 'bg-[var(--blue-soft)] text-[var(--blue-ink)]' : 'text-[var(--fg-muted)] hover:bg-[var(--surface-2)]'
                 }`}
               >
@@ -608,7 +617,7 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
               </button>
             ))}
           </div>
-          <div className="px-2 py-2 border-t border-[var(--border)] flex gap-1.5">
+          <div className="flex gap-1.5 mt-2">
             <input
               value={newBankName}
               onChange={e => setNewBankName(e.target.value)}
@@ -624,17 +633,17 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
 
         {/* 交易列表 */}
         {selectedBank && (
-          <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl overflow-hidden">
-            <div className="px-3 py-2 bg-[var(--surface-2)] flex items-center gap-2">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
               <FileText className="w-3.5 h-3.5 text-[var(--fg-muted)]" />
               <span className="text-xs font-semibold text-[var(--fg-muted)]">交易類別</span>
             </div>
-            <div className="divide-y divide-[var(--border)] max-h-72 overflow-y-auto">
+            <div className="max-h-72 overflow-y-auto rounded-lg border border-[var(--border)]">
               {transList.map(trans => (
                 <div
                   key={trans}
                   onClick={() => { if (renamingTrans !== trans) setSelectedTrans(trans); }}
-                  className={`group flex items-center justify-between px-3 py-2 text-sm cursor-pointer transition-colors ${
+                  className={`group flex items-center justify-between px-3 py-2 text-sm cursor-pointer transition-colors border-b border-[var(--border)] last:border-b-0 ${
                     selectedTrans === trans ? 'bg-[var(--blue-soft)] text-[var(--blue-ink)]' : 'text-[var(--fg-muted)] hover:bg-[var(--surface-2)]'
                   }`}
                 >
@@ -691,7 +700,7 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
               ))}
             </div>
             {/* 新增交易 */}
-            <div className="px-2 py-2 border-t border-[var(--border)] space-y-1.5">
+            <div className="mt-2 space-y-1.5">
               <input
                 value={newTransName}
                 onChange={e => setNewTransName(e.target.value)}
