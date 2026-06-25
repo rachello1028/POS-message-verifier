@@ -2,6 +2,52 @@ import html2canvas from 'html2canvas';
 
 let savedDirHandle: FileSystemDirectoryHandle | null = null;
 
+const IDB_NAME = 'pos-screenshot-store';
+const IDB_STORE = 'handles';
+const IDB_KEY = 'saveDir';
+
+function openIdb(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(IDB_NAME, 1);
+    req.onupgradeneeded = () => req.result.createObjectStore(IDB_STORE);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function persistHandle(handle: FileSystemDirectoryHandle): Promise<void> {
+  try {
+    const db = await openIdb();
+    const tx = db.transaction(IDB_STORE, 'readwrite');
+    tx.objectStore(IDB_STORE).put(handle, IDB_KEY);
+    await new Promise<void>((res, rej) => { tx.oncomplete = () => res(); tx.onerror = () => rej(tx.error); });
+    db.close();
+  } catch { /* ignore */ }
+}
+
+async function restoreHandle(): Promise<FileSystemDirectoryHandle | null> {
+  try {
+    const db = await openIdb();
+    const tx = db.transaction(IDB_STORE, 'readonly');
+    const req = tx.objectStore(IDB_STORE).get(IDB_KEY);
+    const handle = await new Promise<FileSystemDirectoryHandle | null>((res, rej) => {
+      req.onsuccess = () => res(req.result ?? null);
+      req.onerror = () => rej(req.error);
+    });
+    db.close();
+    if (!handle) return null;
+    const perm = await (handle as any).queryPermission({ mode: 'readwrite' });
+    if (perm === 'granted') return handle;
+    const req2 = await (handle as any).requestPermission({ mode: 'readwrite' });
+    return req2 === 'granted' ? handle : null;
+  } catch { return null; }
+}
+
+export async function initSaveDirectory(): Promise<void> {
+  if (savedDirHandle) return;
+  savedDirHandle = await restoreHandle();
+}
+
 export function hasSaveDirectory(): boolean {
   return savedDirHandle !== null;
 }
@@ -13,6 +59,7 @@ export function getSaveDirName(): string {
 export async function pickSaveDirectory(): Promise<boolean> {
   try {
     savedDirHandle = await (window as any).showDirectoryPicker({ mode: 'readwrite' });
+    await persistHandle(savedDirHandle!);
     return true;
   } catch {
     return false;

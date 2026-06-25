@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import type { AllRules, TransactionResult, ConnectionStatus, TransactionStep } from '../types';
 import { downloadReport } from '../services/reportGenerator';
-import { captureElement, pickSaveDirectory, hasSaveDirectory, getSaveDirName, autoCaptureTxCard } from '../services/screenshotService';
+import { captureElement, pickSaveDirectory, hasSaveDirectory, getSaveDirName, autoCaptureTxCard, initSaveDirectory } from '../services/screenshotService';
 
 interface Props {
   rules: AllRules;
@@ -37,6 +37,10 @@ export default function TestPanel({
   const resultsRef = useRef<HTMLDivElement>(null);
   const txCardRefs = useRef<Map<number, HTMLDivElement>>(new Map());
   const lastAutoCapId = useRef(0);
+
+  useEffect(() => {
+    initSaveDirectory().then(() => setSaveDirName(getSaveDirName()));
+  }, []);
 
   const handlePickDir = useCallback(async () => {
     const ok = await pickSaveDirectory();
