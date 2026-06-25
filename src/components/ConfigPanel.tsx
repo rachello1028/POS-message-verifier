@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import type { AllRules, TransactionConfig, TransactionStep, VerifyField } from '../types';
 import { parseSpec, toRulesJson } from '../utils/specParser';
+import JSZip from 'jszip';
 
 interface Props {
   rules: AllRules;
@@ -503,16 +504,18 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
 
   // ── 匯入/匯出 ─────────────────────────────────────────────────────────────
 
-  const exportRules = () => {
+  const exportRules = async () => {
+    const zip = new JSZip();
     for (const [bankName, bankData] of Object.entries(rules)) {
-      const blob = new Blob([JSON.stringify({ [bankName]: bankData }, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${bankName}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
+      zip.file(`${bankName}.json`, JSON.stringify({ [bankName]: bankData }, null, 2));
     }
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'pos_rules.zip';
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const importRules = (e: React.ChangeEvent<HTMLInputElement>) => {
