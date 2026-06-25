@@ -2,9 +2,11 @@ import React, { useState, useCallback, useRef } from 'react';
 import {
   Plus, Trash2, Copy, Save, ChevronDown, ChevronUp,
   Building2, FileText, Layers, Download, Upload, Info,
-  Cloud, CloudDownload, CloudUpload, RefreshCw, AlertCircle, CheckCircle, X
+  Cloud, CloudDownload, CloudUpload, RefreshCw, AlertCircle, CheckCircle, X,
+  FilePlus2, Eye, Loader2, Check
 } from 'lucide-react';
 import type { AllRules, TransactionConfig, TransactionStep, VerifyField } from '../types';
+import { parseSpec, toRulesJson } from '../utils/specParser';
 
 interface Props {
   rules: AllRules;
@@ -144,6 +146,52 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
   const [isCloudDownloading, setIsCloudDownloading] = useState(false);
   const [isCloudUploading, setIsCloudUploading] = useState(false);
   const cloudMsgTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // ── 規格匯入（從 .md 自動解析）────────────────────────────────────────────
+  const [specImportOpen, setSpecImportOpen] = useState(false);
+  const [specParsing, setSpecParsing] = useState(false);
+  const [specResult, setSpecResult] = useState<ReturnType<typeof parseSpec> | null>(null);
+  const [specBankName, setSpecBankName] = useState('');
+  const [specSelectedTx, setSpecSelectedTx] = useState<Set<number>>(() => new Set());
+  const specFileRef = useRef<HTMLInputElement>(null);
+
+  const handleSpecFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setSpecParsing(true);
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const content = ev.target?.result as string;
+        const result = parseSpec(content);
+        setSpecResult(result);
+        setSpecBankName(result.suggestedBankName);
+        setSpecSelectedTx(new Set(result.transactions.map((_, i) => i)));
+        setSpecImportOpen(true);
+      } catch (err) {
+        alert('解析規格檔失敗：' + (err instanceof Error ? err.message : String(err)));
+      } finally {
+        setSpecParsing(false);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+
+  const handleSpecImport = () => {
+    if (!specResult || !specBankName.trim()) return;
+    const selected = specResult.transactions.filter((_, i) => specSelectedTx.has(i));
+    if (selected.length === 0) return;
+    const newRules = toRulesJson(specBankName.trim(), selected);
+    const merged = { ...rules, ...newRules };
+    setRules(merged);
+    onSave(merged);
+    setSelectedBank(specBankName.trim());
+    const firstTx = selected[0]?.name ?? '';
+    setSelectedTrans(firstTx);
+    setSpecImportOpen(false);
+    setSpecResult(null);
+  };
 
   const showCloudMsg = (type: 'success' | 'error' | 'info', text: string) => {
     setCloudMsg({ type, text });
@@ -492,7 +540,18 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
       {/* ── 左側：銀行/交易 tree ───────────────────────── */}
       <div className="lg:col-span-1 space-y-4">
-        {/* 匯入/匯出 */}
+        {/* 新增規格（從 .md 解析） */}
+        <label className={`w-full flex items-center justify-center gap-1.5 text-xs px-3 py-2.5 rounded-lg cursor-pointer font-medium transition-colors ${
+          specParsing ? 'btn-secondary opacity-60' : 'btn-primary'
+        }`}>
+          {specParsing
+            ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> 解析中…</>
+            : <><FilePlus2 className="w-3.5 h-3.5" /> 從規格文件新增</>
+          }
+          <input type="file" accept=".md,.txt" className="hidden" ref={specFileRef} onChange={handleSpecFileSelect} disabled={specParsing} />
+        </label>
+
+        {/* 匯入/匯出 JSON */}
         <div className="flex gap-2">
           <button onClick={exportRules} className="flex-1 flex items-center justify-center gap-1.5 text-xs px-3 py-2 btn-secondary rounded-lg">
             <Download className="w-3.5 h-3.5" /> 匯出 JSON
@@ -868,6 +927,130 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
           </div>
         )}
       </div>
+
+      {/* ── 規格匯入 Modal ─────────────────────────────────────────────── */}
+      {specImportOpen && specResult && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="w-[640px] max-h-[80vh] flex flex-col rounded-xl border border-[var(--border)] bg-[var(--surface-2)] shadow-2xl">
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border)]">
+              <div className="flex items-center gap-2">
+                <FilePlus2 className="w-5 h-5 text-[var(--blue-ink)]" />
+                <h2 className="text-base font-semibold text-[var(--fg)]">規格解析結果</h2>
+              </div>
+              <button onClick={() => { setSpecImportOpen(false); setSpecResult(null); }} className="p-1 rounded hover:bg-[var(--surface-3)] text-[var(--fg-subtle)]">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+              {/* Warnings */}
+              {specResult.warnings.length > 0 && (
+                <div className="alert-banner alert-banner-warning text-xs space-y-1">
+                  {specResult.warnings.map((w, i) => (
+                    <div key={i} className="flex items-start gap-1.5">
+                      <AlertCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-[var(--amber-ink)]" />
+                      <span className="text-[var(--amber-ink)]">{w}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Bank name */}
+              <div>
+                <label className="text-xs font-medium text-[var(--fg-muted)] mb-1 block">銀行 / 規格名稱</label>
+                <input
+                  value={specBankName}
+                  onChange={e => setSpecBankName(e.target.value)}
+                  className="w-full bg-[var(--surface)] text-sm text-[var(--fg)] px-3 py-2 rounded-lg border border-[var(--border-strong)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                  placeholder="例如：彰銀CHB聚合支付"
+                />
+                {specBankName.trim() && Object.keys(rules).includes(specBankName.trim()) && (
+                  <p className="text-[10px] text-[var(--amber-ink)] mt-1 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" /> 此名稱已存在，匯入後將合併覆蓋同名交易
+                  </p>
+                )}
+              </div>
+
+              {/* Transaction list */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-xs font-medium text-[var(--fg-muted)]">
+                    偵測到 {specResult.transactions.length} 種交易
+                  </label>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setSpecSelectedTx(new Set(specResult.transactions.map((_, i) => i)))}
+                      className="text-[10px] text-[var(--blue-ink)] hover:underline"
+                    >全選</button>
+                    <button
+                      onClick={() => setSpecSelectedTx(new Set())}
+                      className="text-[10px] text-[var(--fg-subtle)] hover:underline"
+                    >取消全選</button>
+                  </div>
+                </div>
+                <div className="max-h-[320px] overflow-y-auto rounded-lg border border-[var(--border)] divide-y divide-[var(--border)]">
+                  {specResult.transactions.map((tx, idx) => (
+                    <label
+                      key={idx}
+                      className={`flex items-start gap-3 px-3 py-2.5 cursor-pointer transition-colors ${
+                        specSelectedTx.has(idx) ? 'bg-[var(--blue-soft)]' : 'hover:bg-[var(--surface)]'
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={specSelectedTx.has(idx)}
+                        onChange={() => {
+                          setSpecSelectedTx(prev => {
+                            const next = new Set(prev);
+                            if (next.has(idx)) next.delete(idx); else next.add(idx);
+                            return next;
+                          });
+                        }}
+                        className="mt-0.5"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-[var(--fg)] truncate">{tx.name}</span>
+                          <span className="badge badge-info text-[10px] flex-shrink-0">MTI {tx.mti}</span>
+                          {tx.processingCode && (
+                            <span className="text-[10px] font-mono text-[var(--fg-subtle)] flex-shrink-0">PC:{tx.processingCode}</span>
+                          )}
+                        </div>
+                        <p className="text-[10px] text-[var(--fg-subtle)] mt-0.5">
+                          {tx.fields.length} 個驗證欄位：{tx.fields.slice(0, 5).map(f => f.id).join(', ')}{tx.fields.length > 5 ? '…' : ''}
+                        </p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-between px-5 py-3 border-t border-[var(--border)]">
+              <span className="text-xs text-[var(--fg-subtle)]">
+                已選 {specSelectedTx.size} / {specResult.transactions.length} 種交易
+              </span>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => { setSpecImportOpen(false); setSpecResult(null); }}
+                  className="btn-secondary text-xs px-4 py-2"
+                >取消</button>
+                <button
+                  onClick={handleSpecImport}
+                  disabled={!specBankName.trim() || specSelectedTx.size === 0}
+                  className="btn-primary text-xs px-4 py-2 flex items-center gap-1.5 disabled:opacity-40"
+                >
+                  <Check className="w-3.5 h-3.5" />
+                  存入規格
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
