@@ -757,6 +757,71 @@
                             "expected": "NOT_NULL"
                         },
                         {
+                            "id": "REQ_58_TAG_S00",
+                            "name": "Transaction Type",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58_TAG_S01",
+                            "name": "Transaction Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58_TAG_S02",
+                            "name": "Card Type",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58_TAG_S03",
+                            "name": "Bank ID",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58_TAG_S04",
+                            "name": "Invoice No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58_TAG_S05",
+                            "name": "TC",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58_TAG_S06",
+                            "name": "Adjust / Tip Amount",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58_TAG_S10",
+                            "name": "CUP Settle Date",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58_TAG_S20",
+                            "name": "Installment Period",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58_TAG_S21",
+                            "name": "Installment Down Payment",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58_TAG_S22",
+                            "name": "Installment Payment",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58_TAG_S23",
+                            "name": "Installment Fee",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58_TAG_S40",
+                            "name": "Original Amount",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
