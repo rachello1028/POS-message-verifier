@@ -25,7 +25,7 @@ export default function App() {
   });
   const [transactions, setTransactions] = useState<TransactionResult[]>(() => {
     try {
-      const cached = sessionStorage.getItem('pos-transactions');
+      const cached = localStorage.getItem('pos-transactions');
       return cached ? JSON.parse(cached) : [];
     } catch { return []; }
   });
@@ -56,7 +56,7 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
   // ── 交易結果持久化（sessionStorage，F5 保留、關分頁清除）────────────────────
 
   useEffect(() => {
-    sessionStorage.setItem('pos-transactions', JSON.stringify(transactions));
+    localStorage.setItem('pos-transactions', JSON.stringify(transactions));
   }, [transactions]);
 
   // ── 主題切換 ───────────────────────────────────────────────────────────────
@@ -103,7 +103,7 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
 
     // 從 sessionStorage 恢復的交易 ID 接續，避免新交易 ID 重複
     try {
-      const cached = sessionStorage.getItem('pos-transactions');
+      const cached = localStorage.getItem('pos-transactions');
       if (cached) {
         const restored = JSON.parse(cached) as TransactionResult[];
         if (restored.length > 0) {
