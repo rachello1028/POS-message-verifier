@@ -390,7 +390,7 @@ async def main() -> None:
     print("=" * 50)
     print("  POS 電文驗証工具 - ADB WebSocket Bridge")
     print(f"  監聽埠: ws://127.0.0.1:{LISTEN_PORT}")
-    print(f"  規格檔: {RULES_FILE}")
+    print(f"  規格檔: {RULES_DIR}")
     print(f"  ADB   : {ADB_PATH}")
     # 檢測 ADB 是否可用
     try:
