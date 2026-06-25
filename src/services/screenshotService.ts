@@ -43,7 +43,11 @@ async function restoreHandle(): Promise<FileSystemDirectoryHandle | null> {
   } catch { return null; }
 }
 
+let initDone = false;
+
 export async function initSaveDirectory(): Promise<void> {
+  if (initDone) return;
+  initDone = true;
   if (savedDirHandle) return;
   savedDirHandle = await restoreHandle();
 }

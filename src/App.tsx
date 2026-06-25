@@ -81,17 +81,7 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
       },
       onDevices: (list) => setDevices(list),
       onRules: (r) => {
-        // 優先使用本地緩存（用戶匯入的）；若無緩存才採用 Bridge 傳來的
-        const cached = localStorage.getItem('pos-rules-cache');
-        if (cached) {
-          try {
-            const local = JSON.parse(cached) as AllRules;
-            setRules(local);
-            // 將本地版本同步回 Bridge 檔案
-            bridgeRef.current?.saveRules(local);
-            return;
-          } catch { /* ignore, fall through */ }
-        }
+        // Bridge 連線時傳來的規格以檔案為準，更新本地快取
         setRules(r);
         localStorage.setItem('pos-rules-cache', JSON.stringify(r));
       },
