@@ -43,10 +43,10 @@ export class AdbBridge {
     this.url = url ?? DEFAULT_BRIDGE_URL;
   }
 
-  connect(): void {
+  connect(probe = false): void {
     if (this.ws?.readyState === WebSocket.OPEN) return;
     this.reconnectCount = 0;
-    this.callbacks.onStatus('connecting');
+    if (!probe) this.callbacks.onStatus('connecting');
     try {
       this.ws = new WebSocket(this.url);
 
@@ -58,18 +58,24 @@ export class AdbBridge {
 
       this.ws.onclose = () => {
         this.stopHeartbeat();
-        this.callbacks.onStatus('disconnected', '連線已中斷');
-        this.scheduleReconnect();
+        if (probe) {
+          this.callbacks.onStatus('disconnected');
+        } else {
+          this.callbacks.onStatus('disconnected', '連線已中斷');
+          this.scheduleReconnect();
+        }
       };
 
       this.ws.onerror = () => {
         this.stopHeartbeat();
-        this.callbacks.onStatus('error', '無法連線至 ADB Bridge (請確認 python adb_bridge.py 已執行)');
+        if (!probe) {
+          this.callbacks.onStatus('error', '無法連線至 ADB Bridge (請確認 python adb_bridge.py 已執行)');
+        }
       };
 
       this.ws.onmessage = (e) => this.handleMessage(e);
     } catch (err) {
-      this.callbacks.onStatus('error', String(err));
+      if (!probe) this.callbacks.onStatus('error', String(err));
     }
   }
 

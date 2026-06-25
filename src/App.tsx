@@ -113,6 +113,8 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
       }
     } catch { /* ignore */ }
 
+    bridge.connect(true);
+
     return () => bridge.disconnect();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bridgePort]);
