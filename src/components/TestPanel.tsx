@@ -8,6 +8,7 @@ import {
 import type { AllRules, TransactionResult, ConnectionStatus, TransactionStep } from '../types';
 import { downloadReport } from '../services/reportGenerator';
 import { captureElement, pickSaveDirectory, hasSaveDirectory, getSaveDirName, autoCaptureTxCard, initSaveDirectory } from '../services/screenshotService';
+import { sortTransactions } from '../utils/txSort';
 
 interface Props {
   rules: AllRules;
@@ -90,29 +91,7 @@ export default function TestPanel({
   const bankList = Object.keys(rules).sort((a, b) => a.localeCompare(b, 'zh-TW'));
   
   const transList = selectedBank
-    ? Object.keys(rules[selectedBank] ?? {}).sort((a, b) => {
-        const getGroup = (name: string) => {
-          if (name.startsWith('授權通知')) return 1;
-          if (name.startsWith('CHBI') || name.startsWith('FISC')) return 2;
-          return 0;
-        };
-        const ga = getGroup(a);
-        const gb = getGroup(b);
-        if (ga !== gb) return ga - gb;
-        if (ga === 1) {
-          const order = ['一般銷售','退貨','離線銷售','預授權','預授權請款','分期','紅利折抵','小費','調帳','SmartPay','取消銷售'];
-          const suffix = (s: string) => s.replace(/^授權通知-/, '');
-          const ia = order.indexOf(suffix(a));
-          const ib = order.indexOf(suffix(b));
-          return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
-        }
-        const txOrder = ['銷售','退貨','退款','結帳','查詢'];
-        const getTx = (name: string) => { const i = txOrder.findIndex(p => name.includes(p)); return i === -1 ? txOrder.length : i; };
-        const ta = getTx(a);
-        const tb = getTx(b);
-        if (ta !== tb) return ta - tb;
-        return a.localeCompare(b, 'zh-TW');
-      })
+    ? sortTransactions(Object.keys(rules[selectedBank] ?? {}))
     : [];
 
   const getSteps = (bank: string, trans: string): TransactionStep[] => {
