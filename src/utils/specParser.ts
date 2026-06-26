@@ -337,6 +337,7 @@ function guessBankName(content: string): string {
     if (line.match(/ctbc|中信/i)) return '中信CTBC';
     if (line.match(/sinopac|永豐/i)) return '永豐SinoPac';
     if (line.match(/fubon|富邦/i)) return '富邦Fubon';
+    if (line.match(/american\s*express|amex|gedc/i)) return 'AE';
   }
   return '未命名銀行';
 }
@@ -344,8 +345,8 @@ function guessBankName(content: string): string {
 function findTransactionSections(content: string): string {
   const lines = content.split('\n');
   const startPatterns = [
-    /^#{1,4}\s+\d+\.\s+.*(?:Message|Transaction|Authorization).*(?:Bit\s*Map|Format)/i,
-    /^#{1,4}\s+\d+\.\d+\.?\s+(?:Sale|Refund|Void|Settle|Logon|Reversal|Batch|Pre.?Auth|Inquiry|Close|Change|Download|TC Upload|Passive|FISC|CHBI|Authorization)/i,
+    /^#{1,4}\s+\d+\.\s+.*(?:Message|Transaction|Authorization).*(?:Bit\s*Map|Format|Field|Interface)/i,
+    /^#{1,4}\s+\d+\.\d+\.?\s+(?:Sale|Refund|Void|Settle|Logon|Reversal|Batch|Pre.?Auth|Inquiry|Close|Change|Download|TC Upload|Passive|FISC|CHBI|Authorization|Financial|Reconciliation|Maintenance|Transaction Upload)/i,
   ];
 
   let sectionStart = -1;
