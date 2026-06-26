@@ -89,18 +89,28 @@ export default function TestPanel({
 
   const bankList = Object.keys(rules).sort((a, b) => a.localeCompare(b, 'zh-TW'));
   
-  // 交易類別排序：依優先權 + 中文自然排序
   const transList = selectedBank
     ? Object.keys(rules[selectedBank] ?? {}).sort((a, b) => {
-        // 定義優先順序關鍵字（越前面優先權越高）
-        const priority = ['一般銷售', '銷售', '預授權', '取消', '退貨', '退款', '結帳', '查詢'];
-        const getPriority = (name: string) => {
-          const idx = priority.findIndex(p => name.includes(p));
-          return idx === -1 ? priority.length : idx;
+        const getGroup = (name: string) => {
+          if (name.startsWith('授權通知')) return 1;
+          if (name.startsWith('CHBI') || name.startsWith('FISC')) return 2;
+          return 0;
         };
-        const pa = getPriority(a);
-        const pb = getPriority(b);
-        if (pa !== pb) return pa - pb;
+        const ga = getGroup(a);
+        const gb = getGroup(b);
+        if (ga !== gb) return ga - gb;
+        if (ga === 1) {
+          const order = ['一般銷售','退貨','離線銷售','預授權','預授權請款','分期','紅利折抵','小費','調帳','SmartPay','取消銷售'];
+          const suffix = (s: string) => s.replace(/^授權通知-/, '');
+          const ia = order.indexOf(suffix(a));
+          const ib = order.indexOf(suffix(b));
+          return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+        }
+        const txOrder = ['銷售','退貨','退款','結帳','查詢'];
+        const getTx = (name: string) => { const i = txOrder.findIndex(p => name.includes(p)); return i === -1 ? txOrder.length : i; };
+        const ta = getTx(a);
+        const tb = getTx(b);
+        if (ta !== tb) return ta - tb;
         return a.localeCompare(b, 'zh-TW');
       })
     : [];
