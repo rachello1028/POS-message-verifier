@@ -1,7 +1,5 @@
 {
     "彰銀CHB聚合支付": {
-        "_description": "彰銀 EDC IMPS 聚合支付電文規格 v2.6",
-        "_note": "包含台灣Pay/街口/LINE Pay/微信支付被掃、退貨、結帳、取得QR Code、查詢、FISC安全碼、CHBI端末機管理、授權結果通知",
         "台灣Pay被掃": {
             "type": "multi-step",
             "description": "台灣Pay QR Code 被掃交易 (TWPay Passive Scan)",
@@ -334,7 +332,7 @@
             "description": "取得英特拉 QR Code (Get QR Code of Intella)",
             "steps": [
                 {
-                    "step_name": "取得QR Code",
+                    "step_name": "取得英特拉QR Code",
                     "mti": "0800",
                     "fields": [
                         {
@@ -400,6 +398,11 @@
                             "expected": "023000"
                         },
                         {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
                             "id": "REQ_11",
                             "name": "System Trace Audit Number",
                             "expected": "NOT_NULL"
@@ -443,7 +446,7 @@
             "description": "財金取得安全碼 (FISC Get Secure Code)",
             "steps": [
                 {
-                    "step_name": "取得安全碼",
+                    "step_name": "FISC取得安全碼",
                     "mti": "0800",
                     "fields": [
                         {
@@ -482,16 +485,21 @@
         },
         "CHBI端末機註冊": {
             "type": "multi-step",
-            "description": "財好收端末機註冊 (CHBI Registration of EDC)",
+            "description": "CHBI 端末機註冊 (CHBI Registration of EDC)",
             "steps": [
                 {
-                    "step_name": "端末機註冊",
+                    "step_name": "CHBI端末機註冊",
                     "mti": "0800",
                     "fields": [
                         {
                             "id": "REQ_3",
                             "name": "Processing Code",
                             "expected": "382901"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
                         },
                         {
                             "id": "REQ_11",
@@ -529,16 +537,21 @@
         },
         "CHBI端末機註銷": {
             "type": "multi-step",
-            "description": "財好收端末機註銷 (CHBI Cancel of EDC)",
+            "description": "CHBI 端末機註銷 (CHBI Cancel of EDC)",
             "steps": [
                 {
-                    "step_name": "端末機註銷",
+                    "step_name": "CHBI端末機註銷",
                     "mti": "0800",
                     "fields": [
                         {
                             "id": "REQ_3",
                             "name": "Processing Code",
                             "expected": "382902"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
                         },
                         {
                             "id": "REQ_11",
@@ -576,16 +589,21 @@
         },
         "CHBI端末機確認": {
             "type": "multi-step",
-            "description": "財好收端末機確認 (CHBI Confirm of EDC)",
+            "description": "CHBI 端末機確認 (CHBI Confirm of EDC)",
             "steps": [
                 {
-                    "step_name": "端末機確認",
+                    "step_name": "CHBI端末機確認",
                     "mti": "0800",
                     "fields": [
                         {
                             "id": "REQ_3",
                             "name": "Processing Code",
                             "expected": "382903"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
                         },
                         {
                             "id": "REQ_11",
@@ -623,16 +641,21 @@
         },
         "CHBI更換密鑰": {
             "type": "multi-step",
-            "description": "財好收端末機更換密鑰 (CHBI Changing Key of EDC)",
+            "description": "CHBI 更換密鑰 (CHBI Changing Key of EDC)",
             "steps": [
                 {
-                    "step_name": "更換密鑰",
+                    "step_name": "CHBI更換密鑰",
                     "mti": "0800",
                     "fields": [
                         {
                             "id": "REQ_3",
                             "name": "Processing Code",
                             "expected": "382904"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
                         },
                         {
                             "id": "REQ_11",
