@@ -300,8 +300,8 @@ export function generateExcel(
   screenshotNames?: Map<number, string>
 ): string {
   const headers = [
-    'No.', '測試案例ID', '交易類別', '交易類型代碼', '交易金額',
-    '卡號', '回應碼', '預期結果', '實際結果', '測試時間',
+    'No.', '測試案例ID', '交易類別', 'P Code', '交易金額',
+    '卡號', '過卡方式', '回應碼', '預期結果', '實際結果', '測試時間',
     '授權碼', '序號', '備註',
   ];
 
@@ -319,6 +319,8 @@ export function generateExcel(
     const cardField = findField('REQ_2');
     const amountField = findField('REQ_4');
     const rcField = findField('RSP_39');
+    const pcodeField = findField('REQ_3');
+    const entryModeField = findField('REQ_22');
 
     const amount = amountField?.actual ?? '';
     const formattedAmount = amount ? `$${(parseInt(amount, 10) / 100).toLocaleString()}` : '';
@@ -327,15 +329,16 @@ export function generateExcel(
       String(tx.id),
       `TX_${String(tx.id).padStart(3, '0')}`,
       tx.transactionType,
-      step.mti,
+      pcodeField?.actual ?? step.mti,
       formattedAmount,
       cardField?.actual ?? '',
+      entryModeField?.actual ?? '',
       rcField?.actual ?? '',
       '電文驗証通過',
       tx.pass ? 'Pass' : 'Fail',
       tx.timestamp,
       step.auth,
-      step.rrn,
+      `="${step.rrn}"`,
       screenshotNames?.get(tx.id) ?? '',
     ].map(escCsv).join(','));
   }
