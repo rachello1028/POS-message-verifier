@@ -291,6 +291,7 @@ export class AdbBridge {
 
     const { pass, results } = verifyMessage(parsed, expectedStep.fields);
 
+    const pan = parsed['REQ_2'] ?? parsed['2'] ?? '';
     const stepResult: StepResult = {
       stepName: expectedStep.step_name,
       mti: actualMti || expectedMti,
@@ -299,6 +300,9 @@ export class AdbBridge {
       auth: parsed['RSP_38'] ?? parsed['38'] ?? '—',
       rrn: parsed['RSP_37'] ?? parsed['37'] ?? '—',
       trace: this.extractTrace(parsed),
+      pcode: parsed['REQ_3'] ?? parsed['3'] ?? '',
+      entryMode: parsed['REQ_22'] ?? parsed['22'] ?? '',
+      cardBrand: this.detectCardBrand(pan),
     };
 
     this.accumulatedStepResults.push(stepResult);
@@ -324,6 +328,20 @@ export class AdbBridge {
       this.currentStepIdx = 0;
       this.accumulatedStepResults = [];
     }
+  }
+
+  private detectCardBrand(pan: string): string {
+    const p = pan.replace(/\s/g, '');
+    if (!p || p.length < 4) return '';
+    if (p.startsWith('4')) return 'VISA';
+    const two = parseInt(p.substring(0, 2), 10);
+    if (two >= 51 && two <= 55) return 'MasterCard';
+    const four = parseInt(p.substring(0, 4), 10);
+    if (four >= 2221 && four <= 2720) return 'MasterCard';
+    if (p.startsWith('35')) return 'JCB';
+    if (p.startsWith('34') || p.startsWith('37')) return 'AMEX';
+    if (p.startsWith('62')) return 'UnionPay';
+    return '';
   }
 
   private extractTrace(parsed: Record<string, string>): string {

@@ -319,8 +319,6 @@ export function generateExcel(
     const cardField = findField('REQ_2');
     const amountField = findField('REQ_4');
     const rcField = findField('RSP_39');
-    const pcodeField = findField('REQ_3');
-    const entryModeField = findField('REQ_22');
 
     const amount = amountField?.actual ?? '';
     const formattedAmount = amount ? `$${(parseInt(amount, 10) / 100).toLocaleString()}` : '';
@@ -329,10 +327,10 @@ export function generateExcel(
       String(tx.id),
       `TX_${String(tx.id).padStart(3, '0')}`,
       tx.transactionType,
-      pcodeField?.actual ?? step.mti,
+      step.pcode || step.mti,
       formattedAmount,
       cardField?.actual ?? '',
-      entryModeField?.actual ?? '',
+      step.entryMode,
       rcField?.actual ?? '',
       '電文驗証通過',
       tx.pass ? 'Pass' : 'Fail',
@@ -359,18 +357,15 @@ export function generateCaseList(transactions: TransactionResult[]): string {
     const step = tx.steps[0];
     if (!step) continue;
 
-    const findField = (prefix: string) => step.fields.find(f => f.fieldId.startsWith(prefix));
-    const amountField = findField('REQ_4');
-    const cardField = findField('REQ_2');
-    const entryModeField = findField('REQ_22');
+    const amountField = step.fields.find(f => f.fieldId.startsWith('REQ_4'));
     const amount = amountField?.actual ?? '';
     const formattedAmount = amount ? `$${(parseInt(amount, 10) / 100).toLocaleString()}` : '';
 
     rows.push([
       String(tx.id),
       tx.transactionType,
-      cardField ? sanitizeField(cardField).actual : '',
-      entryModeField?.actual ?? '',
+      step.cardBrand,
+      step.entryMode,
       formattedAmount,
       '電文驗証通過',
       tx.pass ? 'Pass' : 'Fail',

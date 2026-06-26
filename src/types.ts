@@ -51,9 +51,12 @@ export interface StepResult {
   mti: string;
   pass: boolean;
   fields: FieldResult[];
-  auth: string;   // Field 38 授權碼
-  rrn: string;    // Field 37 序號
-  trace: string;  // Field 62 調閱編號
+  auth: string;      // Field 38 授權碼
+  rrn: string;       // Field 37 序號
+  trace: string;     // Field 62 調閱編號
+  pcode: string;     // Field 3 Processing Code
+  entryMode: string; // Field 22 過卡方式
+  cardBrand: string; // 卡別（從 PAN 推斷）
 }
 
 /** 完整交易驗証結果 */
