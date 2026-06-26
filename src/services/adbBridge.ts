@@ -292,6 +292,8 @@ export class AdbBridge {
     const { pass, results } = verifyMessage(parsed, expectedStep.fields);
 
     const pan = parsed['REQ_2'] ?? parsed['2'] ?? '';
+    const rawEntryMode = parsed['REQ_62_TAG_01'] ?? parsed['REQ_62_01'] ?? parsed['REQ_22'] ?? parsed['22'] ?? '';
+    const rawCardType = parsed['REQ_62_TAG_02'] ?? parsed['REQ_62_02'] ?? '';
     const stepResult: StepResult = {
       stepName: expectedStep.step_name,
       mti: actualMti || expectedMti,
@@ -301,8 +303,8 @@ export class AdbBridge {
       rrn: parsed['RSP_37'] ?? parsed['37'] ?? '—',
       trace: this.extractTrace(parsed),
       pcode: parsed['REQ_3'] ?? parsed['3'] ?? '',
-      entryMode: parsed['REQ_22'] ?? parsed['22'] ?? '',
-      cardBrand: this.detectCardBrand(pan),
+      entryMode: this.parseHexLabel(rawEntryMode),
+      cardBrand: rawCardType ? this.mapCardType(this.parseHexLabel(rawCardType)) : this.detectCardBrand(pan),
     };
 
     this.accumulatedStepResults.push(stepResult);
@@ -328,6 +330,19 @@ export class AdbBridge {
       this.currentStepIdx = 0;
       this.accumulatedStepResults = [];
     }
+  }
+
+  private parseHexLabel(raw: string): string {
+    const m = raw.match(/\(([^)]+)\)/);
+    return m ? m[1] : raw;
+  }
+
+  private mapCardType(code: string): string {
+    const map: Record<string, string> = {
+      V: 'VISA', M: 'MasterCard', J: 'JCB', A: 'AMEX',
+      U: 'UnionPay', D: 'Discover', N: 'NCC',
+    };
+    return map[code] ?? code;
   }
 
   private detectCardBrand(pan: string): string {
