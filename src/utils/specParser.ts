@@ -80,6 +80,49 @@ function extractNiiValue(comment: string): string | null {
   return m ? m[1] : null;
 }
 
+// ── 英文交易名稱 → 中文對照 ─────────────────────────────────────────────────
+
+const TX_NAME_MAP: [RegExp, string][] = [
+  [/^Authorization$/i, '授權'],
+  [/^Pre.?Auth/i, '預先授權'],
+  [/Financial Transaction.*Sale.*Refund.*Void/i, '金融交易（銷售／退貨／取消）'],
+  [/Financial Transaction.*Advice.*Offline.*Adjustment/i, '金融交易通知（離線／調帳）'],
+  [/Financial Transaction.*Advice/i, '金融交易通知'],
+  [/Financial Transaction/i, '金融交易'],
+  [/Transaction Upload.*Advice/i, '批上送通知'],
+  [/Transaction Upload/i, '批上送'],
+  [/TC Upload/i, '批上送'],
+  [/^Reversal$/i, '沖正'],
+  [/Reconciliation.*Batch.*Close/i, '結帳'],
+  [/^Reconciliation$/i, '結帳'],
+  [/^Batch.*Close$/i, '結帳'],
+  [/^Settlement$/i, '結帳'],
+  [/^Settle$/i, '結帳'],
+  [/Maintenance.*Logon/i, '維護（簽到）'],
+  [/^Maintenance$/i, '維護'],
+  [/^Logon$/i, '簽到'],
+  [/^Sale$/i, '銷售'],
+  [/^Refund$/i, '退貨'],
+  [/^Void.*Sale/i, '取消銷售'],
+  [/^Void.*Refund/i, '取消退貨'],
+  [/^Void$/i, '取消'],
+  [/^Inquiry$/i, '查詢'],
+  [/^Balance.*Inquiry/i, '餘額查詢'],
+  [/^Installment/i, '分期'],
+  [/^Tip.*Adjust/i, '小費調帳'],
+  [/^Adjustment$/i, '調帳'],
+  [/^Download$/i, '參數下載'],
+  [/^Key.*Download/i, '金鑰下載'],
+  [/^Offline/i, '離線交易'],
+];
+
+function translateTxName(name: string): string {
+  for (const [pattern, zhName] of TX_NAME_MAP) {
+    if (pattern.test(name)) return zhName;
+  }
+  return name;
+}
+
 // ── Format A: 彰銀 style — combined table with M/ME/O/C columns ──────────
 
 function parseFormatA(lines: string[]): ParsedTransaction[] {
@@ -92,7 +135,7 @@ function parseFormatA(lines: string[]): ParsedTransaction[] {
     const sectionMatch = line.match(/^#{2,4}\s+\d+\.\d+\s+(.+)/);
     if (!sectionMatch) { i++; continue; }
 
-    const txName = sectionMatch[1].trim();
+    const txName = translateTxName(sectionMatch[1].trim());
     i++;
 
     // Find the table
@@ -225,7 +268,7 @@ function parseFormatB(lines: string[]): ParsedTransaction[] {
     const sectionMatch = line.match(/^#{2,4}\s+\d+\.\d+\.?\s+(.+)/);
     if (!sectionMatch) { i++; continue; }
 
-    const txName = sectionMatch[1].trim();
+    const txName = translateTxName(sectionMatch[1].trim());
     i++;
 
     // Find "Request From Terminal" table
