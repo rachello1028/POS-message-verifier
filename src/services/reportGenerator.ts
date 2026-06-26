@@ -359,15 +359,18 @@ export function generateCaseList(transactions: TransactionResult[]): string {
     const step = tx.steps[0];
     if (!step) continue;
 
-    const amountField = step.fields.find(f => f.fieldId.startsWith('REQ_4'));
+    const findField = (prefix: string) => step.fields.find(f => f.fieldId.startsWith(prefix));
+    const amountField = findField('REQ_4');
+    const cardField = findField('REQ_2');
+    const entryModeField = findField('REQ_22');
     const amount = amountField?.actual ?? '';
     const formattedAmount = amount ? `$${(parseInt(amount, 10) / 100).toLocaleString()}` : '';
 
     rows.push([
       String(tx.id),
       tx.transactionType,
-      '',
-      '',
+      cardField ? sanitizeField(cardField).actual : '',
+      entryModeField?.actual ?? '',
       formattedAmount,
       '電文驗証通過',
       tx.pass ? 'Pass' : 'Fail',
