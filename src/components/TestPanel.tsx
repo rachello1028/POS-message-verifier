@@ -492,6 +492,18 @@ export default function TestPanel({
                           </div>
                         ))}
                       </div>
+
+                      {/* 原始電文 log */}
+                      {step.rawLog && (
+                        <details className="mt-2 raw-log-details">
+                          <summary className="text-xs text-[var(--fg-subtle)] cursor-pointer hover:text-[var(--fg-muted)] select-none py-1">
+                            📋 原始電文 Log
+                          </summary>
+                          <pre className="mt-1 px-3 py-2 rounded bg-[var(--surface-2)] border border-[var(--border)] text-[10px] leading-[1.4] font-mono text-[var(--fg-muted)] overflow-x-auto whitespace-pre-wrap break-all max-h-80 overflow-y-auto">
+                            {step.rawLog}
+                          </pre>
+                        </details>
+                      )}
                     </div>
                   ))}
                 </div>

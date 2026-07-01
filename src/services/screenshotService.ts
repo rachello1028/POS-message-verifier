@@ -129,6 +129,9 @@ export async function autoCaptureTxCard(
   if (wasDark) root.classList.remove('dark');
   cardEl.classList.add('capture-compact');
 
+  const detailsEls = cardEl.querySelectorAll<HTMLDetailsElement>('details.raw-log-details');
+  detailsEls.forEach(d => d.setAttribute('open', ''));
+
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
   const canvas = await html2canvas(cardEl, {
@@ -138,6 +141,7 @@ export async function autoCaptureTxCard(
     useCORS: true,
   });
 
+  detailsEls.forEach(d => d.removeAttribute('open'));
   cardEl.classList.remove('capture-compact');
   if (wasDark) root.classList.add('dark');
 

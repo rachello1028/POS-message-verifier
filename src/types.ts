@@ -57,6 +57,7 @@ export interface StepResult {
   pcode: string;     // Field 3 Processing Code
   entryMode: string; // Field 22 過卡方式
   cardBrand: string; // 卡別（從 PAN 推斷）
+  rawLog?: string;   // ADB logcat 原始電文
 }
 
 /** 完整交易驗証結果 */

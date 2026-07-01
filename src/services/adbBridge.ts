@@ -248,14 +248,15 @@ export class AdbBridge {
 
       if (line.includes('RECEIVE DATA UnPack END')) {
         this.isCapturing = false;
-        const parsed = parseIsoLog(this.logBuffer.join('\n'));
+        const rawLog = this.logBuffer.join('\n');
+        const parsed = parseIsoLog(rawLog);
         this.logBuffer = [];
-        this.evaluateBuffer(parsed);
+        this.evaluateBuffer(parsed, rawLog);
       }
     }
   }
 
-  private evaluateBuffer(parsed: Record<string, string>): void {
+  private evaluateBuffer(parsed: Record<string, string>, rawLog?: string): void {
     if (this.pendingSteps.length === 0) return;
     const actualMti = (parsed['REQ_.MTI'] ?? '').replace('0x', '').trim();
     const expectedStep = this.pendingSteps[this.currentStepIdx];
@@ -283,7 +284,7 @@ export class AdbBridge {
         this.currentStepIdx = 0;
         this.accumulatedStepResults = [];
         // 遞迴呼叫自己來處理這筆新交易
-        this.evaluateBuffer(parsed);
+        this.evaluateBuffer(parsed, rawLog);
         return;
       }
       return;
@@ -307,6 +308,7 @@ export class AdbBridge {
       cardBrand: rawCardType
         ? this.mapCardType(this.parseHexLabel(rawCardType))
         : this.detectCardBrand(pan, this.currentTransType),
+      rawLog: rawLog ?? '',
     };
 
     this.accumulatedStepResults.push(stepResult);
