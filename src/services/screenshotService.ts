@@ -124,12 +124,22 @@ export async function autoCaptureTxCard(
   const ts = now.toTimeString().slice(0, 8).replace(/:/g, '');
   const name = `${bank}_${transType}_TX${txId}_${ds}_${ts}.png`;
 
+  const root = document.documentElement;
+  const wasDark = root.classList.contains('dark');
+  if (wasDark) root.classList.remove('dark');
+  cardEl.classList.add('capture-compact');
+
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
   const canvas = await html2canvas(cardEl, {
-    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--canvas').trim() || '#020617',
+    backgroundColor: getComputedStyle(root).getPropertyValue('--canvas').trim() || '#f8fafc',
     scale: 2,
     logging: false,
     useCORS: true,
   });
+
+  cardEl.classList.remove('capture-compact');
+  if (wasDark) root.classList.add('dark');
 
   const blob = await canvasToBlob(canvas);
 

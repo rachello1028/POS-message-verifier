@@ -84,6 +84,29 @@ export default function TestPanel({
     }
   }, [transactions, selectedBank]);
 
+  const handleRecaptureAll = useCallback(async () => {
+    if (transactions.length === 0) return;
+    setIsExporting(true);
+    const allIds = new Set(transactions.map(t => t.id));
+    setExpandedTx(allIds);
+
+    await new Promise(r => setTimeout(r, 500));
+
+    const newNames = new Map(screenshotNames);
+    for (const tx of transactions) {
+      const el = txCardRefs.current.get(tx.id);
+      if (!el) continue;
+      try {
+        const name = await autoCaptureTxCard(el, tx.bank, tx.transactionType, tx.id);
+        newNames.set(tx.id, name);
+      } catch (err) {
+        console.error(`重新截圖 TX#${tx.id} 失敗:`, err);
+      }
+    }
+    setScreenshotNames(newNames);
+    setIsExporting(false);
+  }, [transactions, screenshotNames]);
+
   useEffect(() => {
     if (transactions.length === 0) return;
     const latest = transactions[transactions.length - 1];
@@ -335,6 +358,14 @@ export default function TestPanel({
           >
             {isExporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Camera className="w-3.5 h-3.5" />}
             截圖
+          </button>
+          <button
+            onClick={handleRecaptureAll}
+            disabled={isExporting}
+            className="toolbar-btn flex items-center gap-1.5 text-xs px-3 py-1.5"
+            title="以淺色緊湊樣式重新截取所有交易卡片"
+          >
+            <RefreshCw className="w-3.5 h-3.5" /> 重新截圖
           </button>
           <button
             onClick={() => handleExport('html')}
