@@ -303,8 +303,10 @@ export class AdbBridge {
       rrn: parsed['RSP_37'] ?? parsed['37'] ?? '—',
       trace: this.extractTrace(parsed),
       pcode: parsed['REQ_3'] ?? parsed['3'] ?? '',
-      entryMode: this.parseHexLabel(rawEntryMode),
-      cardBrand: rawCardType ? this.mapCardType(this.parseHexLabel(rawCardType)) : this.detectCardBrand(pan),
+      entryMode: this.normalizeEntryMode(this.parseHexLabel(rawEntryMode)),
+      cardBrand: rawCardType
+        ? this.mapCardType(this.parseHexLabel(rawCardType))
+        : this.detectCardBrand(pan, this.currentTransType),
     };
 
     this.accumulatedStepResults.push(stepResult);
@@ -337,15 +339,33 @@ export class AdbBridge {
     return m ? m[1] : raw;
   }
 
+  private normalizeEntryMode(raw: string): string {
+    if (/^[A-Z]$/i.test(raw)) return raw;
+    const digits = raw.replace(/\D/g, '');
+    if (digits.length >= 3) {
+      const panMode = digits.substring(digits.length - 3, digits.length - 1);
+      const modeMap: Record<string, string> = {
+        '01': 'M', '02': 'S', '05': 'C', '07': 'W',
+        '51': 'W', '80': 'F', '90': 'S', '91': 'W',
+      };
+      if (modeMap[panMode]) return modeMap[panMode];
+    }
+    return raw;
+  }
+
   private mapCardType(code: string): string {
     const map: Record<string, string> = {
       V: 'VISA', M: 'MasterCard', J: 'JCB', A: 'AMEX',
-      U: 'UnionPay', D: 'Discover', N: 'NCC',
+      U: 'CUP', D: 'Discover', N: 'NCC',
     };
     return map[code] ?? code;
   }
 
-  private detectCardBrand(pan: string): string {
+  private detectCardBrand(pan: string, transType?: string): string {
+    if (transType) {
+      if (/smartpay/i.test(transType)) return 'SmartPay';
+      if (/銀聯/.test(transType)) return 'CUP';
+    }
     const p = pan.replace(/\s/g, '');
     if (!p || p.length < 4) return '';
     if (p.startsWith('4')) return 'VISA';
@@ -355,7 +375,7 @@ export class AdbBridge {
     if (four >= 2221 && four <= 2720) return 'MasterCard';
     if (p.startsWith('35')) return 'JCB';
     if (p.startsWith('34') || p.startsWith('37')) return 'AMEX';
-    if (p.startsWith('62')) return 'UnionPay';
+    if (p.startsWith('62') || p.startsWith('81')) return 'CUP';
     return '';
   }
 
