@@ -2433,6 +2433,260 @@
           ]
         }
       ]
+    },
+    "授權通知-取消預授權": {
+      "type": "multi-step",
+      "description": "授權通知-取消預授權",
+      "steps": [
+        {
+          "step_name": "授權通知-取消預授權",
+          "mti": "0320",
+          "fields": [
+            {
+              "id": "REQ_2",
+              "name": "Primary Account Number",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_3",
+              "name": "Processing Code",
+              "expected": "003000"
+            },
+            {
+              "id": "REQ_4",
+              "name": "Amount, Transaction",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_11",
+              "name": "System Trace Audit Number",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_12",
+              "name": "Time, Local Transaction",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_13",
+              "name": "Date, Local Transaction",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_14",
+              "name": "Date, Expiration",
+              "expected": "IF_EXIST:NOT_NULL"
+            },
+            {
+              "id": "REQ_22",
+              "name": "Point of Service Entry Mode",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_24",
+              "name": "Network International Identifier",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_25",
+              "name": "Point of Service Condition Code",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_37",
+              "name": "Retrieval Reference Number",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_38",
+              "name": "Authorization Identification Response",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_39",
+              "name": "Response Code",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_41",
+              "name": "Card Acceptor Terminal Identification",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_42",
+              "name": "Card Acceptor Identification Code",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_58",
+              "name": "Additional Data",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_58_TAG_S00",
+              "name": "Transaction Type",
+              "expected": "404"
+            },
+            {
+              "id": "REQ_58_TAG_S01",
+              "name": "Transaction Mode",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_58_TAG_S02",
+              "name": "Card Type",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_58_TAG_S03",
+              "name": "Bank ID",
+              "expected": "IF_EXIST:NOT_NULL"
+            },
+            {
+              "id": "REQ_58_TAG_S04",
+              "name": "Invoice No",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_58_TAG_S05",
+              "name": "TC (晶片交易憑證)",
+              "expected": "IF_EXIST:NOT_NULL"
+            },
+            {
+              "id": "RSP_39",
+              "name": "Response Code",
+              "expected": "00"
+            }
+          ]
+        }
+      ]
+    },
+    "授權通知-取消預授權請款": {
+      "type": "multi-step",
+      "description": "授權通知-取消預授權請款",
+      "steps": [
+        {
+          "step_name": "授權通知-取消預授權請款",
+          "mti": "0320",
+          "fields": [
+            {
+              "id": "REQ_2",
+              "name": "Primary Account Number",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_3",
+              "name": "Processing Code",
+              "expected": "003000"
+            },
+            {
+              "id": "REQ_4",
+              "name": "Amount, Transaction",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_11",
+              "name": "System Trace Audit Number",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_12",
+              "name": "Time, Local Transaction",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_13",
+              "name": "Date, Local Transaction",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_14",
+              "name": "Date, Expiration",
+              "expected": "IF_EXIST:NOT_NULL"
+            },
+            {
+              "id": "REQ_22",
+              "name": "Point of Service Entry Mode",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_24",
+              "name": "Network International Identifier",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_25",
+              "name": "Point of Service Condition Code",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_37",
+              "name": "Retrieval Reference Number",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_38",
+              "name": "Authorization Identification Response",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_39",
+              "name": "Response Code",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_41",
+              "name": "Card Acceptor Terminal Identification",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_42",
+              "name": "Card Acceptor Identification Code",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_58",
+              "name": "Additional Data",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_58_TAG_S00",
+              "name": "Transaction Type",
+              "expected": "405"
+            },
+            {
+              "id": "REQ_58_TAG_S01",
+              "name": "Transaction Mode",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_58_TAG_S02",
+              "name": "Card Type",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_58_TAG_S03",
+              "name": "Bank ID",
+              "expected": "IF_EXIST:NOT_NULL"
+            },
+            {
+              "id": "REQ_58_TAG_S04",
+              "name": "Invoice No",
+              "expected": "NOT_NULL"
+            },
+            {
+              "id": "REQ_58_TAG_S05",
+              "name": "TC (晶片交易憑證)",
+              "expected": "IF_EXIST:NOT_NULL"
+            },
+            {
+              "id": "RSP_39",
+              "name": "Response Code",
+              "expected": "00"
+            }
+          ]
+        }
+      ]
     }
   }
 }
