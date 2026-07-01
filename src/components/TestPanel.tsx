@@ -34,7 +34,13 @@ export default function TestPanel({
   const [expandedTx, setExpandedTx] = useState<Set<number>>(new Set());
   const [isExporting, setIsExporting] = useState(false);
   const [saveDirName, setSaveDirName] = useState(getSaveDirName());
-  const [screenshotNames, setScreenshotNames] = useState<Map<number, string>>(new Map());
+  const [screenshotNames, setScreenshotNames] = useState<Map<number, string>>(() => {
+    try {
+      const saved = localStorage.getItem('pos-screenshot-names');
+      if (saved) return new Map(JSON.parse(saved));
+    } catch { /* ignore */ }
+    return new Map();
+  });
   const resultsRef = useRef<HTMLDivElement>(null);
   const txCardRefs = useRef<Map<number, HTMLDivElement>>(new Map());
   const lastAutoCapId = useRef(0);
@@ -42,6 +48,19 @@ export default function TestPanel({
   useEffect(() => {
     initSaveDirectory().then(() => setSaveDirName(getSaveDirName()));
   }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('pos-screenshot-names', JSON.stringify([...screenshotNames]));
+    } catch { /* ignore */ }
+  }, [screenshotNames]);
+
+  useEffect(() => {
+    if (transactions.length === 0 && screenshotNames.size > 0) {
+      setScreenshotNames(new Map());
+      lastAutoCapId.current = 0;
+    }
+  }, [transactions.length]);
 
   const handlePickDir = useCallback(async () => {
     const ok = await pickSaveDirectory();
@@ -79,14 +98,14 @@ export default function TestPanel({
         const el = txCardRefs.current.get(latest.id);
         if (!el) return;
         try {
-          const name = await autoCaptureTxCard(el, selectedBank, selectedTrans, latest.id);
+          const name = await autoCaptureTxCard(el, latest.bank, latest.transactionType, latest.id);
           setScreenshotNames(prev => new Map(prev).set(latest.id, name));
         } catch (err) {
           console.error('自動截圖失敗:', err);
         }
       }, 800);
     });
-  }, [transactions, selectedBank, selectedTrans]);
+  }, [transactions]);
 
   const bankList = Object.keys(rules).sort((a, b) => a.localeCompare(b, 'zh-TW'));
   
