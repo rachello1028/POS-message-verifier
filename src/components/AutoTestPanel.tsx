@@ -114,7 +114,7 @@ export default function AutoTestPanel({ rules, adbBridge, onTransaction }: Props
   const [stepResults, setStepResults] = useState<AutoStepResult[]>([]);
   const [logs, setLogs] = useState<string[]>([]);
   const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set());
-  const [posPort, setPosPort] = useState(() => localStorage.getItem('pos-bridge-port') || '8766');
+  const [posPort, setPosPort] = useState(() => localStorage.getItem('pos-auto-bridge-port') || '8766');
   const [customScripts, setCustomScripts] = useState<AutoTestScript[]>(() => {
     try {
       const saved = localStorage.getItem('pos-auto-scripts');
@@ -140,7 +140,7 @@ export default function AutoTestPanel({ rules, adbBridge, onTransaction }: Props
   const handleConnectBridge = useCallback(() => {
     const bridge = posBridgeRef.current;
     if (!bridge) return;
-    localStorage.setItem('pos-bridge-port', posPort);
+    localStorage.setItem('pos-auto-bridge-port', posPort);
     bridge.setUrl(`ws://127.0.0.1:${posPort}`);
     bridge.connect();
   }, [posPort]);

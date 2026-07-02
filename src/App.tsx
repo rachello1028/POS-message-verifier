@@ -54,6 +54,15 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
 
   const bridgeRef = useRef<AdbBridge | null>(null);
 
+  // ── localStorage migration：舊 key 清理 ────────────────────────────────────
+  useEffect(() => {
+    const old = localStorage.getItem('pos-bridge-port');
+    if (old && !localStorage.getItem('adb-bridge-port')) {
+      localStorage.setItem('adb-bridge-port', old);
+    }
+    localStorage.removeItem('pos-bridge-port');
+  }, []);
+
   // ── 交易結果持久化（sessionStorage，F5 保留、關分頁清除）────────────────────
 
   useEffect(() => {
