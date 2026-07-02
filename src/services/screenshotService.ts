@@ -134,18 +134,25 @@ export async function autoCaptureTxCard(
 
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
-  const canvas = await html2canvas(cardEl, {
-    backgroundColor: getComputedStyle(root).getPropertyValue('--canvas').trim() || '#f8fafc',
-    scale: 2,
-    logging: false,
-    useCORS: true,
-  });
+  const bgColor = getComputedStyle(root).getPropertyValue('--canvas').trim() || '#f8fafc';
+  const captureOpts = { backgroundColor: bgColor, scale: 2, logging: false, useCORS: true };
+
+  const canvas = await html2canvas(cardEl, captureOpts);
+
+  // 額外截取原始電文 log
+  const logEl = cardEl.querySelector<HTMLElement>('details.raw-log-details pre');
+  let logCanvas: HTMLCanvasElement | null = null;
+  if (logEl) {
+    logCanvas = await html2canvas(logEl, captureOpts);
+  }
 
   detailsEls.forEach(d => d.removeAttribute('open'));
   cardEl.classList.remove('capture-compact');
   if (wasDark) root.classList.add('dark');
 
   const blob = await canvasToBlob(canvas);
+  const logBlob = logCanvas ? await canvasToBlob(logCanvas) : null;
+  const logName = `${bank}_${transType}_TX${txId}_log_${ds}_${ts}.png`;
 
   if (savedDirHandle) {
     try {
@@ -153,6 +160,12 @@ export async function autoCaptureTxCard(
       const writable = await fileHandle.createWritable();
       await writable.write(blob);
       await writable.close();
+      if (logBlob) {
+        const logFileHandle = await savedDirHandle.getFileHandle(logName, { create: true });
+        const logWritable = await logFileHandle.createWritable();
+        await logWritable.write(logBlob);
+        await logWritable.close();
+      }
       return name;
     } catch (e) {
       console.warn('自動截圖寫入失敗:', e);
@@ -167,5 +180,15 @@ export async function autoCaptureTxCard(
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+  if (logBlob) {
+    const logUrl = URL.createObjectURL(logBlob);
+    const la = document.createElement('a');
+    la.href = logUrl;
+    la.download = logName;
+    document.body.appendChild(la);
+    la.click();
+    document.body.removeChild(la);
+    URL.revokeObjectURL(logUrl);
+  }
   return name;
 }
