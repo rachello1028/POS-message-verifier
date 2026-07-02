@@ -74,7 +74,7 @@ if %errorlevel% neq 0 (
 )
 
 :: ─── 從協議 URL 取出 port 參數 ─────────────────────────────────────────────
-set "PORT=8765"
+set "PORT=8767"
 if not "%~1"=="" (
     for /f "delims=" %%p in ('powershell -NoProfile -Command "if ('%~1' -match 'port=(\d+)') { $Matches[1] } else { '' }"') do (
         if not "%%p"=="" set "PORT=%%p"

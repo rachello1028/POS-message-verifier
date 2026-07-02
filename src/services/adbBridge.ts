@@ -1,7 +1,7 @@
 import type { AllRules, ConnectionStatus, TransactionResult, TransactionStep, StepResult } from '../types';
 import { parseIsoLog, verifyMessage } from './isoVerifier';
 
-const DEFAULT_BRIDGE_URL = 'ws://127.0.0.1:8765';
+const DEFAULT_BRIDGE_URL = 'ws://127.0.0.1:8767';
 
 export interface BridgeCallbacks {
   onStatus: (status: ConnectionStatus, msg?: string) => void;

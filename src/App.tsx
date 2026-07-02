@@ -36,7 +36,7 @@ export default function App() {
   const [copied, setCopied] = useState(false);
   const [isBridgeLaunching, setIsBridgeLaunching] = useState(false);
   const [bridgePort, setBridgePort] = useState<string>(
-    () => localStorage.getItem('pos-bridge-port') ?? '8765'
+    () => localStorage.getItem('pos-bridge-port') ?? '8767'
   );
   const [isEditingPort, setIsEditingPort] = useState(false);
   const [portDraft, setPortDraft] = useState(bridgePort);
