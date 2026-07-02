@@ -118,10 +118,14 @@ export class PosBridge {
       const data = JSON.parse(e.data as string);
 
       switch (data.type) {
-        case 'devices':
-          this.status = { ...this.status, connected: true, devices: data.data ?? [] };
+        case 'devices': {
+          const devList: string[] = (data.devices ?? data.data ?? []).map(
+            (d: string | { serial: string }) => typeof d === 'string' ? d : d.serial
+          );
+          this.status = { ...this.status, connected: true, devices: devList };
           this.callbacks.onStatus(this.status);
           break;
+        }
         case 'device_connected':
           this.status = { ...this.status, activeDevice: data.serial };
           this.callbacks.onStatus(this.status);
