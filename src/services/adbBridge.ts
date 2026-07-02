@@ -357,7 +357,7 @@ export class AdbBridge {
 
   private mapCardType(code: string): string {
     const map: Record<string, string> = {
-      V: 'VISA', M: 'MasterCard', J: 'JCB', A: 'AMEX',
+      V: 'V', M: 'M', J: 'J', A: 'AMEX',
       U: 'CUP', D: 'Discover', N: 'NCC',
     };
     return map[code] ?? code;
@@ -365,17 +365,17 @@ export class AdbBridge {
 
   private detectCardBrand(pan: string, transType?: string): string {
     if (transType) {
-      if (/smartpay/i.test(transType)) return 'SmartPay';
+      if (/smartpay/i.test(transType)) return 'SP';
       if (/銀聯/.test(transType)) return 'CUP';
     }
     const p = pan.replace(/\s/g, '');
     if (!p || p.length < 4) return '';
-    if (p.startsWith('4')) return 'VISA';
+    if (p.startsWith('4')) return 'V';
     const two = parseInt(p.substring(0, 2), 10);
-    if (two >= 51 && two <= 55) return 'MasterCard';
+    if (two >= 51 && two <= 55) return 'M';
     const four = parseInt(p.substring(0, 4), 10);
-    if (four >= 2221 && four <= 2720) return 'MasterCard';
-    if (p.startsWith('35')) return 'JCB';
+    if (four >= 2221 && four <= 2720) return 'M';
+    if (p.startsWith('35')) return 'J';
     if (p.startsWith('34') || p.startsWith('37')) return 'AMEX';
     if (p.startsWith('62') || p.startsWith('81')) return 'CUP';
     return '';
