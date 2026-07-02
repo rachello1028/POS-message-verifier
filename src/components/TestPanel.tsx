@@ -43,7 +43,9 @@ export default function TestPanel({
   });
   const resultsRef = useRef<HTMLDivElement>(null);
   const txCardRefs = useRef<Map<number, HTMLDivElement>>(new Map());
-  const lastAutoCapId = useRef(0);
+  const lastAutoCapId = useRef(
+    transactions.length > 0 ? Math.max(...transactions.map(t => t.id)) : 0
+  );
 
   useEffect(() => {
     initSaveDirectory().then(() => setSaveDirName(getSaveDirName()));
