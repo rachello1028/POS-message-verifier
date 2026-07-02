@@ -37,9 +37,7 @@ async function restoreHandle(): Promise<FileSystemDirectoryHandle | null> {
     db.close();
     if (!handle) return null;
     const perm = await (handle as any).queryPermission({ mode: 'readwrite' });
-    if (perm === 'granted') return handle;
-    const req2 = await (handle as any).requestPermission({ mode: 'readwrite' });
-    return req2 === 'granted' ? handle : null;
+    return perm === 'granted' ? handle : null;
   } catch { return null; }
 }
 
