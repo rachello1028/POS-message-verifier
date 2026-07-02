@@ -12,9 +12,35 @@ interface Props {
   onCancel: () => void;
 }
 
-const FUNC_NAMES = ['銷售交易', '取消交易', '退貨交易', '結帳'];
+const ALL_FUNC_NAMES = ['銷售交易', '取消交易', '退貨交易', '結帳'];
 const PAY_METHODS = ['信用卡', '銀聯卡', '晶片金融卡'];
 const TRANS_TYPES = ['一般交易', '分期交易', '紅利交易', 'SmartPay', 'DCC'];
+
+function getFuncNames(bank: string): string[] {
+  if (bank.includes('聚合支付')) return ALL_FUNC_NAMES.filter(f => f !== '結帳');
+  return ALL_FUNC_NAMES;
+}
+
+function needsAmount(funcName: string): boolean {
+  return funcName === '銷售交易' || funcName === '退貨交易';
+}
+
+function needsPayMethod(funcName: string): boolean {
+  return funcName === '銷售交易' || funcName === '退貨交易';
+}
+
+function needsTransType(funcName: string): boolean {
+  return funcName === '銷售交易';
+}
+
+function getRefHint(funcName: string, payMethod?: string): string {
+  if (funcName === '取消交易') return '取消交易僅需調閱編號（traceNumber）';
+  if (funcName === '退貨交易') {
+    if (payMethod === '銀聯卡') return '銀聯退貨需原交易日 + 調閱編號 + 授權碼';
+    return '信用卡退貨需授權碼 + 原交易日';
+  }
+  return '';
+}
 
 function extractRefSource(action: AutoPosAction): string | null {
   const ref = action.traceRef ?? action.authRef ?? action.txDateRef ?? action.rrnRef ?? '';
@@ -291,22 +317,31 @@ export default function ScriptEditor({ script: initial, rules, onSave, onCancel 
                           <label className="block text-xs font-medium text-[var(--fg-muted)] mb-1">功能</label>
                           <select
                             value={step.posAction.funcName}
-                            onChange={e => updateAction(idx, { funcName: e.target.value })}
+                            onChange={e => {
+                              const fn = e.target.value;
+                              const clearFields: Partial<AutoPosAction> = { funcName: fn };
+                              if (!needsAmount(fn)) clearFields.amount = undefined;
+                              if (!needsPayMethod(fn)) clearFields.payMethod = undefined;
+                              if (!needsTransType(fn)) clearFields.transType = undefined;
+                              updateAction(idx, clearFields);
+                            }}
                             className="w-full h-8 px-2 rounded-lg text-sm bg-[var(--surface-2)] border border-[var(--border)] text-[var(--fg)]"
                           >
-                            {FUNC_NAMES.map(f => <option key={f} value={f}>{f}</option>)}
+                            {getFuncNames(step.bank).map(f => <option key={f} value={f}>{f}</option>)}
                           </select>
                         </div>
-                        <div>
-                          <label className="block text-xs font-medium text-[var(--fg-muted)] mb-1">金額</label>
-                          <input
-                            type="text"
-                            value={step.posAction.amount ?? ''}
-                            onChange={e => updateAction(idx, { amount: e.target.value })}
-                            className="w-full h-8 px-3 rounded-lg text-sm bg-[var(--surface-2)] border border-[var(--border)] text-[var(--fg)] focus:outline-none focus:border-[var(--blue-line)]"
-                            placeholder="例如 100"
-                          />
-                        </div>
+                        {needsAmount(step.posAction.funcName) && (
+                          <div>
+                            <label className="block text-xs font-medium text-[var(--fg-muted)] mb-1">金額</label>
+                            <input
+                              type="text"
+                              value={step.posAction.amount ?? ''}
+                              onChange={e => updateAction(idx, { amount: e.target.value })}
+                              className="w-full h-8 px-3 rounded-lg text-sm bg-[var(--surface-2)] border border-[var(--border)] text-[var(--fg)] focus:outline-none focus:border-[var(--blue-line)]"
+                              placeholder="例如 100"
+                            />
+                          </div>
+                        )}
                         <div>
                           <label className="block text-xs font-medium text-[var(--fg-muted)] mb-1">等待秒數</label>
                           <input
@@ -320,31 +355,37 @@ export default function ScriptEditor({ script: initial, rules, onSave, onCancel 
                         </div>
                       </div>
 
-                      {/* Row 4: payMethod + transType */}
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-xs font-medium text-[var(--fg-muted)] mb-1">付款方式</label>
-                          <select
-                            value={step.posAction.payMethod ?? ''}
-                            onChange={e => updateAction(idx, { payMethod: e.target.value || undefined })}
-                            className="w-full h-8 px-2 rounded-lg text-sm bg-[var(--surface-2)] border border-[var(--border)] text-[var(--fg)]"
-                          >
-                            <option value="">不指定</option>
-                            {PAY_METHODS.map(p => <option key={p} value={p}>{p}</option>)}
-                          </select>
+                      {/* Row 4: payMethod + transType — 僅銷售/退貨時顯示 */}
+                      {(needsPayMethod(step.posAction.funcName) || needsTransType(step.posAction.funcName)) && (
+                        <div className="grid grid-cols-2 gap-3">
+                          {needsPayMethod(step.posAction.funcName) && (
+                            <div>
+                              <label className="block text-xs font-medium text-[var(--fg-muted)] mb-1">付款方式</label>
+                              <select
+                                value={step.posAction.payMethod ?? ''}
+                                onChange={e => updateAction(idx, { payMethod: e.target.value || undefined })}
+                                className="w-full h-8 px-2 rounded-lg text-sm bg-[var(--surface-2)] border border-[var(--border)] text-[var(--fg)]"
+                              >
+                                <option value="">不指定</option>
+                                {PAY_METHODS.map(p => <option key={p} value={p}>{p}</option>)}
+                              </select>
+                            </div>
+                          )}
+                          {needsTransType(step.posAction.funcName) && (
+                            <div>
+                              <label className="block text-xs font-medium text-[var(--fg-muted)] mb-1">交易方式</label>
+                              <select
+                                value={step.posAction.transType ?? ''}
+                                onChange={e => updateAction(idx, { transType: e.target.value || undefined })}
+                                className="w-full h-8 px-2 rounded-lg text-sm bg-[var(--surface-2)] border border-[var(--border)] text-[var(--fg)]"
+                              >
+                                <option value="">不指定</option>
+                                {TRANS_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                              </select>
+                            </div>
+                          )}
                         </div>
-                        <div>
-                          <label className="block text-xs font-medium text-[var(--fg-muted)] mb-1">交易方式</label>
-                          <select
-                            value={step.posAction.transType ?? ''}
-                            onChange={e => updateAction(idx, { transType: e.target.value || undefined })}
-                            className="w-full h-8 px-2 rounded-lg text-sm bg-[var(--surface-2)] border border-[var(--border)] text-[var(--fg)]"
-                          >
-                            <option value="">不指定</option>
-                            {TRANS_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                          </select>
-                        </div>
-                      </div>
+                      )}
 
                       {/* Row 5: saveResultAs */}
                       <div>
@@ -360,11 +401,16 @@ export default function ScriptEditor({ script: initial, rules, onSave, onCancel 
                         />
                       </div>
 
-                      {/* Row 6: Refs — 用下拉選引用來源，系統自動帶入四個 ref */}
-                      {idx > 0 && availableRefs.length > 0 && (
+                      {/* Row 6: Refs — 取消/退貨才需要引用 */}
+                      {idx > 0 && availableRefs.length > 0 && (step.posAction.funcName === '取消交易' || step.posAction.funcName === '退貨交易') && (
                         <div className="space-y-2">
                           <div>
                             <label className="block text-xs font-medium text-[var(--fg-muted)] mb-1">引用前筆交易結果</label>
+                            {getRefHint(step.posAction.funcName, step.posAction.payMethod) && (
+                              <p className="text-xs text-[var(--amber-ink)] mb-1.5">
+                                💡 {getRefHint(step.posAction.funcName, step.posAction.payMethod)}
+                              </p>
+                            )}
                             <div className="flex items-center gap-2">
                               <select
                                 value={extractRefSource(step.posAction) ?? ''}
