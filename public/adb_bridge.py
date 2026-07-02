@@ -8,7 +8,7 @@ POS 電文驗証工具 - ADB WebSocket Bridge
 
 使用方式:
     pip install websockets
-    python adb_bridge.py           # 預設 Port 8767
+    python adb_bridge.py           # 預設 Port 9999
     python adb_bridge.py --port 9000  # 自訂 Port
 """
 
@@ -23,7 +23,7 @@ import shutil
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--port', type=int, default=8767, help='WebSocket 監聽埠號')
+parser.add_argument('--port', type=int, default=9999, help='WebSocket 監聽埠號')
 args = parser.parse_args()
 LISTEN_PORT = args.port
 RULES_DIR = os.path.join(os.path.dirname(__file__), "rules")

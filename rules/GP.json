@@ -1,2627 +1,2627 @@
 {
-  "GP": {
-    "預先授權": {
-      "type": "multi-step",
-      "description": "預先授權",
-      "steps": [
-        {
-          "step_name": "預先授權",
-          "mti": "0100",
-          "fields": [
-            {
-              "id": "REQ_2",
-              "name": "Primary Account Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_4",
-              "name": "Amount, Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_14",
-              "name": "Date, Expiration",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_22",
-              "name": "Point of Service Entry Mode",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_35",
-              "name": "Track II Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_48",
-              "name": "Store Message",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_52",
-              "name": "Pin Block",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_55",
-              "name": "Chip Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_56",
-              "name": "Redemption Related Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_62",
-              "name": "Invoice Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_63",
-              "name": "Installment / Totals",
-              "expected": "IF_EXIST:NOT_NULL"
-            }
-          ]
+    "GP": {
+        "預先授權": {
+            "type": "multi-step",
+            "description": "預先授權",
+            "steps": [
+                {
+                    "step_name": "預先授權",
+                    "mti": "0100",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_35",
+                            "name": "Track II Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_48",
+                            "name": "Store Message",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_52",
+                            "name": "Pin Block",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "Chip Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "Redemption Related Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Installment / Totals",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "預先授權完成": {
+            "type": "multi-step",
+            "description": "預先授權完成",
+            "steps": [
+                {
+                    "step_name": "預先授權完成",
+                    "mti": "0200",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "400000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_35",
+                            "name": "Track II Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_48",
+                            "name": "Store Message",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_52",
+                            "name": "Pin Block",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "Chip Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "Redemption Related Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Installment / Totals",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "銷售": {
+            "type": "multi-step",
+            "description": "銷售",
+            "steps": [
+                {
+                    "step_name": "銷售",
+                    "mti": "0200",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_35",
+                            "name": "Track II Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_48",
+                            "name": "Store Message",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_52",
+                            "name": "Pin Block",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "Chip Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "Redemption Related Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Installment / Totals",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "取消": {
+            "type": "multi-step",
+            "description": "取消",
+            "steps": [
+                {
+                    "step_name": "取消",
+                    "mti": "0200",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "Retrieval Reference Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_48",
+                            "name": "Store Message",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "Chip Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Installment / Totals",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "退貨": {
+            "type": "multi-step",
+            "description": "退貨",
+            "steps": [
+                {
+                    "step_name": "退貨",
+                    "mti": "0200",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_35",
+                            "name": "Track II Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "Retrieval Reference Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_48",
+                            "name": "Store Message",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Installment / Totals",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "離線銷售": {
+            "type": "multi-step",
+            "description": "離線銷售",
+            "steps": [
+                {
+                    "step_name": "離線銷售",
+                    "mti": "0220",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_12",
+                            "name": "Time, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_13",
+                            "name": "Date, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_48",
+                            "name": "Store Message",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "銷售完成": {
+            "type": "multi-step",
+            "description": "銷售完成",
+            "steps": [
+                {
+                    "step_name": "銷售完成",
+                    "mti": "0220",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_12",
+                            "name": "Time, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_13",
+                            "name": "Date, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_48",
+                            "name": "Store Message",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "調帳": {
+            "type": "multi-step",
+            "description": "調帳",
+            "steps": [
+                {
+                    "step_name": "調帳",
+                    "mti": "0220",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_12",
+                            "name": "Time, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_13",
+                            "name": "Date, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "Retrieval Reference Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_48",
+                            "name": "Store Message",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "Chip Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_60",
+                            "name": "Batch Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "小費": {
+            "type": "multi-step",
+            "description": "小費",
+            "steps": [
+                {
+                    "step_name": "小費",
+                    "mti": "0220",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_12",
+                            "name": "Time, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_13",
+                            "name": "Date, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "Retrieval Reference Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_48",
+                            "name": "Store Message",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_54",
+                            "name": "Additional Amount",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "Chip Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_60",
+                            "name": "Batch Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "沖正": {
+            "type": "multi-step",
+            "description": "沖正",
+            "steps": [
+                {
+                    "step_name": "沖正",
+                    "mti": "0400",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_48",
+                            "name": "Store Message",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "Chip Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_60",
+                            "name": "Batch Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Installment / Totals",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "結帳": {
+            "type": "multi-step",
+            "description": "結帳",
+            "steps": [
+                {
+                    "step_name": "結帳",
+                    "mti": "0500",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "960000"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "Redemption Related Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_60",
+                            "name": "Batch Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Installment / Totals",
+                            "expected": "NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "批上送": {
+            "type": "multi-step",
+            "description": "批上送",
+            "steps": [
+                {
+                    "step_name": "批上送",
+                    "mti": "0320",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_12",
+                            "name": "Time, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_13",
+                            "name": "Date, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "Retrieval Reference Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_39",
+                            "name": "Response Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_48",
+                            "name": "Store Message",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "Chip Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_60",
+                            "name": "Batch Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Installment / Totals",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "銷售查詢": {
+            "type": "multi-step",
+            "description": "銷售查詢",
+            "steps": [
+                {
+                    "step_name": "銷售查詢",
+                    "mti": "0100",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_13",
+                            "name": "Date, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_48",
+                            "name": "Store Message",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "Chip Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_60",
+                            "name": "Batch Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Installment / Totals",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "更換 PIN Key": {
+            "type": "multi-step",
+            "description": "更換 PIN Key",
+            "steps": [
+                {
+                    "step_name": "更換 PIN Key",
+                    "mti": "0800",
+                    "fields": [
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "更換 TMK": {
+            "type": "multi-step",
+            "description": "更換 TMK",
+            "steps": [
+                {
+                    "step_name": "更換 TMK",
+                    "mti": "0800",
+                    "fields": [
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "MO/TO 銀聯退貨查詢": {
+            "type": "multi-step",
+            "description": "MO/TO 銀聯退貨查詢",
+            "steps": [
+                {
+                    "step_name": "MO/TO 銀聯退貨查詢",
+                    "mti": "0100",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_13",
+                            "name": "Date, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_60",
+                            "name": "Batch Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Installment / Totals",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "MO/TO 銀聯離線查詢": {
+            "type": "multi-step",
+            "description": "MO/TO 銀聯離線查詢",
+            "steps": [
+                {
+                    "step_name": "MO/TO 銀聯離線查詢",
+                    "mti": "0100",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_13",
+                            "name": "Date, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_60",
+                            "name": "Batch Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Installment / Totals",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "EDC 商戶發起交易 MIT（不支援）": {
+            "type": "multi-step",
+            "description": "EDC 商戶發起交易 MIT（不支援）",
+            "steps": [
+                {
+                    "step_name": "EDC 商戶發起交易 MIT（不支援）",
+                    "mti": "0200",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "100000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_35",
+                            "name": "Track II Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_48",
+                            "name": "Store Message",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_52",
+                            "name": "Pin Block",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "Chip Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "Redemption Related Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Installment / Totals",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "EC 商戶發起交易 MIT（不支援）": {
+            "type": "multi-step",
+            "description": "EC 商戶發起交易 MIT（不支援）",
+            "steps": [
+                {
+                    "step_name": "EC 商戶發起交易 MIT（不支援）",
+                    "mti": "0100",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "100000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_12",
+                            "name": "Time, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_13",
+                            "name": "Date, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_35",
+                            "name": "Track II Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "Retrieval Reference Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_48",
+                            "name": "Store Message",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_52",
+                            "name": "Pin Block",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "Chip Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Installment / Totals",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "增額授權（不支援）": {
+            "type": "multi-step",
+            "description": "增額授權（不支援）",
+            "steps": [
+                {
+                    "step_name": "增額授權（不支援）",
+                    "mti": "0100",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "300000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_35",
+                            "name": "Track II Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_48",
+                            "name": "Store Message",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_52",
+                            "name": "Pin Block",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "Chip Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Installment / Totals",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "增額授權沖正（不支援）": {
+            "type": "multi-step",
+            "description": "增額授權沖正（不支援）",
+            "steps": [
+                {
+                    "step_name": "增額授權沖正（不支援）",
+                    "mti": "0420",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "360000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_35",
+                            "name": "Track II Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_48",
+                            "name": "Store Message",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_52",
+                            "name": "Pin Block",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "Chip Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Installment / Totals",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "帳號驗證": {
+            "type": "multi-step",
+            "description": "帳號驗證",
+            "steps": [
+                {
+                    "step_name": "帳號驗證",
+                    "mti": "0100",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "810000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_35",
+                            "name": "Track II Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_48",
+                            "name": "Store Message",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_52",
+                            "name": "Pin Block",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "Chip Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Installment / Totals",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "更換終端基礎金鑰": {
+            "type": "multi-step",
+            "description": "更換終端基礎金鑰",
+            "steps": [
+                {
+                    "step_name": "更換終端基礎金鑰",
+                    "mti": "0800",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "810000"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "DCC 取消預先授權": {
+            "type": "multi-step",
+            "description": "DCC 取消預先授權",
+            "steps": [
+                {
+                    "step_name": "DCC 取消預先授權",
+                    "mti": "0420",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "300000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_35",
+                            "name": "Track II Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_48",
+                            "name": "Store Message",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "Chip Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_60",
+                            "name": "Batch Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Installment / Totals",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "TW-PAY 當筆銷售查詢": {
+            "type": "multi-step",
+            "description": "TW-PAY 當筆銷售查詢",
+            "steps": [
+                {
+                    "step_name": "TW-PAY 當筆銷售查詢",
+                    "mti": "0100",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "TW-PAY 當批明細查詢": {
+            "type": "multi-step",
+            "description": "TW-PAY 當批明細查詢",
+            "steps": [
+                {
+                    "step_name": "TW-PAY 當批明細查詢",
+                    "mti": "0100",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "TW-PAY 當批總計查詢": {
+            "type": "multi-step",
+            "description": "TW-PAY 當批總計查詢",
+            "steps": [
+                {
+                    "step_name": "TW-PAY 當批總計查詢",
+                    "mti": "0100",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "授權": {
+            "type": "multi-step",
+            "description": "授權",
+            "steps": [
+                {
+                    "step_name": "授權",
+                    "mti": "0100",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_35",
+                            "name": "Track II Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_48",
+                            "name": "Store Message",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_52",
+                            "name": "Pin Block",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "Chip Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Installment / Totals",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "預先授權批上送": {
+            "type": "multi-step",
+            "description": "預先授權批上送",
+            "steps": [
+                {
+                    "step_name": "預先授權批上送",
+                    "mti": "0100",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_12",
+                            "name": "Time, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_13",
+                            "name": "Date, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "Retrieval Reference Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_39",
+                            "name": "Response Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_48",
+                            "name": "Store Message",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "Chip Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_59",
+                            "name": "Original Transaction Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_60",
+                            "name": "Batch Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Installment / Totals",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
         }
-      ]
-    },
-    "預先授權完成": {
-      "type": "multi-step",
-      "description": "預先授權完成",
-      "steps": [
-        {
-          "step_name": "預先授權完成",
-          "mti": "0200",
-          "fields": [
-            {
-              "id": "REQ_2",
-              "name": "Primary Account Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "400000"
-            },
-            {
-              "id": "REQ_4",
-              "name": "Amount, Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_14",
-              "name": "Date, Expiration",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_22",
-              "name": "Point of Service Entry Mode",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_35",
-              "name": "Track II Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_38",
-              "name": "Authorization Identification Response",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_48",
-              "name": "Store Message",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_52",
-              "name": "Pin Block",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_55",
-              "name": "Chip Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_56",
-              "name": "Redemption Related Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_62",
-              "name": "Invoice Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_63",
-              "name": "Installment / Totals",
-              "expected": "IF_EXIST:NOT_NULL"
-            }
-          ]
-        }
-      ]
-    },
-    "銷售": {
-      "type": "multi-step",
-      "description": "銷售",
-      "steps": [
-        {
-          "step_name": "銷售",
-          "mti": "0200",
-          "fields": [
-            {
-              "id": "REQ_2",
-              "name": "Primary Account Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_4",
-              "name": "Amount, Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_14",
-              "name": "Date, Expiration",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_22",
-              "name": "Point of Service Entry Mode",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_35",
-              "name": "Track II Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_48",
-              "name": "Store Message",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_52",
-              "name": "Pin Block",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_55",
-              "name": "Chip Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_56",
-              "name": "Redemption Related Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_62",
-              "name": "Invoice Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_63",
-              "name": "Installment / Totals",
-              "expected": "IF_EXIST:NOT_NULL"
-            }
-          ]
-        }
-      ]
-    },
-    "取消": {
-      "type": "multi-step",
-      "description": "取消",
-      "steps": [
-        {
-          "step_name": "取消",
-          "mti": "0200",
-          "fields": [
-            {
-              "id": "REQ_2",
-              "name": "Primary Account Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_4",
-              "name": "Amount, Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_14",
-              "name": "Date, Expiration",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_22",
-              "name": "Point of Service Entry Mode",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_37",
-              "name": "Retrieval Reference Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_38",
-              "name": "Authorization Identification Response",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_48",
-              "name": "Store Message",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_55",
-              "name": "Chip Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_62",
-              "name": "Invoice Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_63",
-              "name": "Installment / Totals",
-              "expected": "IF_EXIST:NOT_NULL"
-            }
-          ]
-        }
-      ]
-    },
-    "退貨": {
-      "type": "multi-step",
-      "description": "退貨",
-      "steps": [
-        {
-          "step_name": "退貨",
-          "mti": "0200",
-          "fields": [
-            {
-              "id": "REQ_2",
-              "name": "Primary Account Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_4",
-              "name": "Amount, Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_14",
-              "name": "Date, Expiration",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_22",
-              "name": "Point of Service Entry Mode",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_35",
-              "name": "Track II Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_37",
-              "name": "Retrieval Reference Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_38",
-              "name": "Authorization Identification Response",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_48",
-              "name": "Store Message",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_62",
-              "name": "Invoice Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_63",
-              "name": "Installment / Totals",
-              "expected": "IF_EXIST:NOT_NULL"
-            }
-          ]
-        }
-      ]
-    },
-    "離線銷售": {
-      "type": "multi-step",
-      "description": "離線銷售",
-      "steps": [
-        {
-          "step_name": "離線銷售",
-          "mti": "0220",
-          "fields": [
-            {
-              "id": "REQ_2",
-              "name": "Primary Account Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_4",
-              "name": "Amount, Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_12",
-              "name": "Time, Local Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_13",
-              "name": "Date, Local Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_14",
-              "name": "Date, Expiration",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_22",
-              "name": "Point of Service Entry Mode",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_38",
-              "name": "Authorization Identification Response",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_48",
-              "name": "Store Message",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_62",
-              "name": "Invoice Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            }
-          ]
-        }
-      ]
-    },
-    "銷售完成": {
-      "type": "multi-step",
-      "description": "銷售完成",
-      "steps": [
-        {
-          "step_name": "銷售完成",
-          "mti": "0220",
-          "fields": [
-            {
-              "id": "REQ_2",
-              "name": "Primary Account Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_4",
-              "name": "Amount, Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_12",
-              "name": "Time, Local Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_13",
-              "name": "Date, Local Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_14",
-              "name": "Date, Expiration",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_22",
-              "name": "Point of Service Entry Mode",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_38",
-              "name": "Authorization Identification Response",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_48",
-              "name": "Store Message",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_62",
-              "name": "Invoice Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            }
-          ]
-        }
-      ]
-    },
-    "調帳": {
-      "type": "multi-step",
-      "description": "調帳",
-      "steps": [
-        {
-          "step_name": "調帳",
-          "mti": "0220",
-          "fields": [
-            {
-              "id": "REQ_2",
-              "name": "Primary Account Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_4",
-              "name": "Amount, Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_12",
-              "name": "Time, Local Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_13",
-              "name": "Date, Local Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_14",
-              "name": "Date, Expiration",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_22",
-              "name": "Point of Service Entry Mode",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_37",
-              "name": "Retrieval Reference Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_38",
-              "name": "Authorization Identification Response",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_48",
-              "name": "Store Message",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_55",
-              "name": "Chip Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_60",
-              "name": "Batch Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_62",
-              "name": "Invoice Number",
-              "expected": "NOT_NULL"
-            }
-          ]
-        }
-      ]
-    },
-    "小費": {
-      "type": "multi-step",
-      "description": "小費",
-      "steps": [
-        {
-          "step_name": "小費",
-          "mti": "0220",
-          "fields": [
-            {
-              "id": "REQ_2",
-              "name": "Primary Account Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_4",
-              "name": "Amount, Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_12",
-              "name": "Time, Local Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_13",
-              "name": "Date, Local Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_14",
-              "name": "Date, Expiration",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_22",
-              "name": "Point of Service Entry Mode",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_37",
-              "name": "Retrieval Reference Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_38",
-              "name": "Authorization Identification Response",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_48",
-              "name": "Store Message",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_54",
-              "name": "Additional Amount",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_55",
-              "name": "Chip Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_60",
-              "name": "Batch Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_62",
-              "name": "Invoice Number",
-              "expected": "NOT_NULL"
-            }
-          ]
-        }
-      ]
-    },
-    "沖正": {
-      "type": "multi-step",
-      "description": "沖正",
-      "steps": [
-        {
-          "step_name": "沖正",
-          "mti": "0400",
-          "fields": [
-            {
-              "id": "REQ_2",
-              "name": "Primary Account Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_4",
-              "name": "Amount, Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_14",
-              "name": "Date, Expiration",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_22",
-              "name": "Point of Service Entry Mode",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_38",
-              "name": "Authorization Identification Response",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_48",
-              "name": "Store Message",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_55",
-              "name": "Chip Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_60",
-              "name": "Batch Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_62",
-              "name": "Invoice Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_63",
-              "name": "Installment / Totals",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            }
-          ]
-        }
-      ]
-    },
-    "結帳": {
-      "type": "multi-step",
-      "description": "結帳",
-      "steps": [
-        {
-          "step_name": "結帳",
-          "mti": "0500",
-          "fields": [
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "960000"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_56",
-              "name": "Redemption Related Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_60",
-              "name": "Batch Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_63",
-              "name": "Installment / Totals",
-              "expected": "NOT_NULL"
-            }
-          ]
-        }
-      ]
-    },
-    "批上送": {
-      "type": "multi-step",
-      "description": "批上送",
-      "steps": [
-        {
-          "step_name": "批上送",
-          "mti": "0320",
-          "fields": [
-            {
-              "id": "REQ_2",
-              "name": "Primary Account Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_4",
-              "name": "Amount, Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_12",
-              "name": "Time, Local Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_13",
-              "name": "Date, Local Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_14",
-              "name": "Date, Expiration",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_22",
-              "name": "Point of Service Entry Mode",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_25",
-              "name": "Point of Service Condition Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_37",
-              "name": "Retrieval Reference Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_38",
-              "name": "Authorization Identification Response",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_39",
-              "name": "Response Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_48",
-              "name": "Store Message",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_55",
-              "name": "Chip Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_60",
-              "name": "Batch Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_62",
-              "name": "Invoice Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_63",
-              "name": "Installment / Totals",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            }
-          ]
-        }
-      ]
-    },
-    "銷售查詢": {
-      "type": "multi-step",
-      "description": "銷售查詢",
-      "steps": [
-        {
-          "step_name": "銷售查詢",
-          "mti": "0100",
-          "fields": [
-            {
-              "id": "REQ_2",
-              "name": "Primary Account Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_4",
-              "name": "Amount, Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_13",
-              "name": "Date, Local Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_14",
-              "name": "Date, Expiration",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_22",
-              "name": "Point of Service Entry Mode",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_48",
-              "name": "Store Message",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_55",
-              "name": "Chip Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_60",
-              "name": "Batch Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_62",
-              "name": "Invoice Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_63",
-              "name": "Installment / Totals",
-              "expected": "IF_EXIST:NOT_NULL"
-            }
-          ]
-        }
-      ]
-    },
-    "更換 PIN Key": {
-      "type": "multi-step",
-      "description": "更換 PIN Key",
-      "steps": [
-        {
-          "step_name": "更換 PIN Key",
-          "mti": "0800",
-          "fields": [
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "NOT_NULL"
-            }
-          ]
-        }
-      ]
-    },
-    "更換 TMK": {
-      "type": "multi-step",
-      "description": "更換 TMK",
-      "steps": [
-        {
-          "step_name": "更換 TMK",
-          "mti": "0800",
-          "fields": [
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "NOT_NULL"
-            }
-          ]
-        }
-      ]
-    },
-    "MO/TO 銀聯退貨查詢": {
-      "type": "multi-step",
-      "description": "MO/TO 銀聯退貨查詢",
-      "steps": [
-        {
-          "step_name": "MO/TO 銀聯退貨查詢",
-          "mti": "0100",
-          "fields": [
-            {
-              "id": "REQ_2",
-              "name": "Primary Account Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_4",
-              "name": "Amount, Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_13",
-              "name": "Date, Local Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_14",
-              "name": "Date, Expiration",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_22",
-              "name": "Point of Service Entry Mode",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_38",
-              "name": "Authorization Identification Response",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_60",
-              "name": "Batch Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_62",
-              "name": "Invoice Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_63",
-              "name": "Installment / Totals",
-              "expected": "IF_EXIST:NOT_NULL"
-            }
-          ]
-        }
-      ]
-    },
-    "MO/TO 銀聯離線查詢": {
-      "type": "multi-step",
-      "description": "MO/TO 銀聯離線查詢",
-      "steps": [
-        {
-          "step_name": "MO/TO 銀聯離線查詢",
-          "mti": "0100",
-          "fields": [
-            {
-              "id": "REQ_2",
-              "name": "Primary Account Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_4",
-              "name": "Amount, Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_13",
-              "name": "Date, Local Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_14",
-              "name": "Date, Expiration",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_22",
-              "name": "Point of Service Entry Mode",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_38",
-              "name": "Authorization Identification Response",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_60",
-              "name": "Batch Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_62",
-              "name": "Invoice Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_63",
-              "name": "Installment / Totals",
-              "expected": "IF_EXIST:NOT_NULL"
-            }
-          ]
-        }
-      ]
-    },
-    "EDC 商戶發起交易 MIT（不支援）": {
-      "type": "multi-step",
-      "description": "EDC 商戶發起交易 MIT（不支援）",
-      "steps": [
-        {
-          "step_name": "EDC 商戶發起交易 MIT（不支援）",
-          "mti": "0200",
-          "fields": [
-            {
-              "id": "REQ_2",
-              "name": "Primary Account Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "100000"
-            },
-            {
-              "id": "REQ_4",
-              "name": "Amount, Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_14",
-              "name": "Date, Expiration",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_22",
-              "name": "Point of Service Entry Mode",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_25",
-              "name": "Point of Service Condition Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_35",
-              "name": "Track II Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_38",
-              "name": "Authorization Identification Response",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_48",
-              "name": "Store Message",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_52",
-              "name": "Pin Block",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_55",
-              "name": "Chip Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_56",
-              "name": "Redemption Related Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_62",
-              "name": "Invoice Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_63",
-              "name": "Installment / Totals",
-              "expected": "IF_EXIST:NOT_NULL"
-            }
-          ]
-        }
-      ]
-    },
-    "EC 商戶發起交易 MIT（不支援）": {
-      "type": "multi-step",
-      "description": "EC 商戶發起交易 MIT（不支援）",
-      "steps": [
-        {
-          "step_name": "EC 商戶發起交易 MIT（不支援）",
-          "mti": "0100",
-          "fields": [
-            {
-              "id": "REQ_2",
-              "name": "Primary Account Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "100000"
-            },
-            {
-              "id": "REQ_4",
-              "name": "Amount, Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_12",
-              "name": "Time, Local Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_13",
-              "name": "Date, Local Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_14",
-              "name": "Date, Expiration",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_22",
-              "name": "Point of Service Entry Mode",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_25",
-              "name": "Point of Service Condition Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_35",
-              "name": "Track II Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_37",
-              "name": "Retrieval Reference Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_38",
-              "name": "Authorization Identification Response",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_48",
-              "name": "Store Message",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_52",
-              "name": "Pin Block",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_55",
-              "name": "Chip Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_62",
-              "name": "Invoice Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_63",
-              "name": "Installment / Totals",
-              "expected": "IF_EXIST:NOT_NULL"
-            }
-          ]
-        }
-      ]
-    },
-    "增額授權（不支援）": {
-      "type": "multi-step",
-      "description": "增額授權（不支援）",
-      "steps": [
-        {
-          "step_name": "增額授權（不支援）",
-          "mti": "0100",
-          "fields": [
-            {
-              "id": "REQ_2",
-              "name": "Primary Account Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "300000"
-            },
-            {
-              "id": "REQ_4",
-              "name": "Amount, Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_14",
-              "name": "Date, Expiration",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_22",
-              "name": "Point of Service Entry Mode",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_25",
-              "name": "Point of Service Condition Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_35",
-              "name": "Track II Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_38",
-              "name": "Authorization Identification Response",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_48",
-              "name": "Store Message",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_52",
-              "name": "Pin Block",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_55",
-              "name": "Chip Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_62",
-              "name": "Invoice Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_63",
-              "name": "Installment / Totals",
-              "expected": "IF_EXIST:NOT_NULL"
-            }
-          ]
-        }
-      ]
-    },
-    "增額授權沖正（不支援）": {
-      "type": "multi-step",
-      "description": "增額授權沖正（不支援）",
-      "steps": [
-        {
-          "step_name": "增額授權沖正（不支援）",
-          "mti": "0420",
-          "fields": [
-            {
-              "id": "REQ_2",
-              "name": "Primary Account Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "360000"
-            },
-            {
-              "id": "REQ_4",
-              "name": "Amount, Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_14",
-              "name": "Date, Expiration",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_22",
-              "name": "Point of Service Entry Mode",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_25",
-              "name": "Point of Service Condition Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_35",
-              "name": "Track II Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_48",
-              "name": "Store Message",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_52",
-              "name": "Pin Block",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_55",
-              "name": "Chip Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_62",
-              "name": "Invoice Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_63",
-              "name": "Installment / Totals",
-              "expected": "IF_EXIST:NOT_NULL"
-            }
-          ]
-        }
-      ]
-    },
-    "帳號驗證": {
-      "type": "multi-step",
-      "description": "帳號驗證",
-      "steps": [
-        {
-          "step_name": "帳號驗證",
-          "mti": "0100",
-          "fields": [
-            {
-              "id": "REQ_2",
-              "name": "Primary Account Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "810000"
-            },
-            {
-              "id": "REQ_4",
-              "name": "Amount, Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_14",
-              "name": "Date, Expiration",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_22",
-              "name": "Point of Service Entry Mode",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_25",
-              "name": "Point of Service Condition Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_35",
-              "name": "Track II Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_48",
-              "name": "Store Message",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_52",
-              "name": "Pin Block",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_55",
-              "name": "Chip Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_62",
-              "name": "Invoice Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_63",
-              "name": "Installment / Totals",
-              "expected": "IF_EXIST:NOT_NULL"
-            }
-          ]
-        }
-      ]
-    },
-    "更換終端基礎金鑰": {
-      "type": "multi-step",
-      "description": "更換終端基礎金鑰",
-      "steps": [
-        {
-          "step_name": "更換終端基礎金鑰",
-          "mti": "0800",
-          "fields": [
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "810000"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_25",
-              "name": "Point of Service Condition Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_62",
-              "name": "Invoice Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            }
-          ]
-        }
-      ]
-    },
-    "DCC 取消預先授權": {
-      "type": "multi-step",
-      "description": "DCC 取消預先授權",
-      "steps": [
-        {
-          "step_name": "DCC 取消預先授權",
-          "mti": "0420",
-          "fields": [
-            {
-              "id": "REQ_2",
-              "name": "Primary Account Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "300000"
-            },
-            {
-              "id": "REQ_4",
-              "name": "Amount, Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_14",
-              "name": "Date, Expiration",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_22",
-              "name": "Point of Service Entry Mode",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_25",
-              "name": "Point of Service Condition Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_35",
-              "name": "Track II Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_48",
-              "name": "Store Message",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_55",
-              "name": "Chip Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_60",
-              "name": "Batch Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_62",
-              "name": "Invoice Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_63",
-              "name": "Installment / Totals",
-              "expected": "IF_EXIST:NOT_NULL"
-            }
-          ]
-        }
-      ]
-    },
-    "TW-PAY 當筆銷售查詢": {
-      "type": "multi-step",
-      "description": "TW-PAY 當筆銷售查詢",
-      "steps": [
-        {
-          "step_name": "TW-PAY 當筆銷售查詢",
-          "mti": "0100",
-          "fields": [
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_25",
-              "name": "Point of Service Condition Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            }
-          ]
-        }
-      ]
-    },
-    "TW-PAY 當批明細查詢": {
-      "type": "multi-step",
-      "description": "TW-PAY 當批明細查詢",
-      "steps": [
-        {
-          "step_name": "TW-PAY 當批明細查詢",
-          "mti": "0100",
-          "fields": [
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_25",
-              "name": "Point of Service Condition Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "NOT_NULL"
-            }
-          ]
-        }
-      ]
-    },
-    "TW-PAY 當批總計查詢": {
-      "type": "multi-step",
-      "description": "TW-PAY 當批總計查詢",
-      "steps": [
-        {
-          "step_name": "TW-PAY 當批總計查詢",
-          "mti": "0100",
-          "fields": [
-            {
-              "id": "REQ_2",
-              "name": "Primary Account Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_25",
-              "name": "Point of Service Condition Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            }
-          ]
-        }
-      ]
-    },
-    "授權": {
-      "type": "multi-step",
-      "description": "授權",
-      "steps": [
-        {
-          "step_name": "授權",
-          "mti": "0100",
-          "fields": [
-            {
-              "id": "REQ_2",
-              "name": "Primary Account Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_4",
-              "name": "Amount, Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_14",
-              "name": "Date, Expiration",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_22",
-              "name": "Point of Service Entry Mode",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_25",
-              "name": "Point of Service Condition Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_35",
-              "name": "Track II Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_48",
-              "name": "Store Message",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_52",
-              "name": "Pin Block",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_55",
-              "name": "Chip Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_62",
-              "name": "Invoice Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_63",
-              "name": "Installment / Totals",
-              "expected": "IF_EXIST:NOT_NULL"
-            }
-          ]
-        }
-      ]
-    },
-    "預先授權批上送": {
-      "type": "multi-step",
-      "description": "預先授權批上送",
-      "steps": [
-        {
-          "step_name": "預先授權批上送",
-          "mti": "0100",
-          "fields": [
-            {
-              "id": "REQ_2",
-              "name": "Primary Account Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_3",
-              "name": "Processing Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_4",
-              "name": "Amount, Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_11",
-              "name": "System Trace Audit Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_12",
-              "name": "Time, Local Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_13",
-              "name": "Date, Local Transaction",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_14",
-              "name": "Date, Expiration",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_22",
-              "name": "Point of Service Entry Mode",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_24",
-              "name": "Network International Identifier",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_25",
-              "name": "Point of Service Condition Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_37",
-              "name": "Retrieval Reference Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_38",
-              "name": "Authorization Identification Response",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_39",
-              "name": "Response Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_41",
-              "name": "Card Acceptor Terminal Identification",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_42",
-              "name": "Card Acceptor Identification Code",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_48",
-              "name": "Store Message",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_55",
-              "name": "Chip Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_59",
-              "name": "Original Transaction Data",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_60",
-              "name": "Batch Number",
-              "expected": "NOT_NULL"
-            },
-            {
-              "id": "REQ_62",
-              "name": "Invoice Number",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "REQ_63",
-              "name": "Installment / Totals",
-              "expected": "IF_EXIST:NOT_NULL"
-            },
-            {
-              "id": "RSP_39",
-              "name": "Response Code",
-              "expected": "00"
-            }
-          ]
-        }
-      ]
     }
-  }
 }
