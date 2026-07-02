@@ -16,6 +16,12 @@ const FUNC_NAMES = ['銷售交易', '取消交易', '退貨交易', '結帳'];
 const PAY_METHODS = ['信用卡', '銀聯卡', '晶片金融卡'];
 const TRANS_TYPES = ['一般交易', '分期交易', '紅利交易', 'SmartPay', 'DCC'];
 
+function extractRefSource(action: AutoPosAction): string | null {
+  const ref = action.traceRef ?? action.authRef ?? action.txDateRef ?? action.rrnRef ?? '';
+  const m = ref.match(/\{\{(\w+)\./);
+  return m ? m[1] : null;
+}
+
 function newStep(idx: number): AutoTestStep {
   return {
     id: `step_${Date.now()}_${idx}`,
@@ -354,58 +360,58 @@ export default function ScriptEditor({ script: initial, rules, onSave, onCancel 
                         />
                       </div>
 
-                      {/* Row 6: Refs — 任何步驟都可能引用前筆（小費、退貨、取消、預授權完成等） */}
-                      {idx > 0 && (
+                      {/* Row 6: Refs — 用下拉選引用來源，系統自動帶入四個 ref */}
+                      {idx > 0 && availableRefs.length > 0 && (
                         <div className="space-y-2">
-                          <div className="text-xs font-semibold text-[var(--fg-subtle)]">
-                            引用前筆交易
-                            {availableRefs.length > 0 && (
-                              <span className="font-normal text-[var(--fg-subtle)] ml-2">
-                                可用：{availableRefs.map(r => `{{${r}.xxx}}`).join('、')}
-                              </span>
+                          <div>
+                            <label className="block text-xs font-medium text-[var(--fg-muted)] mb-1">引用前筆交易結果</label>
+                            <div className="flex items-center gap-2">
+                              <select
+                                value={extractRefSource(step.posAction) ?? ''}
+                                onChange={e => {
+                                  const ref = e.target.value;
+                                  if (ref) {
+                                    updateAction(idx, {
+                                      traceRef: `{{${ref}.traceNumber}}`,
+                                      authRef: `{{${ref}.authCode}}`,
+                                      txDateRef: `{{${ref}.txDate}}`,
+                                      rrnRef: `{{${ref}.rrn}}`,
+                                    });
+                                  } else {
+                                    updateAction(idx, {
+                                      traceRef: undefined,
+                                      authRef: undefined,
+                                      txDateRef: undefined,
+                                      rrnRef: undefined,
+                                    });
+                                  }
+                                }}
+                                className="flex-1 h-8 px-2 rounded-lg text-sm bg-[var(--surface-2)] border border-[var(--border)] text-[var(--fg)]"
+                              >
+                                <option value="">不引用</option>
+                                {availableRefs
+                                  .filter((_, ri) => {
+                                    const refStepIdx = script.steps.findIndex(s => s.saveResultAs === availableRefs[ri]);
+                                    return refStepIdx < idx;
+                                  })
+                                  .map(r => {
+                                    const refStep = script.steps.find(s => s.saveResultAs === r);
+                                    return (
+                                      <option key={r} value={r}>
+                                        {r} — {refStep?.name ?? ''}
+                                      </option>
+                                    );
+                                  })}
+                              </select>
+                            </div>
+                            {extractRefSource(step.posAction) && (
+                              <div className="mt-1.5 text-xs text-[var(--fg-subtle)] bg-[var(--surface-2)] rounded-lg px-3 py-2 font-mono grid grid-cols-2 gap-1">
+                                <span>調閱編號 ← {step.posAction.traceRef}</span>
+                                <span>授權碼 ← {step.posAction.authRef}</span>
+                                <span>原交易日 ← {step.posAction.txDateRef}</span>
+                                <span>RRN ← {step.posAction.rrnRef}</span>
+                              </div>
                             )}
-                          </div>
-                          <div className="grid grid-cols-2 gap-3">
-                            <div>
-                              <label className="block text-xs text-[var(--fg-subtle)] mb-1">調閱編號 (traceRef)</label>
-                              <input
-                                type="text"
-                                value={step.posAction.traceRef ?? ''}
-                                onChange={e => updateAction(idx, { traceRef: e.target.value || undefined })}
-                                className="w-full h-8 px-3 rounded-lg text-xs bg-[var(--surface-2)] border border-[var(--border)] text-[var(--fg)] font-mono focus:outline-none focus:border-[var(--blue-line)]"
-                                placeholder="{{sale1.traceNumber}}"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-xs text-[var(--fg-subtle)] mb-1">授權碼 (authRef)</label>
-                              <input
-                                type="text"
-                                value={step.posAction.authRef ?? ''}
-                                onChange={e => updateAction(idx, { authRef: e.target.value || undefined })}
-                                className="w-full h-8 px-3 rounded-lg text-xs bg-[var(--surface-2)] border border-[var(--border)] text-[var(--fg)] font-mono focus:outline-none focus:border-[var(--blue-line)]"
-                                placeholder="{{sale1.authCode}}"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-xs text-[var(--fg-subtle)] mb-1">原交易日 (txDateRef)</label>
-                              <input
-                                type="text"
-                                value={step.posAction.txDateRef ?? ''}
-                                onChange={e => updateAction(idx, { txDateRef: e.target.value || undefined })}
-                                className="w-full h-8 px-3 rounded-lg text-xs bg-[var(--surface-2)] border border-[var(--border)] text-[var(--fg)] font-mono focus:outline-none focus:border-[var(--blue-line)]"
-                                placeholder="{{sale1.txDate}}"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-xs text-[var(--fg-subtle)] mb-1">RRN (rrnRef)</label>
-                              <input
-                                type="text"
-                                value={step.posAction.rrnRef ?? ''}
-                                onChange={e => updateAction(idx, { rrnRef: e.target.value || undefined })}
-                                className="w-full h-8 px-3 rounded-lg text-xs bg-[var(--surface-2)] border border-[var(--border)] text-[var(--fg)] font-mono focus:outline-none focus:border-[var(--blue-line)]"
-                                placeholder="{{sale1.rrn}}"
-                              />
-                            </div>
                           </div>
                         </div>
                       )}
