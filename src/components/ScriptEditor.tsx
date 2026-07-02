@@ -354,8 +354,8 @@ export default function ScriptEditor({ script: initial, rules, onSave, onCancel 
                         />
                       </div>
 
-                      {/* Row 6: Refs */}
-                      {(step.posAction.funcName === '取消交易' || step.posAction.funcName === '退貨交易') && (
+                      {/* Row 6: Refs — 任何步驟都可能引用前筆（小費、退貨、取消、預授權完成等） */}
+                      {idx > 0 && (
                         <div className="space-y-2">
                           <div className="text-xs font-semibold text-[var(--fg-subtle)]">
                             引用前筆交易
