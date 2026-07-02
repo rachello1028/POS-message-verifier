@@ -4,8 +4,9 @@ import TestPanel from './components/TestPanel';
 import ConfigPanel from './components/ConfigPanel';
 import HelpPanel from './components/HelpPanel';
 import AutoTestPanel from './components/AutoTestPanel';
-import type { AllRules, ConnectionStatus, TransactionResult, TransactionStep } from './types';
+import type { AllRules, ConnectionStatus, TransactionResult, TransactionStep, AutoTestScript } from './types';
 import { AdbBridge } from './services/adbBridge';
+import { transactionsToScript } from './services/scriptConverter';
 
 const EMPTY_RULES: AllRules = {};
 
@@ -52,6 +53,7 @@ New-Item -Path $cmdPath -Force | Out-Null
 Set-ItemProperty -Path $cmdPath -Name "(Default)" -Value ('"{0}"' -f $batPath)
 Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。" -ForegroundColor Green`;
 
+  const [pendingScript, setPendingScript] = useState<AutoTestScript | null>(null);
   const bridgeRef = useRef<AdbBridge | null>(null);
   const autoTxListenerRef = useRef<((tx: TransactionResult) => void) | null>(null);
 
@@ -368,6 +370,11 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
             onClearResults={handleClearResults}
             onDeleteTransaction={(id) => setTransactions(prev => prev.filter(tx => tx.id !== id))}
             onUpdateTestTarget={handleUpdateTestTarget}
+            onExportToAutoTest={(txs) => {
+              const script = transactionsToScript(txs);
+              setPendingScript(script);
+              setActiveTab('auto');
+            }}
           />
         )}
         {activeTab === 'auto' && (
@@ -376,6 +383,8 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
             adbBridge={bridgeRef.current}
             onTransaction={(tx) => setTransactions(prev => [...prev, tx])}
             autoTxListenerRef={autoTxListenerRef}
+            pendingScript={pendingScript}
+            onPendingScriptHandled={() => setPendingScript(null)}
           />
         )}
         {activeTab === 'config' && (

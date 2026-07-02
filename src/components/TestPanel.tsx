@@ -3,7 +3,7 @@ import {
   Play, Square, RefreshCw, ChevronDown, ChevronRight,
   CheckCircle2, XCircle, Wifi, WifiOff, Loader2, AlertCircle,
   Trash2, Smartphone, Building2, FileText, Camera, FileSpreadsheet, FileJson,
-  FolderOpen, Table
+  FolderOpen, Table, Bot
 } from 'lucide-react';
 import type { AllRules, TransactionResult, ConnectionStatus, TransactionStep } from '../types';
 import { downloadReport } from '../services/reportGenerator';
@@ -22,11 +22,12 @@ interface Props {
   onClearResults: () => void;
   onDeleteTransaction: (id: number) => void;
   onUpdateTestTarget?: (bank: string, transType: string, steps: TransactionStep[]) => void;
+  onExportToAutoTest?: (txs: TransactionResult[]) => void;
 }
 
 export default function TestPanel({
   rules, devices, connStatus, transactions, isMonitoring,
-  onRefreshDevices, onStartMonitor, onStopMonitor, onClearResults, onDeleteTransaction, onUpdateTestTarget,
+  onRefreshDevices, onStartMonitor, onStopMonitor, onClearResults, onDeleteTransaction, onUpdateTestTarget, onExportToAutoTest,
 }: Props) {
   const [selectedDevice, setSelectedDevice] = useState('');
   const [selectedBank, setSelectedBank] = useState('');
@@ -399,6 +400,15 @@ export default function TestPanel({
           >
             <FileJson className="w-3.5 h-3.5" /> JSON
           </button>
+          {onExportToAutoTest && (
+            <button
+              onClick={() => onExportToAutoTest(transactions)}
+              className="toolbar-btn flex items-center gap-1.5 text-xs px-3 py-1.5 text-[var(--blue-ink)] border-[var(--blue-line)]"
+              title="將目前的交易紀錄轉為自動化測試腳本"
+            >
+              <Bot className="w-3.5 h-3.5" /> 匯出為自動化腳本
+            </button>
+          )}
         </div>
       )}
 

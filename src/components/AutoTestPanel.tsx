@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Play, Square, Wifi, WifiOff, Loader2, CheckCircle2, XCircle,
   AlertCircle, Smartphone, ChevronDown, ChevronRight, CreditCard,
-  RotateCcw, Upload, Plus,
+  RotateCcw, Upload, Plus, Pencil, Circle, Download,
 } from 'lucide-react';
 import type {
   AutoTestScript, AutoTestStep, AutoStepResult, AutoRunStatus,
@@ -11,12 +11,16 @@ import type {
 import { PosBridge } from '../services/posBridge';
 import { AdbBridge } from '../services/adbBridge';
 import { AutoTestRunner } from '../services/autoTestRunner';
+import { transactionsToScript } from '../services/scriptConverter';
+import ScriptEditor from './ScriptEditor';
 
 interface Props {
   rules: AllRules;
   adbBridge: AdbBridge | null;
   onTransaction: (tx: TransactionResult) => void;
   autoTxListenerRef: React.MutableRefObject<((tx: TransactionResult) => void) | null>;
+  pendingScript?: AutoTestScript | null;
+  onPendingScriptHandled?: () => void;
 }
 
 const PRESET_SCRIPTS: AutoTestScript[] = [
@@ -103,7 +107,10 @@ const STATUS_ICON: Record<string, React.ReactNode> = {
   skipped: <AlertCircle className="w-5 h-5 text-[var(--fg-subtle)]" />,
 };
 
-export default function AutoTestPanel({ rules, adbBridge, onTransaction, autoTxListenerRef }: Props) {
+export default function AutoTestPanel({
+  rules, adbBridge, onTransaction, autoTxListenerRef,
+  pendingScript, onPendingScriptHandled,
+}: Props) {
   const [posStatus, setPosStatus] = useState<PosBridgeStatus>({ connected: false, devices: [] });
   const [selectedDevice, setSelectedDevice] = useState('');
   const [runStatus, setRunStatus] = useState<AutoRunStatus>('idle');
@@ -117,6 +124,9 @@ export default function AutoTestPanel({ rules, adbBridge, onTransaction, autoTxL
       return saved ? JSON.parse(saved) : [];
     } catch { return []; }
   });
+  const [editingScript, setEditingScript] = useState<AutoTestScript | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const recordedTxRef = useRef<TransactionResult[]>([]);
 
   const posBridgeRef = useRef<PosBridge | null>(null);
   const runnerRef = useRef<AutoTestRunner | null>(null);
@@ -132,6 +142,14 @@ export default function AutoTestPanel({ rules, adbBridge, onTransaction, autoTxL
     posBridgeRef.current = bridge;
     return () => bridge.disconnect();
   }, []);
+
+  // Handle pending script from TestPanel export
+  useEffect(() => {
+    if (pendingScript) {
+      setEditingScript(pendingScript);
+      onPendingScriptHandled?.();
+    }
+  }, [pendingScript, onPendingScriptHandled]);
 
   const handleConnectBridge = useCallback(() => {
     posBridgeRef.current?.connect();
@@ -218,6 +236,81 @@ export default function AutoTestPanel({ rules, adbBridge, onTransaction, autoTxL
     input.click();
   }, []);
 
+  const handleNewScript = useCallback(() => {
+    setEditingScript({
+      id: `custom-${Date.now()}`,
+      name: '新腳本',
+      description: '',
+      steps: [],
+    });
+  }, []);
+
+  const handleEditScript = useCallback((script: AutoTestScript) => {
+    setEditingScript(structuredClone(script));
+  }, []);
+
+  const handleSaveScript = useCallback((script: AutoTestScript) => {
+    setCustomScripts(prev => {
+      const exists = prev.findIndex(s => s.id === script.id);
+      if (exists >= 0) {
+        const next = [...prev];
+        next[exists] = script;
+        return next;
+      }
+      return [...prev, script];
+    });
+    setEditingScript(null);
+    setSelectedScript(script);
+    setLogs(prev => [...prev, `✅ 腳本已儲存：${script.name}`]);
+  }, []);
+
+  const handleDeleteScript = useCallback((scriptId: string) => {
+    setCustomScripts(prev => prev.filter(s => s.id !== scriptId));
+    if (selectedScript?.id === scriptId) {
+      setSelectedScript(null);
+      setStepResults([]);
+    }
+  }, [selectedScript]);
+
+  // ── Recording mode ──────────────────────────────────────────────────────────
+
+  const handleStartRecording = useCallback(() => {
+    if (!adbBridge) return;
+    recordedTxRef.current = [];
+    setIsRecording(true);
+    setLogs(prev => [...prev, `${new Date().toLocaleTimeString('zh-TW')} 🔴 開始錄製 — 請在 POS 上操作，電文會自動收集`]);
+
+    autoTxListenerRef.current = (tx) => {
+      recordedTxRef.current.push(tx);
+      setLogs(prev => [...prev, `${new Date().toLocaleTimeString('zh-TW')} 📝 錄製到交易：${tx.bank} · ${tx.transactionType}`]);
+    };
+  }, [adbBridge, autoTxListenerRef]);
+
+  const handleStopRecording = useCallback(() => {
+    setIsRecording(false);
+    autoTxListenerRef.current = null;
+
+    const recorded = recordedTxRef.current;
+    if (recorded.length === 0) {
+      setLogs(prev => [...prev, `${new Date().toLocaleTimeString('zh-TW')} ⚠️ 錄製結束，沒有收到任何交易`]);
+      return;
+    }
+
+    setLogs(prev => [...prev, `${new Date().toLocaleTimeString('zh-TW')} ⏹️ 錄製結束，共 ${recorded.length} 筆交易，正在產生腳本...`]);
+    const script = transactionsToScript(recorded, `錄製腳本 ${new Date().toLocaleString('zh-TW')}`);
+    setEditingScript(script);
+  }, [autoTxListenerRef]);
+
+  const handleExportJson = useCallback((script: AutoTestScript) => {
+    const blob = new Blob([JSON.stringify(script, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${script.name.replace(/[^\w一-鿿]/g, '_')}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, []);
+
   const allScripts = [...PRESET_SCRIPTS, ...customScripts];
 
   const toggleStep = (idx: number) => {
@@ -234,6 +327,8 @@ export default function AutoTestPanel({ rules, adbBridge, onTransaction, autoTxL
     failed: stepResults.filter(r => r.status === 'failed').length,
     running: stepResults.filter(r => r.status === 'running' || r.status === 'waiting_card').length,
   } : null;
+
+  const isPreset = (id: string) => PRESET_SCRIPTS.some(s => s.id === id);
 
   return (
     <div className="space-y-4">
@@ -252,7 +347,6 @@ export default function AutoTestPanel({ rules, adbBridge, onTransaction, autoTxL
           </div>
         </div>
 
-        {/* Bridge 連線控制 */}
         <div className="flex items-center gap-2 mb-3">
           <code className="text-xs text-[var(--fg-muted)] bg-[var(--surface-2)] px-2 py-1 rounded">ws://127.0.0.1:8766</code>
           {posStatus.connected ? (
@@ -308,36 +402,110 @@ export default function AutoTestPanel({ rules, adbBridge, onTransaction, autoTxL
         )}
       </div>
 
+      {/* 錄製控制 */}
+      <div className="border border-[var(--border)] rounded-xl bg-[var(--surface)] p-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-semibold text-[var(--fg)] flex items-center gap-2">
+            <Circle className={`w-4 h-4 ${isRecording ? 'text-red-500 fill-red-500 animate-pulse' : 'text-[var(--fg-subtle)]'}`} />
+            交易錄製
+          </h3>
+          <div className="flex items-center gap-2">
+            {isRecording ? (
+              <>
+                <span className="text-xs text-red-400 animate-pulse">錄製中… 已收集 {recordedTxRef.current.length} 筆</span>
+                <button
+                  onClick={handleStopRecording}
+                  className="btn-danger text-xs px-3 py-1.5 flex items-center gap-1.5"
+                >
+                  <Square className="w-3.5 h-3.5" /> 停止錄製
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={handleStartRecording}
+                disabled={!adbBridge || runStatus === 'running'}
+                className="toolbar-btn text-xs px-3 py-1.5 flex items-center gap-1.5 disabled:opacity-50"
+                title="開始錄製：在 POS 上操作交易，電文自動收集為腳本"
+              >
+                <Circle className="w-3.5 h-3.5 text-red-400" /> 開始錄製
+              </button>
+            )}
+          </div>
+        </div>
+        {!isRecording && (
+          <p className="text-xs text-[var(--fg-subtle)] mt-2">
+            錄製模式會監聽 ADB Bridge 的交易電文，自動產生自動化腳本。請確保 ADB Bridge 已連線並選好監聽設備。
+          </p>
+        )}
+      </div>
+
       {/* 腳本選擇 */}
       <div className="border border-[var(--border)] rounded-xl bg-[var(--surface)] p-4">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-sm font-semibold text-[var(--fg)]">測試腳本</h3>
-          <button onClick={handleImportScript} className="toolbar-btn text-xs">
-            <Upload className="w-3.5 h-3.5" /> 匯入腳本
-          </button>
+          <div className="flex items-center gap-2">
+            <button onClick={handleNewScript} className="toolbar-btn text-xs flex items-center gap-1">
+              <Plus className="w-3.5 h-3.5" /> 新建腳本
+            </button>
+            <button onClick={handleImportScript} className="toolbar-btn text-xs flex items-center gap-1">
+              <Upload className="w-3.5 h-3.5" /> 匯入 JSON
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 gap-2">
           {allScripts.map(script => (
-            <button
+            <div
               key={script.id}
+              className={`group relative text-left px-3 py-2.5 rounded-lg border transition-colors cursor-pointer ${
+                selectedScript?.id === script.id
+                  ? 'border-[var(--blue-line)] bg-[var(--blue-soft)] text-[var(--blue-ink)]'
+                  : 'border-[var(--border)] bg-[var(--surface-2)] text-[var(--fg-muted)] hover:bg-[var(--surface-3)]'
+              }`}
               onClick={() => {
                 setSelectedScript(script);
                 setStepResults([]);
                 setLogs([]);
               }}
-              className={`text-left px-3 py-2.5 rounded-lg border transition-colors ${
-                selectedScript?.id === script.id
-                  ? 'border-[var(--blue-line)] bg-[var(--blue-soft)] text-[var(--blue-ink)]'
-                  : 'border-[var(--border)] bg-[var(--surface-2)] text-[var(--fg-muted)] hover:bg-[var(--surface-3)]'
-              }`}
             >
-              <div className="font-medium text-sm">{script.name}</div>
-              {script.description && (
-                <div className="text-xs mt-0.5 opacity-75">{script.description}</div>
-              )}
-              <div className="text-xs mt-1 opacity-60">{script.steps.length} 步驟</div>
-            </button>
+              <div className="flex items-center justify-between">
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-sm">{script.name}</div>
+                  {script.description && (
+                    <div className="text-xs mt-0.5 opacity-75">{script.description}</div>
+                  )}
+                  <div className="text-xs mt-1 opacity-60">
+                    {script.steps.length} 步驟
+                    {isPreset(script.id) && <span className="ml-2 opacity-50">· 預設</span>}
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" onClick={e => e.stopPropagation()}>
+                  <button
+                    onClick={() => handleEditScript(script)}
+                    className="p-1.5 rounded hover:bg-[var(--surface-3)] text-[var(--fg-muted)]"
+                    title="編輯"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={() => handleExportJson(script)}
+                    className="p-1.5 rounded hover:bg-[var(--surface-3)] text-[var(--fg-muted)]"
+                    title="匯出 JSON"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                  </button>
+                  {!isPreset(script.id) && (
+                    <button
+                      onClick={() => handleDeleteScript(script.id)}
+                      className="p-1.5 rounded hover:bg-[var(--red-soft)] text-[var(--red-ink)]"
+                      title="刪除"
+                    >
+                      <XCircle className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       </div>
@@ -361,7 +529,7 @@ export default function AutoTestPanel({ rules, adbBridge, onTransaction, autoTxL
               {runStatus === 'idle' || runStatus === 'completed' || runStatus === 'aborted' ? (
                 <button
                   onClick={handleRun}
-                  disabled={!posStatus.connected || !posStatus.activeDevice}
+                  disabled={!posStatus.connected || !posStatus.activeDevice || isRecording}
                   className="btn-primary text-xs px-3 py-1.5 flex items-center gap-1.5 disabled:opacity-50"
                 >
                   <Play className="w-3.5 h-3.5" /> 開始執行
@@ -456,6 +624,16 @@ export default function AutoTestPanel({ rules, adbBridge, onTransaction, autoTxL
           </pre>
           <div ref={logsEndRef} />
         </div>
+      )}
+
+      {/* Script Editor Modal */}
+      {editingScript && (
+        <ScriptEditor
+          script={editingScript}
+          rules={rules}
+          onSave={handleSaveScript}
+          onCancel={() => setEditingScript(null)}
+        />
       )}
     </div>
   );
