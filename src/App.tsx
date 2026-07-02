@@ -36,7 +36,7 @@ export default function App() {
   const [copied, setCopied] = useState(false);
   const [isBridgeLaunching, setIsBridgeLaunching] = useState(false);
   const [bridgePort, setBridgePort] = useState<string>(
-    () => localStorage.getItem('pos-bridge-port') ?? '8767'
+    () => localStorage.getItem('adb-bridge-port') ?? '8767'
   );
   const [isEditingPort, setIsEditingPort] = useState(false);
   const [portDraft, setPortDraft] = useState(bridgePort);
@@ -177,7 +177,7 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
     const p = portDraft.trim().replace(/\D/g, '');
     if (!p) return;
     setBridgePort(p);
-    localStorage.setItem('pos-bridge-port', p);
+    localStorage.setItem('adb-bridge-port', p);
     setIsEditingPort(false);
   }, [portDraft]);
 
@@ -199,10 +199,10 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
 
   const StatusBadge = () => {
     const map: Record<ConnectionStatus, { icon: React.ReactNode; label: string; cls: string }> = {
-      connected:    { icon: <Wifi className="w-3.5 h-3.5" />,                          label: 'Bridge 已連線',   cls: 'text-[var(--emerald-ink)]' },
-      connecting:   { icon: <Loader2 className="w-3.5 h-3.5 animate-spin" />,          label: '連線中…',        cls: 'text-[var(--amber-ink)]'   },
-      disconnected: { icon: <WifiOff className="w-3.5 h-3.5" />,                       label: 'Bridge 未連線',   cls: 'text-[var(--fg-subtle)]'   },
-      error:        { icon: <AlertTriangle className="w-3.5 h-3.5" />,                  label: '連線失敗',        cls: 'text-[var(--red-ink)]'     },
+      connected:    { icon: <Wifi className="w-3.5 h-3.5" />,                          label: 'ADB Bridge 已連線', cls: 'text-[var(--emerald-ink)]' },
+      connecting:   { icon: <Loader2 className="w-3.5 h-3.5 animate-spin" />,          label: 'ADB 連線中…',      cls: 'text-[var(--amber-ink)]'   },
+      disconnected: { icon: <WifiOff className="w-3.5 h-3.5" />,                       label: 'ADB Bridge 未連線', cls: 'text-[var(--fg-subtle)]'   },
+      error:        { icon: <AlertTriangle className="w-3.5 h-3.5" />,                  label: 'ADB 連線失敗',      cls: 'text-[var(--red-ink)]'     },
     };
     const { icon, label, cls } = map[connStatus];
     return (
