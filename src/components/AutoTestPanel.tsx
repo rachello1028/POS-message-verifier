@@ -114,6 +114,7 @@ export default function AutoTestPanel({ rules, adbBridge, onTransaction }: Props
   const [stepResults, setStepResults] = useState<AutoStepResult[]>([]);
   const [logs, setLogs] = useState<string[]>([]);
   const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set());
+  const [posPort, setPosPort] = useState(() => localStorage.getItem('pos-bridge-port') || '8766');
   const [customScripts, setCustomScripts] = useState<AutoTestScript[]>(() => {
     try {
       const saved = localStorage.getItem('pos-auto-scripts');
@@ -133,9 +134,16 @@ export default function AutoTestPanel({ rules, adbBridge, onTransaction }: Props
       onError: (msg) => setLogs(prev => [...prev, `❌ POS Bridge: ${msg}`]),
     });
     posBridgeRef.current = bridge;
-    bridge.connect();
     return () => bridge.disconnect();
   }, []);
+
+  const handleConnectBridge = useCallback(() => {
+    const bridge = posBridgeRef.current;
+    if (!bridge) return;
+    localStorage.setItem('pos-bridge-port', posPort);
+    bridge.setUrl(`ws://127.0.0.1:${posPort}`);
+    bridge.connect();
+  }, [posPort]);
 
   useEffect(() => {
     logsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -250,9 +258,38 @@ export default function AutoTestPanel({ rules, adbBridge, onTransaction }: Props
           </div>
         </div>
 
+        {/* Bridge 連線設定 */}
+        <div className="flex items-center gap-2 mb-3">
+          <label className="text-xs text-[var(--fg-muted)] whitespace-nowrap">ws://127.0.0.1:</label>
+          <input
+            type="text"
+            value={posPort}
+            onChange={e => setPosPort(e.target.value.replace(/\D/g, ''))}
+            className="w-20 h-8 px-2 rounded-lg text-sm bg-[var(--surface-2)] border border-[var(--border)] text-[var(--fg)] text-center font-mono"
+            placeholder="8766"
+            disabled={posStatus.connected}
+          />
+          {posStatus.connected ? (
+            <button
+              onClick={() => posBridgeRef.current?.disconnect()}
+              className="btn-danger text-xs px-3 py-1.5"
+            >
+              斷線
+            </button>
+          ) : (
+            <button
+              onClick={handleConnectBridge}
+              disabled={!posPort}
+              className="btn-primary text-xs px-3 py-1.5 disabled:opacity-50"
+            >
+              連線
+            </button>
+          )}
+        </div>
+
         {!posStatus.connected && (
           <div className="text-xs text-[var(--fg-subtle)] bg-[var(--surface-2)] border border-[var(--border)] rounded-lg p-3">
-            請確認 <code className="bg-[var(--surface-3)] px-1 rounded">pos_auto_bridge.py</code> 正在執行（ws://localhost:8766）
+            請先啟動 <code className="bg-[var(--surface-3)] px-1 rounded">pos_auto_bridge.py</code>，再點「連線」
           </div>
         )}
 
@@ -261,7 +298,7 @@ export default function AutoTestPanel({ rules, adbBridge, onTransaction }: Props
             <select
               value={selectedDevice}
               onChange={e => setSelectedDevice(e.target.value)}
-              className="flex-1 h-8 px-2 rounded-lg text-sm"
+              className="flex-1 h-8 px-2 rounded-lg text-sm bg-[var(--surface-2)] border border-[var(--border)] text-[var(--fg)]"
             >
               <option value="">選擇 POS 設備</option>
               {posStatus.devices.map(d => <option key={d} value={d}>{d}</option>)}
@@ -274,14 +311,14 @@ export default function AutoTestPanel({ rules, adbBridge, onTransaction }: Props
               disabled={!selectedDevice}
               className="btn-primary text-xs px-3 py-1.5 disabled:opacity-50"
             >
-              連接
+              連接設備
             </button>
           </div>
         )}
 
         {posStatus.activeDevice && (
           <div className="mt-2 text-xs text-[var(--emerald-ink)]">
-            ✅ 已連接：{posStatus.activeDevice}
+            ✅ 已連接設備：{posStatus.activeDevice}
           </div>
         )}
       </div>

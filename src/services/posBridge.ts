@@ -27,31 +27,62 @@ export class PosBridge {
   private url: string;
   private callbacks: PosBridgeCallbacks;
   private status: PosBridgeStatus = { connected: false, devices: [] };
+  private pingTimer: ReturnType<typeof setInterval> | null = null;
+  private pongReceived = false;
 
   constructor(callbacks: PosBridgeCallbacks, url?: string) {
     this.callbacks = callbacks;
     this.url = url ?? DEFAULT_POS_BRIDGE_URL;
   }
 
+  setUrl(url: string): void {
+    this.url = url;
+  }
+
+  getUrl(): string {
+    return this.url;
+  }
+
   connect(): void {
-    if (this.ws?.readyState === WebSocket.OPEN) return;
+    this.disconnect();
     try {
       this.ws = new WebSocket(this.url);
       this.ws.onopen = () => {
-        this.status = { ...this.status, connected: true };
-        this.callbacks.onStatus(this.status);
         this.send({ command: 'list_devices' });
+        this.pongReceived = false;
+        this.send({ type: 'ping' });
+        this.startPing();
       };
       this.ws.onclose = () => {
+        this.stopPing();
         this.status = { connected: false, devices: [] };
         this.callbacks.onStatus(this.status);
       };
       this.ws.onerror = () => {
-        this.callbacks.onError('無法連線 POS Auto Bridge (ws://localhost:8766)');
+        this.stopPing();
+        this.status = { connected: false, devices: [] };
+        this.callbacks.onStatus(this.status);
+        this.callbacks.onError(`無法連線 POS Auto Bridge (${this.url})`);
       };
       this.ws.onmessage = (e) => this.handleMessage(e);
     } catch (err) {
       this.callbacks.onError(String(err));
+    }
+  }
+
+  private startPing(): void {
+    this.stopPing();
+    this.pingTimer = setInterval(() => {
+      if (this.ws?.readyState === WebSocket.OPEN) {
+        this.send({ type: 'ping' });
+      }
+    }, 25000);
+  }
+
+  private stopPing(): void {
+    if (this.pingTimer) {
+      clearInterval(this.pingTimer);
+      this.pingTimer = null;
     }
   }
 
@@ -96,7 +127,7 @@ export class PosBridge {
 
       switch (data.type) {
         case 'devices':
-          this.status = { ...this.status, devices: data.data ?? [] };
+          this.status = { ...this.status, connected: true, devices: data.data ?? [] };
           this.callbacks.onStatus(this.status);
           break;
         case 'device_connected':
@@ -125,6 +156,11 @@ export class PosBridge {
           });
           break;
         case 'pong':
+          if (!this.status.connected) {
+            this.status = { ...this.status, connected: true };
+            this.callbacks.onStatus(this.status);
+          }
+          this.pongReceived = true;
           break;
         case 'error':
           this.callbacks.onError(data.message ?? '未知錯誤');
