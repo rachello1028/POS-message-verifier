@@ -44,13 +44,16 @@ export class AutoTestRunner {
     this.callbacks = callbacks;
   }
 
-  async runScript(script: AutoTestScript): Promise<void> {
+  async runScript(script: AutoTestScript, adbDevice = ''): Promise<void> {
     this.status = 'running';
     this.abortRequested = false;
     this.context.clear();
     this.prevContext = { authCode: '', rrn: '', traceNumber: '', txDate: '' };
     this.callbacks.onStatusChange('running');
     this.callbacks.onLog(`開始執行腳本：${script.name}（共 ${script.steps.length} 步）`);
+
+    this.adbBridge.startLogcat(adbDevice);
+    this.callbacks.onLog('ADB logcat 監聽已啟動');
 
     for (let i = 0; i < script.steps.length; i++) {
       if (this.abortRequested) {
@@ -69,6 +72,7 @@ export class AutoTestRunner {
       await this.executeStep(i, script.steps[i]);
     }
 
+    this.adbBridge.stopLogcat();
     this.status = this.abortRequested ? 'aborted' : 'completed';
     this.callbacks.onStatusChange(this.status);
     this.callbacks.onLog(`腳本執行${this.abortRequested ? '已中止' : '完成'}`);
@@ -124,7 +128,7 @@ export class AutoTestRunner {
       this.context.set(step.saveResultAs, ctx);
     }
 
-    const txReceived = await this.waitForTransaction(8000);
+    const txReceived = await this.waitForTransaction(15000);
     if (txReceived) {
       result.transaction = txReceived;
       result.status = txReceived.pass ? 'passed' : 'failed';

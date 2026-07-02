@@ -16,13 +16,14 @@ interface Props {
   rules: AllRules;
   adbBridge: AdbBridge | null;
   onTransaction: (tx: TransactionResult) => void;
+  autoTxListenerRef: React.MutableRefObject<((tx: TransactionResult) => void) | null>;
 }
 
 const PRESET_SCRIPTS: AutoTestScript[] = [
   {
     id: 'chb-agg-basic',
-    name: 'CHB 聚合支付 — 基本流程',
-    description: '信用卡銷售 → 取消 → 銷售 → 退貨 → 結帳',
+    name: 'CHB 聚合支付 — 信用卡基本流程',
+    description: '信用卡銷售 → 取消 → 銷售 → 退貨',
     steps: [
       {
         id: 's1', name: '信用卡銷售 $100', bank: '彰銀CHB聚合支付', transType: '授權通知-一般銷售',
@@ -39,15 +40,11 @@ const PRESET_SCRIPTS: AutoTestScript[] = [
         posAction: { funcName: '銷售交易', amount: '200', payMethod: '信用卡', transType: '一般交易' },
       },
       {
-        id: 's4', name: '退貨 $200', bank: '彰銀CHB聚合支付', transType: '授權通知-退貨',
+        id: 's4', name: '信用卡退貨 $200', bank: '彰銀CHB聚合支付', transType: '授權通知-退貨',
         posAction: {
           funcName: '退貨交易', amount: '200', payMethod: '信用卡',
           authRef: '{{sale2.authCode}}', txDateRef: '{{sale2.txDate}}',
         },
-      },
-      {
-        id: 's5', name: '結帳', bank: '彰銀CHB聚合支付', transType: '結帳',
-        posAction: { funcName: '結帳作業' },
       },
     ],
   },
@@ -74,7 +71,7 @@ const PRESET_SCRIPTS: AutoTestScript[] = [
         id: 'c4', name: '銀聯退貨 $200', bank: '彰銀CHB聚合支付', transType: '授權通知-銀聯退貨',
         posAction: {
           funcName: '退貨交易', amount: '200', payMethod: '銀聯卡',
-          rrnRef: '{{cup_sale2.rrn}}',
+          txDateRef: '{{cup_sale2.txDate}}', traceRef: '{{cup_sale2.traceNumber}}', authRef: '{{cup_sale2.authCode}}',
         },
       },
     ],
@@ -87,7 +84,7 @@ const PRESET_SCRIPTS: AutoTestScript[] = [
       {
         id: 'sp1', name: 'SmartPay 銷售 $100', bank: '彰銀CHB聚合支付', transType: '授權通知-SmartPay',
         saveResultAs: 'sp_sale',
-        posAction: { funcName: '銷售交易', amount: '100', payMethod: 'SmartPay', transType: '一般交易' },
+        posAction: { funcName: '銷售交易', amount: '100', payMethod: '晶片金融卡', transType: 'SmartPay' },
       },
       {
         id: 'sp2', name: 'SmartPay 取消', bank: '彰銀CHB聚合支付', transType: '授權通知-取消銷售',
@@ -106,7 +103,7 @@ const STATUS_ICON: Record<string, React.ReactNode> = {
   skipped: <AlertCircle className="w-5 h-5 text-[var(--fg-subtle)]" />,
 };
 
-export default function AutoTestPanel({ rules, adbBridge, onTransaction }: Props) {
+export default function AutoTestPanel({ rules, adbBridge, onTransaction, autoTxListenerRef }: Props) {
   const [posStatus, setPosStatus] = useState<PosBridgeStatus>({ connected: false, devices: [] });
   const [selectedDevice, setSelectedDevice] = useState('');
   const [runStatus, setRunStatus] = useState<AutoRunStatus>('idle');
@@ -187,10 +184,12 @@ export default function AutoTestPanel({ rules, adbBridge, onTransaction }: Props
       },
     );
     runnerRef.current = runner;
+    autoTxListenerRef.current = (tx) => runner.feedTransaction(tx);
 
     await runner.runScript(selectedScript);
+    autoTxListenerRef.current = null;
     runnerRef.current = null;
-  }, [selectedScript, adbBridge, rules, onTransaction]);
+  }, [selectedScript, adbBridge, rules, onTransaction, autoTxListenerRef]);
 
   const handleAbort = useCallback(() => {
     runnerRef.current?.abort();

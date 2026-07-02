@@ -53,6 +53,7 @@ Set-ItemProperty -Path $cmdPath -Name "(Default)" -Value ('"{0}"' -f $batPath)
 Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。" -ForegroundColor Green`;
 
   const bridgeRef = useRef<AdbBridge | null>(null);
+  const autoTxListenerRef = useRef<((tx: TransactionResult) => void) | null>(null);
 
   // ── localStorage migration：舊 key 清理 ────────────────────────────────────
   useEffect(() => {
@@ -96,7 +97,10 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
         localStorage.setItem('pos-rules-cache', JSON.stringify(r));
       },
       onRulesSaved: () => {},
-      onTransaction: (tx) => setTransactions(prev => [...prev, tx]),
+      onTransaction: (tx) => {
+        setTransactions(prev => [...prev, tx]);
+        autoTxListenerRef.current?.(tx);
+      },
       onError: (msg) => console.error('[Bridge Error]', msg),
     }, `ws://127.0.0.1:${bridgePort}`);
     bridgeRef.current = bridge;
@@ -371,6 +375,7 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
             rules={rules}
             adbBridge={bridgeRef.current}
             onTransaction={(tx) => setTransactions(prev => [...prev, tx])}
+            autoTxListenerRef={autoTxListenerRef}
           />
         )}
         {activeTab === 'config' && (
