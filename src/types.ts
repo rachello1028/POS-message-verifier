@@ -70,6 +70,67 @@ export interface TransactionResult {
   steps: StepResult[];
 }
 
+// ─── 自動化測試相關型別 ──────────────────────────────────────────────────────
+
+export interface AutoPosAction {
+  funcName: string;
+  amount?: string;
+  payMethod?: string;
+  transType?: string;
+  dccChoice?: string;
+  settleUnit?: string;
+  cardNo?: string;
+  expDate?: string;
+  signatureMode?: 'electronic' | 'paper' | 'skip';
+  addTip?: string;
+  traceRef?: string;
+  authRef?: string;
+  rrnRef?: string;
+  txDateRef?: string;
+  waitSeconds?: number;
+}
+
+export interface AutoTestStep {
+  id: string;
+  name: string;
+  posAction: AutoPosAction;
+  bank: string;
+  transType: string;
+  saveResultAs?: string;
+  description?: string;
+}
+
+export interface AutoTestScript {
+  id: string;
+  name: string;
+  description?: string;
+  steps: AutoTestStep[];
+}
+
+export type AutoStepStatus = 'pending' | 'running' | 'waiting_card' | 'passed' | 'failed' | 'skipped';
+
+export interface AutoStepResult {
+  stepId: string;
+  stepName: string;
+  status: AutoStepStatus;
+  authCode?: string;
+  rrn?: string;
+  traceNumber?: string;
+  txDate?: string;
+  logData?: Record<string, string>;
+  progressMessages: string[];
+  error?: string;
+  transaction?: TransactionResult;
+}
+
+export type AutoRunStatus = 'idle' | 'running' | 'paused' | 'completed' | 'aborted';
+
+export interface PosBridgeStatus {
+  connected: boolean;
+  devices: string[];
+  activeDevice?: string;
+}
+
 // ─── WebSocket / ADB 橋接相關型別 ─────────────────────────────────────────────
 
 export type ConnectionStatus = 'disconnected' | 'connecting' | 'connected' | 'error';

@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { CreditCard, FlaskConical, Settings, Wifi, WifiOff, Loader2, AlertTriangle, BookOpen, Terminal, Download, X, Zap, Copy, Pencil, Check, CheckCircle2, Sun, Moon } from 'lucide-react';
+import { CreditCard, FlaskConical, Settings, Wifi, WifiOff, Loader2, AlertTriangle, BookOpen, Terminal, Download, X, Zap, Copy, Pencil, Check, CheckCircle2, Sun, Moon, Bot } from 'lucide-react';
 import TestPanel from './components/TestPanel';
 import ConfigPanel from './components/ConfigPanel';
 import HelpPanel from './components/HelpPanel';
+import AutoTestPanel from './components/AutoTestPanel';
 import type { AllRules, ConnectionStatus, TransactionResult, TransactionStep } from './types';
 import { AdbBridge } from './services/adbBridge';
 
@@ -12,7 +13,7 @@ export default function App() {
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     return (localStorage.getItem('pos-theme') as 'dark' | 'light') ?? 'dark';
   });
-  const [activeTab, setActiveTab] = useState<'test' | 'config' | 'help'>('test');
+  const [activeTab, setActiveTab] = useState<'test' | 'auto' | 'config' | 'help'>('test');
   const [connStatus, setConnStatus] = useState<ConnectionStatus>('disconnected');
   const [connMsg, setConnMsg] = useState('');
   const [devices, setDevices] = useState<string[]>([]);
@@ -189,8 +190,9 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
 
   // ── UI ───────────────────────────────────────────────────────────────────
 
-  const tabs: { id: 'test' | 'config' | 'help'; label: string; icon: React.ReactNode }[] = [
+  const tabs: { id: 'test' | 'auto' | 'config' | 'help'; label: string; icon: React.ReactNode }[] = [
     { id: 'test',   label: '測試驗証面板', icon: <FlaskConical className="w-4 h-4" /> },
+    { id: 'auto',   label: '自動化測試',   icon: <Bot className="w-4 h-4" /> },
     { id: 'config', label: '規格設定管理', icon: <Settings className="w-4 h-4" /> },
     { id: 'help',   label: '操作說明',     icon: <BookOpen className="w-4 h-4" /> },
   ];
@@ -353,6 +355,13 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
             onClearResults={handleClearResults}
             onDeleteTransaction={(id) => setTransactions(prev => prev.filter(tx => tx.id !== id))}
             onUpdateTestTarget={handleUpdateTestTarget}
+          />
+        )}
+        {activeTab === 'auto' && (
+          <AutoTestPanel
+            rules={rules}
+            adbBridge={bridgeRef.current}
+            onTransaction={(tx) => setTransactions(prev => [...prev, tx])}
           />
         )}
         {activeTab === 'config' && (
