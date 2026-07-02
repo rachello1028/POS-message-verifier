@@ -114,7 +114,6 @@ export default function AutoTestPanel({ rules, adbBridge, onTransaction }: Props
   const [stepResults, setStepResults] = useState<AutoStepResult[]>([]);
   const [logs, setLogs] = useState<string[]>([]);
   const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set());
-  const [posPort, setPosPort] = useState(() => localStorage.getItem('pos-auto-bridge-port') || '8766');
   const [customScripts, setCustomScripts] = useState<AutoTestScript[]>(() => {
     try {
       const saved = localStorage.getItem('pos-auto-scripts');
@@ -138,12 +137,8 @@ export default function AutoTestPanel({ rules, adbBridge, onTransaction }: Props
   }, []);
 
   const handleConnectBridge = useCallback(() => {
-    const bridge = posBridgeRef.current;
-    if (!bridge) return;
-    localStorage.setItem('pos-auto-bridge-port', posPort);
-    bridge.setUrl(`ws://127.0.0.1:${posPort}`);
-    bridge.connect();
-  }, [posPort]);
+    posBridgeRef.current?.connect();
+  }, []);
 
   useEffect(() => {
     logsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -258,17 +253,9 @@ export default function AutoTestPanel({ rules, adbBridge, onTransaction }: Props
           </div>
         </div>
 
-        {/* Bridge 連線設定 */}
+        {/* Bridge 連線控制 */}
         <div className="flex items-center gap-2 mb-3">
-          <label className="text-xs text-[var(--fg-muted)] whitespace-nowrap">ws://127.0.0.1:</label>
-          <input
-            type="text"
-            value={posPort}
-            onChange={e => setPosPort(e.target.value.replace(/\D/g, ''))}
-            className="w-20 h-8 px-2 rounded-lg text-sm bg-[var(--surface-2)] border border-[var(--border)] text-[var(--fg)] text-center font-mono"
-            placeholder="8766"
-            disabled={posStatus.connected}
-          />
+          <code className="text-xs text-[var(--fg-muted)] bg-[var(--surface-2)] px-2 py-1 rounded">ws://127.0.0.1:8766</code>
           {posStatus.connected ? (
             <button
               onClick={() => posBridgeRef.current?.disconnect()}
@@ -279,8 +266,7 @@ export default function AutoTestPanel({ rules, adbBridge, onTransaction }: Props
           ) : (
             <button
               onClick={handleConnectBridge}
-              disabled={!posPort}
-              className="btn-primary text-xs px-3 py-1.5 disabled:opacity-50"
+              className="btn-primary text-xs px-3 py-1.5"
             >
               連線
             </button>

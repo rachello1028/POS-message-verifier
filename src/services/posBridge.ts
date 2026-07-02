@@ -35,14 +35,6 @@ export class PosBridge {
     this.url = url ?? DEFAULT_POS_BRIDGE_URL;
   }
 
-  setUrl(url: string): void {
-    this.url = url;
-  }
-
-  getUrl(): string {
-    return this.url;
-  }
-
   connect(): void {
     this.disconnect();
     try {
