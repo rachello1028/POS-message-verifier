@@ -403,6 +403,22 @@ export default function ScriptEditor({ script: initial, rules, onSave, onCancel 
                         </div>
                       )}
 
+                      {/* Row 4b: 分期期數 — 僅交易方式為分期交易時顯示 */}
+                      {step.posAction.transType === '分期交易' && (
+                        <div className="grid grid-cols-3 gap-3">
+                          <div>
+                            <label className="block text-xs font-medium text-[var(--fg-muted)] mb-1">分期期數</label>
+                            <input
+                              type="text"
+                              value={step.posAction.installments ?? ''}
+                              onChange={e => updateAction(idx, { installments: e.target.value || undefined })}
+                              className="w-full h-8 px-3 rounded-lg text-sm bg-[var(--surface-2)] border border-[var(--border)] text-[var(--fg)] font-mono focus:outline-none focus:border-[var(--blue-line)]"
+                              placeholder="例如 3、6、12"
+                            />
+                          </div>
+                        </div>
+                      )}
+
                       {/* Row 5: saveResultAs */}
                       <div>
                         <label className="block text-xs font-medium text-[var(--fg-muted)] mb-1">

@@ -150,6 +150,7 @@ export class AutoTestRunner {
       amount: a.amount ?? '',
       payMethod: a.payMethod ?? '',
       transType: a.transType ?? '',
+      installments: a.installments ?? '',
       dccChoice: a.dccChoice ?? '外幣',
       settleUnit: a.settleUnit ?? '',
       cardNo: a.cardNo ?? '',

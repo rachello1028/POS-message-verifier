@@ -77,6 +77,7 @@ export interface AutoPosAction {
   amount?: string;
   payMethod?: string;
   transType?: string;
+  installments?: string;
   dccChoice?: string;
   settleUnit?: string;
   cardNo?: string;
