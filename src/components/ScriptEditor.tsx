@@ -401,8 +401,8 @@ export default function ScriptEditor({ script: initial, rules, onSave, onCancel 
                         />
                       </div>
 
-                      {/* Row 6: Refs — 取消/退貨才需要引用 */}
-                      {idx > 0 && availableRefs.length > 0 && (step.posAction.funcName === '取消交易' || step.posAction.funcName === '退貨交易') && (
+                      {/* Row 6: Refs — 第一步以後都可引用前筆結果 */}
+                      {idx > 0 && availableRefs.length > 0 && (
                         <div className="space-y-2">
                           <div>
                             <label className="block text-xs font-medium text-[var(--fg-muted)] mb-1">引用前筆交易結果</label>
