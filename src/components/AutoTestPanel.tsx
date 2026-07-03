@@ -585,6 +585,18 @@ export default function AutoTestPanel({
                       {result.authCode && (
                         <div className="text-[var(--fg-muted)]">授權碼：{result.authCode} | RRN：{result.rrn} | 調閱：{result.traceNumber}</div>
                       )}
+                      {result.screenshot && (
+                        <details className="mt-1">
+                          <summary className="text-[var(--fg-subtle)] cursor-pointer hover:text-[var(--fg-muted)]">
+                            POS 截圖
+                          </summary>
+                          <img
+                            src={`data:image/png;base64,${result.screenshot}`}
+                            alt="POS screenshot"
+                            className="mt-1 rounded border border-[var(--border)] max-w-[240px]"
+                          />
+                        </details>
+                      )}
                       {result.error && (
                         <div className="text-[var(--red-ink)]">❌ {result.error}</div>
                       )}

@@ -118,6 +118,7 @@ export class AutoTestRunner {
     result.traceNumber = posResult.traceNumber;
     result.txDate = posResult.txDate;
     result.logData = posResult.logData;
+    result.screenshot = posResult.screenshot ?? undefined;
 
     const ctx: StepContext = {
       authCode: posResult.authCode,
@@ -156,6 +157,7 @@ export class AutoTestRunner {
       cardNo: a.cardNo ?? '',
       expDate: a.expDate ?? '',
       signatureMode: a.signatureMode ?? 'electronic',
+      pin: a.pin ?? '',
       addTip: a.addTip ?? '',
       waitSeconds: a.waitSeconds ?? 60,
     };

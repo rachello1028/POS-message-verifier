@@ -23,7 +23,7 @@ const TRANS_TYPES = ['一般交易', '分期交易', '紅利交易', 'SmartPay',
 
 const _NEEDS_AMOUNT = new Set(['銷售交易', '退貨交易', '小費交易', '預先授權', '預授權完成', '調帳']);
 const _NEEDS_PAY = new Set(['銷售交易', '退貨交易', '小費交易', '預先授權']);
-const _NEEDS_TRANS = new Set(['銷售交易']);
+const _NEEDS_TRANS = new Set(['銷售交易', '退貨交易']);
 const _NEEDS_REF = new Set(['取消交易', '退貨交易', '小費交易', '預授權完成', '預先授權取消']);
 
 function getFuncNames(bank: string): string[] {
@@ -403,19 +403,33 @@ export default function ScriptEditor({ script: initial, rules, onSave, onCancel 
                         </div>
                       )}
 
-                      {/* Row 4b: 分期期數 — 僅交易方式為分期交易時顯示 */}
-                      {step.posAction.transType === '分期交易' && (
+                      {/* Row 4b: 分期期數 / PIN — 條件式顯示 */}
+                      {(step.posAction.transType === '分期交易' || step.posAction.payMethod === '銀聯卡' || step.posAction.payMethod === '晶片金融卡') && (
                         <div className="grid grid-cols-3 gap-3">
-                          <div>
-                            <label className="block text-xs font-medium text-[var(--fg-muted)] mb-1">分期期數</label>
-                            <input
-                              type="text"
-                              value={step.posAction.installments ?? ''}
-                              onChange={e => updateAction(idx, { installments: e.target.value || undefined })}
-                              className="w-full h-8 px-3 rounded-lg text-sm bg-[var(--surface-2)] border border-[var(--border)] text-[var(--fg)] font-mono focus:outline-none focus:border-[var(--blue-line)]"
-                              placeholder="例如 3、6、12"
-                            />
-                          </div>
+                          {step.posAction.transType === '分期交易' && (
+                            <div>
+                              <label className="block text-xs font-medium text-[var(--fg-muted)] mb-1">分期期數</label>
+                              <input
+                                type="text"
+                                value={step.posAction.installments ?? ''}
+                                onChange={e => updateAction(idx, { installments: e.target.value || undefined })}
+                                className="w-full h-8 px-3 rounded-lg text-sm bg-[var(--surface-2)] border border-[var(--border)] text-[var(--fg)] font-mono focus:outline-none focus:border-[var(--blue-line)]"
+                                placeholder="例如 3、6、12"
+                              />
+                            </div>
+                          )}
+                          {(step.posAction.payMethod === '銀聯卡' || step.posAction.payMethod === '晶片金融卡') && (
+                            <div>
+                              <label className="block text-xs font-medium text-[var(--fg-muted)] mb-1">PIN 碼</label>
+                              <input
+                                type="text"
+                                value={step.posAction.pin ?? ''}
+                                onChange={e => updateAction(idx, { pin: e.target.value || undefined })}
+                                className="w-full h-8 px-3 rounded-lg text-sm bg-[var(--surface-2)] border border-[var(--border)] text-[var(--fg)] font-mono focus:outline-none focus:border-[var(--blue-line)]"
+                                placeholder="空白=等待手動輸入"
+                              />
+                            </div>
+                          )}
                         </div>
                       )}
 

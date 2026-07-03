@@ -83,6 +83,7 @@ export interface AutoPosAction {
   cardNo?: string;
   expDate?: string;
   signatureMode?: 'electronic' | 'paper' | 'skip';
+  pin?: string;
   addTip?: string;
   traceRef?: string;
   authRef?: string;
@@ -119,6 +120,7 @@ export interface AutoStepResult {
   traceNumber?: string;
   txDate?: string;
   logData?: Record<string, string>;
+  screenshot?: string;
   progressMessages: string[];
   error?: string;
   transaction?: TransactionResult;
