@@ -12,25 +12,39 @@ interface Props {
   onCancel: () => void;
 }
 
-const ALL_FUNC_NAMES = ['銷售交易', '取消交易', '退貨交易', '結帳'];
+const ALL_FUNC_NAMES = [
+  '銷售交易', '取消交易', '退貨交易',
+  '小費交易', '預先授權', '預授權完成',
+  '預先授權取消', '補登', '調帳',
+  '結帳作業',
+];
 const PAY_METHODS = ['信用卡', '銀聯卡', '晶片金融卡'];
 const TRANS_TYPES = ['一般交易', '分期交易', '紅利交易', 'SmartPay', 'DCC'];
 
+const _NEEDS_AMOUNT = new Set(['銷售交易', '退貨交易', '小費交易', '預先授權', '預授權完成', '調帳']);
+const _NEEDS_PAY = new Set(['銷售交易', '退貨交易', '小費交易', '預先授權']);
+const _NEEDS_TRANS = new Set(['銷售交易']);
+const _NEEDS_REF = new Set(['取消交易', '退貨交易', '小費交易', '預授權完成', '預先授權取消']);
+
 function getFuncNames(bank: string): string[] {
-  if (bank.includes('聚合支付')) return ALL_FUNC_NAMES.filter(f => f !== '結帳');
+  if (bank.includes('聚合支付')) return ALL_FUNC_NAMES.filter(f => f !== '結帳作業');
   return ALL_FUNC_NAMES;
 }
 
 function needsAmount(funcName: string): boolean {
-  return funcName === '銷售交易' || funcName === '退貨交易';
+  return _NEEDS_AMOUNT.has(funcName);
 }
 
 function needsPayMethod(funcName: string): boolean {
-  return funcName === '銷售交易' || funcName === '退貨交易';
+  return _NEEDS_PAY.has(funcName);
 }
 
 function needsTransType(funcName: string): boolean {
-  return funcName === '銷售交易';
+  return _NEEDS_TRANS.has(funcName);
+}
+
+function needsRef(funcName: string): boolean {
+  return _NEEDS_REF.has(funcName);
 }
 
 function getRefHint(funcName: string, payMethod?: string): string {
@@ -39,6 +53,8 @@ function getRefHint(funcName: string, payMethod?: string): string {
     if (payMethod === '銀聯卡') return '銀聯退貨需原交易日 + 調閱編號 + 授權碼';
     return '信用卡退貨需授權碼 + 原交易日';
   }
+  if (funcName === '小費交易') return '小費需引用原銷售交易的調閱編號';
+  if (funcName === '預授權完成' || funcName === '預先授權取消') return '需引用原預先授權的調閱編號';
   return '';
 }
 
@@ -401,8 +417,8 @@ export default function ScriptEditor({ script: initial, rules, onSave, onCancel 
                         />
                       </div>
 
-                      {/* Row 6: Refs — 第一步以後都可引用前筆結果 */}
-                      {idx > 0 && availableRefs.length > 0 && (
+                      {/* Row 6: Refs — 需要引用前筆交易的功能才顯示 */}
+                      {idx > 0 && availableRefs.length > 0 && needsRef(step.posAction.funcName) && (
                         <div className="space-y-2">
                           <div>
                             <label className="block text-xs font-medium text-[var(--fg-muted)] mb-1">引用前筆交易結果</label>

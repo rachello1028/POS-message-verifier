@@ -28,6 +28,7 @@ export class AutoTestRunner {
   private abortRequested = false;
   private currentStepResolve: ((result: PosStepResult) => void) | null = null;
   private txWaitResolve: ((tx: TransactionResult) => void) | null = null;
+  private pendingTx: TransactionResult | null = null;
   private context: Map<string, StepContext> = new Map();
   private prevContext: StepContext = { authCode: '', rrn: '', traceNumber: '', txDate: '' };
   private txCounter = 0;
@@ -92,6 +93,7 @@ export class AutoTestRunner {
     };
     this.callbacks.onStepUpdate(idx, result);
     this.callbacks.onLog(`[${idx + 1}] 執行：${step.name}`);
+    this.pendingTx = null;
 
     const action = this.resolveAction(step);
 
@@ -220,6 +222,11 @@ export class AutoTestRunner {
   }
 
   private waitForTransaction(timeoutMs: number): Promise<TransactionResult | null> {
+    if (this.pendingTx) {
+      const tx = this.pendingTx;
+      this.pendingTx = null;
+      return Promise.resolve(tx);
+    }
     return new Promise((resolve) => {
       const timer = setTimeout(() => {
         this.txWaitResolve = null;
@@ -237,6 +244,8 @@ export class AutoTestRunner {
   feedTransaction(tx: TransactionResult): void {
     if (this.txWaitResolve) {
       this.txWaitResolve(tx);
+    } else {
+      this.pendingTx = tx;
     }
   }
 
