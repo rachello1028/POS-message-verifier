@@ -213,6 +213,50 @@ export default function AutoTestPanel({
     runnerRef.current?.abort();
   }, []);
 
+  const handleRunSingle = useCallback(async (idx: number) => {
+    if (!selectedScript || !posBridgeRef.current || !adbBridge) return;
+
+    const step = selectedScript.steps[idx];
+    setStepResults(prev => {
+      const next = [...prev];
+      while (next.length <= idx) next.push({ stepId: '', stepName: '', status: 'pending', progressMessages: [] });
+      next[idx] = { stepId: step.id, stepName: step.name, status: 'pending', progressMessages: [] };
+      return next;
+    });
+    setLogs(prev => [...prev, `${new Date().toLocaleTimeString('zh-TW')} ▶ 單步執行：${step.name}`]);
+    setExpandedSteps(prev => new Set(prev).add(idx));
+
+    const runner = new AutoTestRunner(
+      posBridgeRef.current,
+      adbBridge,
+      rules,
+      {
+        onStatusChange: setRunStatus,
+        onStepUpdate: (stepIdx, result) => {
+          setStepResults(prev => {
+            const next = [...prev];
+            next[stepIdx] = result;
+            return next;
+          });
+          if (result.status === 'running' || result.status === 'waiting_card') {
+            setExpandedSteps(prev => new Set(prev).add(stepIdx));
+          }
+        },
+        onTransaction: (tx) => {
+          onTransaction(tx);
+          runner.feedTransaction(tx);
+        },
+        onLog: (msg) => setLogs(prev => [...prev, `${new Date().toLocaleTimeString('zh-TW')} ${msg}`]),
+      },
+    );
+    runnerRef.current = runner;
+    autoTxListenerRef.current = (tx) => runner.feedTransaction(tx);
+
+    await runner.runSingleStep(idx, step, stepResults, selectedScript.steps);
+    autoTxListenerRef.current = null;
+    runnerRef.current = null;
+  }, [selectedScript, adbBridge, rules, onTransaction, autoTxListenerRef, stepResults]);
+
   const handleImportScript = useCallback(() => {
     const input = document.createElement('input');
     input.type = 'file';
@@ -572,6 +616,14 @@ export default function AutoTestPanel({
                       {step.posAction.amount ? ` $${step.posAction.amount}` : ''}
                       {step.posAction.payMethod ? ` · ${step.posAction.payMethod}` : ''}
                     </div>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleRunSingle(idx); }}
+                      disabled={runStatus === 'running' || !posStatus.connected || !posStatus.activeDevice}
+                      className="p-1 rounded hover:bg-[var(--blue-soft)] text-[var(--blue-ink)] disabled:opacity-30 disabled:cursor-not-allowed"
+                      title="單步執行此步驟"
+                    >
+                      <Play className="w-3.5 h-3.5" />
+                    </button>
                     {expanded ? <ChevronDown className="w-4 h-4 text-[var(--fg-subtle)]" /> : <ChevronRight className="w-4 h-4 text-[var(--fg-subtle)]" />}
                   </button>
 
@@ -611,12 +663,26 @@ export default function AutoTestPanel({
                         </details>
                       )}
                       {result.transaction && (
-                        <div className={`mt-1 px-2 py-1 rounded ${result.transaction.pass ? 'bg-[var(--emerald-soft)] text-[var(--emerald-ink)]' : 'bg-[var(--red-soft)] text-[var(--red-ink)]'}`}>
-                          電文驗證：{result.transaction.pass ? '通過' : '失敗'}
-                          {result.transaction.steps.map((s, si) => (
-                            <span key={si} className="ml-2">[{s.stepName}: {s.pass ? '✅' : '❌'}]</span>
-                          ))}
-                        </div>
+                        <>
+                          <div className={`mt-1 px-2 py-1 rounded ${result.transaction.pass ? 'bg-[var(--emerald-soft)] text-[var(--emerald-ink)]' : 'bg-[var(--red-soft)] text-[var(--red-ink)]'}`}>
+                            電文驗證：{result.transaction.pass ? '通過' : '失敗'}
+                            {result.transaction.steps.map((s, si) => (
+                              <span key={si} className="ml-2">[{s.stepName}: {s.pass ? '✅' : '❌'}]</span>
+                            ))}
+                          </div>
+                          {result.transaction.steps.some(s => s.rawLog) && (
+                            <details className="mt-1">
+                              <summary className="text-[var(--fg-subtle)] cursor-pointer hover:text-[var(--fg-muted)]">
+                                電文 Raw Data
+                              </summary>
+                              <pre className="mt-1 p-2 bg-[var(--surface)] rounded text-[10px] leading-relaxed max-h-48 overflow-y-auto font-mono text-[var(--fg-subtle)] whitespace-pre-wrap break-all">
+                                {result.transaction.steps.map((s, si) => (
+                                  s.rawLog ? `── ${s.stepName} (MTI: ${s.mti}) ──\n${s.rawLog}\n\n` : ''
+                                )).join('')}
+                              </pre>
+                            </details>
+                          )}
+                        </>
                       )}
                     </div>
                   )}

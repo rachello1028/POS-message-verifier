@@ -84,6 +84,44 @@ export class AutoTestRunner {
     this.callbacks.onLog('正在中止測試...');
   }
 
+  async runSingleStep(
+    idx: number,
+    step: AutoTestStep,
+    priorResults: AutoStepResult[],
+    allSteps: AutoTestStep[],
+    adbDevice = '',
+  ): Promise<void> {
+    this.status = 'running';
+    this.abortRequested = false;
+    this.context.clear();
+    this.prevContext = { authCode: '', rrn: '', traceNumber: '', txDate: '' };
+    this.callbacks.onStatusChange('running');
+    this.callbacks.onLog(`單步執行：${step.name}`);
+
+    for (let i = 0; i < idx; i++) {
+      const pr = priorResults[i];
+      if (pr?.authCode || pr?.rrn || pr?.traceNumber) {
+        const ctx: StepContext = {
+          authCode: pr.authCode ?? '',
+          rrn: pr.rrn ?? '',
+          traceNumber: pr.traceNumber ?? '',
+          txDate: pr.txDate ?? '',
+        };
+        this.prevContext = ctx;
+        const saveAs = allSteps[i]?.saveResultAs;
+        if (saveAs) this.context.set(saveAs, ctx);
+      }
+    }
+
+    this.adbBridge.startLogcat(adbDevice);
+    await this.executeStep(idx, step);
+    this.adbBridge.stopLogcat();
+
+    this.status = 'completed';
+    this.callbacks.onStatusChange(this.status);
+    this.callbacks.onLog('單步執行完成');
+  }
+
   private async executeStep(idx: number, step: AutoTestStep): Promise<void> {
     const result: AutoStepResult = {
       stepId: step.id,
