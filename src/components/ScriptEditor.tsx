@@ -22,7 +22,7 @@ const PAY_METHODS = ['信用卡', '銀聯卡', '晶片金融卡'];
 const TRANS_TYPES = ['一般交易', '分期交易', '紅利交易', 'SmartPay', 'DCC'];
 
 const _NEEDS_AMOUNT = new Set(['銷售交易', '退貨交易', '小費交易', '預先授權', '預授權完成', '調帳']);
-const _NEEDS_PAY = new Set(['銷售交易', '退貨交易', '小費交易', '預先授權']);
+const _NEEDS_PAY = new Set(['銷售交易', '退貨交易', '預先授權']);
 const _NEEDS_TRANS = new Set(['銷售交易', '退貨交易']);
 const _NEEDS_REF = new Set(['取消交易', '退貨交易', '小費交易', '預授權完成', '預先授權取消']);
 
@@ -348,13 +348,15 @@ export default function ScriptEditor({ script: initial, rules, onSave, onCancel 
                         </div>
                         {needsAmount(step.posAction.funcName) && (
                           <div>
-                            <label className="block text-xs font-medium text-[var(--fg-muted)] mb-1">金額</label>
+                            <label className="block text-xs font-medium text-[var(--fg-muted)] mb-1">
+                              {step.posAction.funcName === '小費交易' ? '小費金額' : '金額'}
+                            </label>
                             <input
                               type="text"
                               value={step.posAction.amount ?? ''}
                               onChange={e => updateAction(idx, { amount: e.target.value })}
                               className="w-full h-8 px-3 rounded-lg text-sm bg-[var(--surface-2)] border border-[var(--border)] text-[var(--fg)] focus:outline-none focus:border-[var(--blue-line)]"
-                              placeholder="例如 100"
+                              placeholder={step.posAction.funcName === '小費交易' ? '例如 190' : '例如 100'}
                             />
                           </div>
                         )}
