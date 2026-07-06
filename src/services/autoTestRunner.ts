@@ -173,6 +173,7 @@ export class AutoTestRunner {
     this.prevContext = ctx;
     if (step.saveResultAs) {
       this.context.set(step.saveResultAs, ctx);
+      this.callbacks.onLog(`[${idx + 1}] 儲存結果 ${step.saveResultAs}：trace=${ctx.traceNumber} auth=${ctx.authCode} rrn=${ctx.rrn}`);
     }
 
     const txReceived = await this.waitForTransaction(15000);
@@ -206,7 +207,10 @@ export class AutoTestRunner {
       waitSeconds: a.waitSeconds ?? 60,
     };
 
-    if (a.traceRef) resolved['traceNo'] = this.resolveRef(a.traceRef, 'traceNumber');
+    if (a.traceRef) {
+      resolved['traceNo'] = this.resolveRef(a.traceRef, 'traceNumber');
+      console.log(`[Runner] resolveRef traceRef=${a.traceRef} → ${resolved['traceNo']}`);
+    }
     if (a.authRef) resolved['authCode'] = this.resolveRef(a.authRef, 'authCode');
     if (a.rrnRef) resolved['rrn'] = this.resolveRef(a.rrnRef, 'rrn');
     if (a.txDateRef) resolved['txDate'] = this.resolveRef(a.txDateRef, 'txDate');
