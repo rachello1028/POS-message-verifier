@@ -134,6 +134,9 @@ export class AutoTestRunner {
     this.pendingTx = null;
 
     const action = this.resolveAction(step);
+    const refFields = ['authCode', 'rrn', 'traceNo', 'txDate', 'installments', 'pin', 'amount'];
+    const refLog = refFields.filter(k => action[k]).map(k => `${k}=${action[k]}`).join(', ');
+    if (refLog) this.callbacks.onLog(`[${idx + 1}] 帶入參數：${refLog}`);
 
     const config = this.getTransactionConfig(step.bank, step.transType);
     if (config) {
