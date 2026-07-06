@@ -102,6 +102,7 @@ export class PosBridge {
   }
 
   executePosStep(stepId: string, action: Record<string, unknown>): void {
+    console.log('[PosBridge] executePosStep →', { stepId, action });
     this.send({
       command: 'execute_pos_step',
       stepId,
