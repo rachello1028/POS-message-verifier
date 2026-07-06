@@ -204,6 +204,7 @@ export class AutoTestRunner {
       signatureMode: a.signatureMode ?? 'electronic',
       pin: a.pin ?? '',
       addTip: a.addTip ?? '',
+      forceAuthCode: a.forceAuthCode ?? '',
       waitSeconds: a.waitSeconds ?? 60,
     };
 

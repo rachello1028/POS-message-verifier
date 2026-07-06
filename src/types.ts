@@ -85,6 +85,7 @@ export interface AutoPosAction {
   signatureMode?: 'electronic' | 'paper' | 'skip';
   pin?: string;
   addTip?: string;
+  forceAuthCode?: string;
   traceRef?: string;
   authRef?: string;
   rrnRef?: string;
