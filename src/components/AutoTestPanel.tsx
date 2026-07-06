@@ -126,6 +126,9 @@ export default function AutoTestPanel({
   });
   const [editingScript, setEditingScript] = useState<AutoTestScript | null>(null);
   const [isRecording, setIsRecording] = useState(false);
+  const [noVirtualKeypad, setNoVirtualKeypad] = useState(() => {
+    try { return localStorage.getItem('pos-no-virtual-keypad') === 'true'; } catch { return false; }
+  });
   const recordedTxRef = useRef<TransactionResult[]>([]);
 
   const posBridgeRef = useRef<PosBridge | null>(null);
@@ -200,6 +203,7 @@ export default function AutoTestPanel({
         },
         onLog: (msg) => setLogs(prev => [...prev, `${new Date().toLocaleTimeString('zh-TW')} ${msg}`]),
       },
+      { noVirtualKeypad },
     );
     runnerRef.current = runner;
     autoTxListenerRef.current = (tx) => runner.feedTransaction(tx);
@@ -207,7 +211,7 @@ export default function AutoTestPanel({
     await runner.runScript(selectedScript);
     autoTxListenerRef.current = null;
     runnerRef.current = null;
-  }, [selectedScript, adbBridge, rules, onTransaction, autoTxListenerRef]);
+  }, [selectedScript, adbBridge, rules, onTransaction, autoTxListenerRef, noVirtualKeypad]);
 
   const handleAbort = useCallback(() => {
     runnerRef.current?.abort();
@@ -248,6 +252,7 @@ export default function AutoTestPanel({
         },
         onLog: (msg) => setLogs(prev => [...prev, `${new Date().toLocaleTimeString('zh-TW')} ${msg}`]),
       },
+      { noVirtualKeypad },
     );
     runnerRef.current = runner;
     autoTxListenerRef.current = (tx) => runner.feedTransaction(tx);
@@ -255,7 +260,7 @@ export default function AutoTestPanel({
     await runner.runSingleStep(idx, step, stepResults, selectedScript.steps);
     autoTxListenerRef.current = null;
     runnerRef.current = null;
-  }, [selectedScript, adbBridge, rules, onTransaction, autoTxListenerRef, stepResults]);
+  }, [selectedScript, adbBridge, rules, onTransaction, autoTxListenerRef, stepResults, noVirtualKeypad]);
 
   const handleImportScript = useCallback(() => {
     const input = document.createElement('input');
@@ -444,6 +449,20 @@ export default function AutoTestPanel({
             ✅ 已連接設備：{posStatus.activeDevice}
           </div>
         )}
+
+        {/* 無虛擬鍵盤模式 */}
+        <label className="mt-3 flex items-center gap-2 text-xs text-[var(--fg-muted)] cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={noVirtualKeypad}
+            onChange={e => {
+              setNoVirtualKeypad(e.target.checked);
+              localStorage.setItem('pos-no-virtual-keypad', String(e.target.checked));
+            }}
+            className="rounded border-[var(--border-strong)]"
+          />
+          無虛擬鍵盤（跳過按鈕偵測，直接用 keyevent 輸入）
+        </label>
       </div>
 
       {/* 錄製控制 */}

@@ -32,17 +32,20 @@ export class AutoTestRunner {
   private context: Map<string, StepContext> = new Map();
   private prevContext: StepContext = { authCode: '', rrn: '', traceNumber: '', txDate: '' };
   private txCounter = 0;
+  private noVirtualKeypad = false;
 
   constructor(
     posBridge: PosBridge,
     adbBridge: AdbBridge,
     rules: AllRules,
     callbacks: RunnerCallbacks,
+    options?: { noVirtualKeypad?: boolean },
   ) {
     this.posBridge = posBridge;
     this.adbBridge = adbBridge;
     this.rules = rules;
     this.callbacks = callbacks;
+    this.noVirtualKeypad = options?.noVirtualKeypad ?? false;
   }
 
   async runScript(script: AutoTestScript, adbDevice = ''): Promise<void> {
@@ -207,6 +210,7 @@ export class AutoTestRunner {
     if (a.authRef) resolved['authCode'] = this.resolveRef(a.authRef, 'authCode');
     if (a.rrnRef) resolved['rrn'] = this.resolveRef(a.rrnRef, 'rrn');
     if (a.txDateRef) resolved['txDate'] = this.resolveRef(a.txDateRef, 'txDate');
+    if (this.noVirtualKeypad) resolved['noVirtualKeypad'] = true;
 
     return resolved;
   }
