@@ -21,8 +21,8 @@ const ALL_FUNC_NAMES = [
 const PAY_METHODS = ['信用卡', '銀聯卡', '晶片金融卡'];
 const TRANS_TYPES = ['一般交易', '分期交易', '紅利交易', 'SmartPay', 'DCC'];
 
-const _NEEDS_AMOUNT = new Set(['銷售交易', '退貨交易', '小費交易', '預先授權', '預授權完成', '補登', '調帳']);
-const _NEEDS_PAY = new Set(['銷售交易', '退貨交易', '預先授權']);
+const _NEEDS_AMOUNT = new Set(['銷售交易', '退貨交易', '小費交易', '預先授權', '預授權完成', '預先授權取消', '補登', '調帳']);
+const _NEEDS_PAY = new Set(['銷售交易', '退貨交易', '預先授權', '預先授權取消']);
 const _NEEDS_TRANS = new Set(['銷售交易', '退貨交易']);
 const _NEEDS_REF = new Set(['取消交易', '退貨交易', '小費交易', '預授權完成', '預先授權取消']);
 
