@@ -158,8 +158,12 @@ export default function AutoTestPanel({
     posBridgeRef.current?.connect();
   }, []);
 
+  // 日誌區域內部自動捲到底部（不影響整頁捲動位置）
   useEffect(() => {
-    logsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (logsEndRef.current) {
+      const container = logsEndRef.current.parentElement;
+      if (container) container.scrollTop = container.scrollHeight;
+    }
   }, [logs]);
 
   useEffect(() => {
@@ -689,6 +693,27 @@ export default function AutoTestPanel({
                               <span key={si} className="ml-2">[{s.stepName}: {s.pass ? '✅' : '❌'}]</span>
                             ))}
                           </div>
+                          {!result.transaction.pass && (
+                            <div className="mt-1 text-xs space-y-1">
+                              {result.transaction.steps.filter(s => !s.pass).map((s, si) => (
+                                <details key={si} open className="bg-[var(--surface)] border border-[var(--border)] rounded-lg p-2">
+                                  <summary className="cursor-pointer font-medium text-[var(--red-ink)]">
+                                    {s.stepName} — 失敗欄位
+                                  </summary>
+                                  <div className="mt-1 space-y-0.5 font-mono text-[10px]">
+                                    {s.fields.filter(f => !f.pass).map((f, fi) => (
+                                      <div key={fi} className="flex gap-2 text-[var(--fg-muted)]">
+                                        <span className="text-[var(--red-ink)]">✗</span>
+                                        <span className="font-semibold">{f.fieldId}{f.fieldName ? ` ${f.fieldName}` : ''}</span>
+                                        <span>期望: <code className="text-[var(--blue-ink)]">{f.expected}</code></span>
+                                        <span>實際: <code className="text-[var(--red-ink)]">{f.actual || '(空)'}</code></span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </details>
+                              ))}
+                            </div>
+                          )}
                           {result.transaction.steps.some(s => s.rawLog) && (
                             <details className="mt-1">
                               <summary className="text-[var(--fg-subtle)] cursor-pointer hover:text-[var(--fg-muted)]">
