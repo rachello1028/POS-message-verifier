@@ -24,7 +24,7 @@ const TRANS_TYPES = ['一般交易', '分期交易', '紅利交易', 'SmartPay',
 const _NEEDS_AMOUNT = new Set(['銷售交易', '退貨交易', '小費交易', '預先授權', '預授權完成', '預先授權取消', '補登', '調帳']);
 const _NEEDS_PAY = new Set(['銷售交易', '退貨交易', '預先授權', '預先授權取消']);
 const _NEEDS_TRANS = new Set(['銷售交易', '退貨交易']);
-const _NEEDS_REF = new Set(['取消交易', '退貨交易', '小費交易', '預授權完成', '預先授權取消']);
+const _NEEDS_REF = new Set(['取消交易', '退貨交易', '小費交易', '預授權完成', '預先授權取消', '調帳']);
 
 function getFuncNames(bank: string): string[] {
   if (bank.includes('聚合支付')) return ALL_FUNC_NAMES.filter(f => f !== '結帳作業');
@@ -55,6 +55,7 @@ function getRefHint(funcName: string, payMethod?: string): string {
   }
   if (funcName === '小費交易') return '小費需引用原銷售交易的調閱編號';
   if (funcName === '預授權完成' || funcName === '預先授權取消') return '需引用原預先授權的調閱編號';
+  if (funcName === '調帳') return '需引用原交易的調閱編號';
   return '';
 }
 
