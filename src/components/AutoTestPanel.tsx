@@ -129,6 +129,12 @@ export default function AutoTestPanel({
   const [noVirtualKeypad, setNoVirtualKeypad] = useState(() => {
     try { return localStorage.getItem('pos-no-virtual-keypad') === 'true'; } catch { return false; }
   });
+  const [hiddenPresets, setHiddenPresets] = useState<Set<string>>(() => {
+    try {
+      const saved = localStorage.getItem('pos-hidden-presets');
+      return saved ? new Set(JSON.parse(saved)) : new Set();
+    } catch { return new Set(); }
+  });
   const recordedTxRef = useRef<TransactionResult[]>([]);
 
   const posBridgeRef = useRef<PosBridge | null>(null);
@@ -318,7 +324,16 @@ export default function AutoTestPanel({
   }, []);
 
   const handleDeleteScript = useCallback((scriptId: string) => {
-    setCustomScripts(prev => prev.filter(s => s.id !== scriptId));
+    if (PRESET_SCRIPTS.some(s => s.id === scriptId)) {
+      setHiddenPresets(prev => {
+        const next = new Set(prev);
+        next.add(scriptId);
+        localStorage.setItem('pos-hidden-presets', JSON.stringify([...next]));
+        return next;
+      });
+    } else {
+      setCustomScripts(prev => prev.filter(s => s.id !== scriptId));
+    }
     if (selectedScript?.id === scriptId) {
       setSelectedScript(null);
       setStepResults([]);
@@ -364,7 +379,7 @@ export default function AutoTestPanel({
     URL.revokeObjectURL(url);
   }, []);
 
-  const allScripts = [...PRESET_SCRIPTS, ...customScripts];
+  const allScripts = [...PRESET_SCRIPTS.filter(s => !hiddenPresets.has(s.id)), ...customScripts];
 
   const toggleStep = (idx: number) => {
     setExpandedSteps(prev => {
@@ -561,15 +576,13 @@ export default function AutoTestPanel({
                   >
                     <Download className="w-3.5 h-3.5" />
                   </button>
-                  {!isPreset(script.id) && (
-                    <button
-                      onClick={() => handleDeleteScript(script.id)}
-                      className="p-1.5 rounded hover:bg-[var(--red-soft)] text-[var(--red-ink)]"
-                      title="刪除"
-                    >
-                      <XCircle className="w-3.5 h-3.5" />
-                    </button>
-                  )}
+                  <button
+                    onClick={() => handleDeleteScript(script.id)}
+                    className="p-1.5 rounded hover:bg-[var(--red-soft)] text-[var(--red-ink)]"
+                    title="刪除"
+                  >
+                    <XCircle className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               </div>
             </div>
