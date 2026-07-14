@@ -459,8 +459,8 @@ class ResponseGenerator:
 
         now = datetime.now()
 
-        # 從 request 回傳的欄位（Host 通常會 echo 這些）
-        echo_fields = [2, 3, 4, 11, 14, 22, 24, 25, 41, 42, 49]
+        # 從 request 回傳的欄位（只 echo host 真正會回的）
+        echo_fields = [2, 3, 4, 11, 14, 41, 42, 49]
         for fid in echo_fields:
             if fid in req.fields:
                 resp.fields[fid] = req.fields[fid]
@@ -470,7 +470,6 @@ class ResponseGenerator:
         # Host 產生的回應欄位
         resp.fields[12] = now.strftime('%H%M%S')
         resp.fields[13] = now.strftime('%m%d')
-        resp.fields[15] = now.strftime('%m%d')
         resp.fields[37] = req.fields.get(37, self._next_rrn())
         resp.fields[38] = self._next_auth_code()
         resp.fields[39] = rc
