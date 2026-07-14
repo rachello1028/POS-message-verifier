@@ -22,6 +22,9 @@ export interface SimStatus {
   mti_encoding: string;
   default_rc: string;
   host_ip: string;
+  delay: number;
+  timeout_mode: string;
+  field_overrides: Record<string, string>;
 }
 
 export interface SimConnection {
@@ -138,6 +141,9 @@ export class SimBridge {
         mti_encoding: data.mti_encoding as string,
         default_rc: data.default_rc as string,
         host_ip: (data.host_ip as string) || '127.0.0.1',
+        delay: (data.delay as number) ?? 0.1,
+        timeout_mode: (data.timeout_mode as string) ?? 'none',
+        field_overrides: (data.field_overrides as Record<string, string>) ?? {},
       });
     } else if (type === 'request') {
       const txId = data.tx_id as number;
@@ -200,5 +206,17 @@ export class SimBridge {
 
   setOverride(key: string, code: string) {
     this.send({ command: 'set_override', key, code });
+  }
+
+  setDelay(delay: number) {
+    this.send({ command: 'set_delay', delay });
+  }
+
+  setTimeout(mode: string, count?: number) {
+    this.send({ command: 'set_timeout', mode, count: count ?? 1 });
+  }
+
+  setFieldOverrides(fields: Record<string, string>) {
+    this.send({ command: 'set_field_overrides', fields });
   }
 }
