@@ -85,7 +85,6 @@ export default function SimulatorPanel({
   const [availableBanks, setAvailableBanks] = useState<string[]>(
     simStatus?.available_banks?.length ? simStatus.available_banks : AVAILABLE_BANKS_FALLBACK
   );
-  const logEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (simStatus?.default_rc) setSelectedRC(simStatus.default_rc);
@@ -113,10 +112,6 @@ export default function SimulatorPanel({
   useEffect(() => {
     if (simStatus?.available_banks?.length) setAvailableBanks(simStatus.available_banks);
   }, [simStatus?.available_banks]);
-
-  useEffect(() => {
-    logEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [transactions.length]);
 
   const toggleExpand = useCallback((txId: number) => {
     setExpandedTx(prev => {
@@ -752,7 +747,7 @@ export default function SimulatorPanel({
               共 {transactions.length} 筆交易
             </span>
           </div>
-          {transactions.map(tx => {
+          {[...transactions].reverse().map(tx => {
             const isExpanded = expandedTx.has(tx.tx_id);
             const isApproved = tx.response_code === '00';
             const isError = tx.response_code === 'ERR';
@@ -907,7 +902,6 @@ export default function SimulatorPanel({
               </div>
             );
           })}
-          <div ref={logEndRef} />
         </div>
       )}
       {ipModalEl}
