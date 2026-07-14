@@ -443,6 +443,13 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
             transactions={simTransactions}
             posConnections={simPosConnections}
             onClearTransactions={handleClearSimTransactions}
+            simTcpPort={localStorage.getItem('sim-tcp-port') ?? '8000'}
+            simWsPort={simWsPort}
+            onPortChange={(tcp, ws) => {
+              localStorage.setItem('sim-tcp-port', tcp);
+              localStorage.setItem('sim-ws-port', ws);
+              setSimWsPort(ws);
+            }}
           />
         )}
         {activeTab === 'config' && (

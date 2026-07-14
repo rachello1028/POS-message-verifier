@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Server, Wifi, WifiOff, Loader2, ChevronDown, ChevronRight,
   Trash2, ArrowDownLeft, ArrowUpRight, CircleDot, Zap, Copy,
-  Check, Settings2, AlertTriangle,
+  Check, Settings2, AlertTriangle, X, Download, Pencil,
+  Terminal, CheckCircle2,
 } from 'lucide-react';
 import type { SimTransaction, SimStatus, SimBridge } from '../services/simBridge';
 
@@ -13,6 +14,9 @@ interface Props {
   transactions: SimTransaction[];
   posConnections: string[];
   onClearTransactions: () => void;
+  simTcpPort: string;
+  simWsPort: string;
+  onPortChange: (tcpPort: string, wsPort: string) => void;
 }
 
 const FIELD_NAMES: Record<string, string> = {
@@ -42,14 +46,30 @@ const RC_PRESETS: { code: string; label: string }[] = [
   { code: '96', label: '96 - 系統異常' },
 ];
 
+const SIM_PS_SCRIPT = `$dir = Get-Location
+$batPath = Join-Path $dir "start_simulator.bat"
+$regPath = "HKCU:\\Software\\Classes\\pos-host-sim"
+New-Item -Path $regPath -Force | Out-Null
+Set-ItemProperty -Path $regPath -Name "(Default)" -Value "URL:POS Host Simulator Protocol"
+Set-ItemProperty -Path $regPath -Name "URL Protocol" -Value ""
+$cmdPath = Join-Path $regPath "shell\\open\\command"
+New-Item -Path $cmdPath -Force | Out-Null
+Set-ItemProperty -Path $cmdPath -Name "(Default)" -Value ('"{0}" "%1"' -f $batPath)
+Write-Host "Done! Host Simulator protocol registered." -ForegroundColor Green`;
+
 export default function SimulatorPanel({
   simBridge, simConnStatus, simStatus, transactions, posConnections,
-  onClearTransactions,
+  onClearTransactions, simTcpPort, simWsPort, onPortChange,
 }: Props) {
   const [expandedTx, setExpandedTx] = useState<Set<number>>(new Set());
   const [selectedRC, setSelectedRC] = useState(simStatus?.default_rc ?? '00');
   const [showConfig, setShowConfig] = useState(false);
   const [copiedHex, setCopiedHex] = useState<number | null>(null);
+  const [showSetupModal, setShowSetupModal] = useState(false);
+  const [isLaunching, setIsLaunching] = useState(false);
+  const [copiedScript, setCopiedScript] = useState(false);
+  const [isEditingPort, setIsEditingPort] = useState(false);
+  const [portDraft, setPortDraft] = useState({ tcp: simTcpPort, ws: simWsPort });
   const logEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -73,6 +93,39 @@ export default function SimulatorPanel({
     setSelectedRC(code);
     simBridge?.setResponseCode(code);
   }, [simBridge]);
+
+  const handleLaunch = useCallback(() => {
+    setIsLaunching(true);
+    const a = document.createElement('a');
+    a.href = `pos-host-sim://run?port=${simTcpPort}&wsport=${simWsPort}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => {
+      setIsLaunching(false);
+      setTimeout(() => {
+        if (simConnStatus !== 'connected') {
+          setShowSetupModal(true);
+        }
+      }, 3000);
+    }, 2500);
+  }, [simTcpPort, simWsPort, simConnStatus]);
+
+  const handleConfirmPort = useCallback(() => {
+    const tcp = portDraft.tcp.trim().replace(/\D/g, '');
+    const ws = portDraft.ws.trim().replace(/\D/g, '');
+    if (tcp && ws) {
+      onPortChange(tcp, ws);
+      setIsEditingPort(false);
+    }
+  }, [portDraft, onPortChange]);
+
+  const copyScript = useCallback(() => {
+    navigator.clipboard.writeText(SIM_PS_SCRIPT).then(() => {
+      setCopiedScript(true);
+      setTimeout(() => setCopiedScript(false), 2000);
+    }).catch(() => {});
+  }, []);
 
   const copyHex = useCallback((text: string, txId: number) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -106,33 +159,150 @@ export default function SimulatorPanel({
   if (simConnStatus !== 'connected') {
     return (
       <div className="space-y-4">
-        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-8 text-center space-y-4">
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-8 text-center space-y-5">
           <div className="w-16 h-16 mx-auto rounded-2xl bg-[var(--surface-3)] flex items-center justify-center">
             <Server className="w-8 h-8 text-[var(--fg-subtle)]" />
           </div>
           <div>
             <h3 className="text-lg font-semibold text-[var(--fg)]">Host Simulator 未連線</h3>
             <p className="text-sm text-[var(--fg-subtle)] mt-1">
-              {simConnStatus === 'connecting'
-                ? '正在連線 WebSocket 監控通道…'
-                : '請先啟動 Host Simulator'}
+              模擬銀行後台，接收 POS 端末機交易電文並自動回應
             </p>
           </div>
-          <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-lg p-4 text-left max-w-md mx-auto">
-            <p className="text-xs text-[var(--fg-muted)] font-medium mb-2">啟動方式</p>
-            <code className="text-xs text-[var(--blue-ink)] font-mono block mb-1">
-              python host_simulator.py
-            </code>
-            <code className="text-xs text-[var(--fg-subtle)] font-mono block">
-              python host_simulator.py --port 8000 --response-code 00
-            </code>
+
+          {/* 啟動按鈕 */}
+          <div className="flex items-center justify-center gap-3">
+            <button
+              onClick={handleLaunch}
+              disabled={isLaunching}
+              className="btn-primary flex items-center gap-2 text-sm px-5 py-2.5 disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {isLaunching
+                ? <><Loader2 className="w-4 h-4 animate-spin" /> 啟動中…</>
+                : <><Zap className="w-4 h-4" /> 啟動 Host Simulator</>}
+            </button>
+            <button
+              onClick={() => setShowSetupModal(true)}
+              className="btn-secondary text-sm"
+            >
+              首次設定
+            </button>
           </div>
+
+          {/* Port 資訊 */}
+          <div className="flex items-center justify-center gap-4 text-xs text-[var(--fg-subtle)]">
+            <span className="flex items-center gap-1">
+              TCP Port:
+              {isEditingPort ? (
+                <>
+                  <input type="text" inputMode="numeric" value={portDraft.tcp}
+                    onChange={e => setPortDraft(p => ({ ...p, tcp: e.target.value }))}
+                    onKeyDown={e => { if (e.key === 'Enter') handleConfirmPort(); if (e.key === 'Escape') setIsEditingPort(false); }}
+                    autoFocus
+                    className="w-16 px-1.5 py-0.5 rounded text-xs font-mono text-center"
+                  />
+                </>
+              ) : (
+                <button onClick={() => { setPortDraft({ tcp: simTcpPort, ws: simWsPort }); setIsEditingPort(true); }}
+                  className="font-mono text-[var(--fg)] underline decoration-dotted flex items-center gap-0.5">
+                  {simTcpPort} <Pencil className="w-3 h-3" />
+                </button>
+              )}
+            </span>
+            <span className="flex items-center gap-1">
+              WS Port:
+              {isEditingPort ? (
+                <>
+                  <input type="text" inputMode="numeric" value={portDraft.ws}
+                    onChange={e => setPortDraft(p => ({ ...p, ws: e.target.value }))}
+                    onKeyDown={e => { if (e.key === 'Enter') handleConfirmPort(); if (e.key === 'Escape') setIsEditingPort(false); }}
+                    className="w-16 px-1.5 py-0.5 rounded text-xs font-mono text-center"
+                  />
+                  <button onClick={handleConfirmPort} className="text-[var(--emerald-ink)]">
+                    <Check className="w-3.5 h-3.5" />
+                  </button>
+                </>
+              ) : (
+                <span className="font-mono text-[var(--fg)]">{simWsPort}</span>
+              )}
+            </span>
+          </div>
+
           {simConnStatus === 'connecting' && (
             <div className="flex items-center justify-center gap-2 text-[var(--amber-ink)] text-sm">
               <Loader2 className="w-4 h-4 animate-spin" /> 嘗試連線中…
             </div>
           )}
+
+          {/* 替代方案 */}
+          <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-lg p-4 text-left max-w-lg mx-auto">
+            <p className="text-xs text-[var(--fg-muted)] font-medium mb-2">手動啟動（不需要註冊協定）</p>
+            <code className="text-xs text-[var(--blue-ink)] font-mono block">
+              python host_simulator.py --port {simTcpPort} --ws-port {simWsPort}
+            </code>
+          </div>
         </div>
+
+        {/* ── 首次設定 Modal ────────────────────────────── */}
+        {showSetupModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShowSetupModal(false)}>
+            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
+              <div className="p-4 border-b border-[var(--border)] flex items-center justify-between">
+                <h2 className="text-base font-bold text-[var(--fg)] flex items-center gap-2">
+                  <Server className="w-4 h-4 text-[var(--blue-ink)]" /> 首次設定：一鍵啟動 Host Simulator
+                </h2>
+                <button onClick={() => setShowSetupModal(false)} className="p-1 hover:bg-[var(--surface-3)] rounded-lg transition-colors text-[var(--fg-muted)]">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="p-6 overflow-y-auto space-y-5 text-sm text-[var(--fg-muted)]">
+                <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-xl p-4 space-y-1.5">
+                  <p className="font-semibold text-[var(--fg)]">設定步驟（只需做一次）</p>
+                  <ol className="list-decimal list-inside space-y-1.5 text-[var(--fg-subtle)] ml-1">
+                    <li>
+                      確認 <code className="bg-[var(--surface-3)] px-1 rounded">host_simulator.py</code> 和{' '}
+                      <code className="bg-[var(--surface-3)] px-1 rounded">start_simulator.bat</code> 在同一個資料夾。
+                    </li>
+                    <li>在該資料夾的<strong className="text-[var(--fg)]">網址列</strong>輸入 <code className="bg-[var(--surface-3)] px-1 rounded">powershell</code> 按 Enter。</li>
+                    <li>在彈出的 PowerShell 視窗貼上以下指令，按 Enter。</li>
+                  </ol>
+                </div>
+
+                <div className="relative group">
+                  <pre className="bg-[#0b0f19] text-[#38bdf8] p-4 rounded-xl text-xs font-mono overflow-x-auto leading-relaxed border border-[#1e293b]">{SIM_PS_SCRIPT}</pre>
+                  <button
+                    onClick={copyScript}
+                    className="absolute top-2 right-2 flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-medium transition-colors bg-[#1e293b]/80 hover:bg-[#334155] text-slate-300"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                    {copiedScript ? '已複製！' : '複製指令'}
+                  </button>
+                </div>
+
+                <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-xl p-4">
+                  <p className="text-[var(--amber-ink)] font-medium mb-1">POS 端末機設定</p>
+                  <ol className="list-decimal list-inside space-y-1.5 text-[var(--fg-subtle)] ml-1">
+                    <li>將 POS 的<strong className="text-[var(--fg)]">主機 IP</strong> 改為本機 IP（同一網段）</li>
+                    <li>將 POS 的<strong className="text-[var(--fg)]">主機 Port</strong> 改為 <code className="bg-[var(--surface-3)] px-1 rounded font-mono">{simTcpPort}</code></li>
+                    <li>儲存後即可發送交易，Simulator 會自動回應</li>
+                  </ol>
+                </div>
+
+                <p className="text-xs text-[var(--emerald-ink)] flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0" />
+                  設定完成後，關閉此視窗即可從按鈕直接啟動 Simulator。
+                </p>
+              </div>
+
+              <div className="p-4 border-t border-[var(--border)] flex justify-end">
+                <button onClick={() => setShowSetupModal(false)} className="btn-secondary">
+                  關閉
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
