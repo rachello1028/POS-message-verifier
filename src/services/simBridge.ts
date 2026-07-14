@@ -21,6 +21,7 @@ export interface SimStatus {
   has_tpdu: boolean;
   mti_encoding: string;
   default_rc: string;
+  host_ip: string;
 }
 
 export interface SimConnection {
@@ -136,6 +137,7 @@ export class SimBridge {
         has_tpdu: data.has_tpdu as boolean,
         mti_encoding: data.mti_encoding as string,
         default_rc: data.default_rc as string,
+        host_ip: (data.host_ip as string) || '127.0.0.1',
       });
     } else if (type === 'request') {
       const txId = data.tx_id as number;

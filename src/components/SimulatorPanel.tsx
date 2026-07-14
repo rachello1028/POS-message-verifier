@@ -3,7 +3,7 @@ import {
   Server, Wifi, WifiOff, Loader2, ChevronDown, ChevronRight,
   Trash2, ArrowDownLeft, ArrowUpRight, CircleDot, Zap, Copy,
   Check, Settings2, AlertTriangle, X, Download, Pencil,
-  Terminal, CheckCircle2,
+  Terminal, CheckCircle2, MonitorSmartphone,
 } from 'lucide-react';
 import type { SimTransaction, SimStatus, SimBridge } from '../services/simBridge';
 
@@ -70,6 +70,10 @@ export default function SimulatorPanel({
   const [copiedScript, setCopiedScript] = useState(false);
   const [isEditingPort, setIsEditingPort] = useState(false);
   const [portDraft, setPortDraft] = useState({ tcp: simTcpPort, ws: simWsPort });
+  const [showIpModal, setShowIpModal] = useState(false);
+  const [detectedIp, setDetectedIp] = useState<string | null>(null);
+  const [ipLoading, setIpLoading] = useState(false);
+  const [copiedIp, setCopiedIp] = useState(false);
   const logEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -134,6 +138,53 @@ export default function SimulatorPanel({
     }).catch(() => {});
   }, []);
 
+  const detectLocalIp = useCallback((): Promise<string | null> => {
+    return new Promise((resolve) => {
+      try {
+        const pc = new RTCPeerConnection({ iceServers: [] });
+        let resolved = false;
+        const timeout = setTimeout(() => { if (!resolved) { resolved = true; pc.close(); resolve(null); } }, 3000);
+        pc.createDataChannel('');
+        pc.createOffer().then(offer => pc.setLocalDescription(offer));
+        pc.onicecandidate = (e) => {
+          if (resolved) return;
+          if (e.candidate) {
+            const match = e.candidate.candidate.match(/(\d+\.\d+\.\d+\.\d+)/);
+            if (match && match[1] !== '0.0.0.0' && !match[1].startsWith('127.')) {
+              resolved = true;
+              clearTimeout(timeout);
+              pc.close();
+              resolve(match[1]);
+            }
+          }
+        };
+      } catch {
+        resolve(null);
+      }
+    });
+  }, []);
+
+  const handleShowIp = useCallback(async () => {
+    setShowIpModal(true);
+    if (simStatus?.host_ip && simStatus.host_ip !== '127.0.0.1') {
+      setDetectedIp(simStatus.host_ip);
+      return;
+    }
+    setIpLoading(true);
+    const ip = await detectLocalIp();
+    setDetectedIp(ip);
+    setIpLoading(false);
+  }, [simStatus, detectLocalIp]);
+
+  const copyIpInfo = useCallback(() => {
+    const ip = simStatus?.host_ip && simStatus.host_ip !== '127.0.0.1' ? simStatus.host_ip : detectedIp;
+    if (!ip) return;
+    navigator.clipboard.writeText(`${ip}:${simTcpPort}`).then(() => {
+      setCopiedIp(true);
+      setTimeout(() => setCopiedIp(false), 2000);
+    }).catch(() => {});
+  }, [simStatus, detectedIp, simTcpPort]);
+
   const formatAmount = (raw: string): string => {
     if (!raw) return '?';
     const n = parseInt(raw, 10);
@@ -154,6 +205,67 @@ export default function SimulatorPanel({
     };
     return map[mti] ?? mti;
   };
+
+  const ipModalEl = showIpModal && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShowIpModal(false)}>
+      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-2xl w-full max-w-md overflow-hidden" onClick={e => e.stopPropagation()}>
+        <div className="p-4 border-b border-[var(--border)] flex items-center justify-between">
+          <h2 className="text-base font-bold text-[var(--fg)] flex items-center gap-2">
+            <MonitorSmartphone className="w-4 h-4 text-[var(--blue-ink)]" /> POS 連線位址
+          </h2>
+          <button onClick={() => setShowIpModal(false)} className="p-1 hover:bg-[var(--surface-3)] rounded-lg transition-colors text-[var(--fg-muted)]">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+        <div className="p-6 space-y-4">
+          <p className="text-sm text-[var(--fg-muted)]">請將 POS 端末機的主機連線位置改為：</p>
+          {ipLoading ? (
+            <div className="flex items-center justify-center gap-2 py-4 text-[var(--fg-subtle)]">
+              <Loader2 className="w-5 h-5 animate-spin" /> 偵測本機 IP 中…
+            </div>
+          ) : (
+            (() => {
+              const ip = simStatus?.host_ip && simStatus.host_ip !== '127.0.0.1' ? simStatus.host_ip : detectedIp;
+              return ip ? (
+                <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-xl p-5 text-center space-y-3">
+                  <div className="text-2xl font-mono font-bold text-[var(--fg)] tracking-wide">
+                    {ip}
+                  </div>
+                  <div className="text-base font-mono text-[var(--blue-ink)]">
+                    Port: {simTcpPort}
+                  </div>
+                  <button onClick={copyIpInfo} className="btn-secondary text-xs flex items-center gap-1.5 mx-auto">
+                    {copiedIp
+                      ? <><Check className="w-3.5 h-3.5" /> 已複製！</>
+                      : <><Copy className="w-3.5 h-3.5" /> 複製 IP:Port</>}
+                  </button>
+                </div>
+              ) : (
+                <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-xl p-4 space-y-2">
+                  <p className="text-sm text-[var(--amber-ink)] flex items-center gap-1.5">
+                    <AlertTriangle className="w-4 h-4 flex-shrink-0" /> 無法自動偵測本機 IP
+                  </p>
+                  <p className="text-xs text-[var(--fg-subtle)]">
+                    請在終端機執行 <code className="bg-[var(--surface-3)] px-1.5 py-0.5 rounded font-mono">ipconfig</code> 查看本機 IPv4 位址，
+                    將該 IP 填入 POS 主機設定，Port 填 <code className="bg-[var(--surface-3)] px-1.5 py-0.5 rounded font-mono">{simTcpPort}</code>
+                  </p>
+                </div>
+              );
+            })()
+          )}
+          {simConnStatus === 'connected' && simStatus?.host_ip && simStatus.host_ip !== '127.0.0.1' && (
+            <p className="text-xs text-[var(--emerald-ink)] flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0" />
+              IP 由 Host Simulator 提供（最準確）
+            </p>
+          )}
+        </div>
+        <div className="p-4 border-t border-[var(--border)] flex justify-end">
+          <button onClick={() => setShowIpModal(false)} className="btn-secondary">關閉</button>
+        </div>
+      </div>
+    </div>
+  );
 
   // ── 未連線狀態 ────────────────────────────────────────────
   if (simConnStatus !== 'connected') {
@@ -188,6 +300,14 @@ export default function SimulatorPanel({
               首次設定
             </button>
           </div>
+
+          {/* 連線位址按鈕 */}
+          <button
+            onClick={handleShowIp}
+            className="btn-secondary flex items-center gap-2 text-sm mx-auto"
+          >
+            <MonitorSmartphone className="w-4 h-4" /> POS 連線位址
+          </button>
 
           {/* Port 資訊 */}
           <div className="flex items-center justify-center gap-4 text-xs text-[var(--fg-subtle)]">
@@ -303,6 +423,7 @@ export default function SimulatorPanel({
             </div>
           </div>
         )}
+        {ipModalEl}
       </div>
     );
   }
@@ -330,6 +451,9 @@ export default function SimulatorPanel({
             )}
           </div>
           <div className="flex items-center gap-2">
+            <button onClick={handleShowIp} className="toolbar-btn text-xs">
+              <MonitorSmartphone className="w-3.5 h-3.5" /> 連線位址
+            </button>
             <button
               onClick={() => setShowConfig(!showConfig)}
               className={`toolbar-btn text-xs ${showConfig ? 'active' : ''}`}
@@ -538,6 +662,7 @@ export default function SimulatorPanel({
           <div ref={logEndRef} />
         </div>
       )}
+      {ipModalEl}
     </div>
   );
 }

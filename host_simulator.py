@@ -14,6 +14,7 @@ POS Host Simulator — 模擬銀行後台
 import asyncio
 import json
 import os
+import socket
 import struct
 import random
 import string
@@ -504,6 +505,17 @@ def load_rules(rules_dir: str) -> dict:
     return merged
 
 
+def get_local_ip():
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(('8.8.8.8', 80))
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except Exception:
+        return '127.0.0.1'
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 #  TCP Server — 主角
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -549,6 +561,7 @@ class HostSimulator:
             'has_tpdu': self.has_tpdu,
             'mti_encoding': self.mti_encoding,
             'default_rc': self.generator.default_rc,
+            'host_ip': get_local_ip(),
         }, ensure_ascii=False))
         try:
             async for raw in ws:
