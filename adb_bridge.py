@@ -21,7 +21,6 @@ import os
 import re
 import shutil
 import argparse
-from datetime import datetime
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--port', type=int, default=9999, help='WebSocket 監聽埠號')
@@ -186,28 +185,17 @@ async def start_logcat(device_id: str = '') -> None:
             pass
         logcat_process = None
 
-    # 清除所有 logcat buffer（main/system/crash/events）
+    # 清除 logcat buffer
     clear_cmd = [ADB_PATH]
     if device_id:
         clear_cmd += ['-s', device_id]
-    clear_cmd += ['logcat', '-b', 'all', '-c']
-    try:
-        clear_proc = await asyncio.create_subprocess_exec(
-            *clear_cmd,
-            stdout=asyncio.subprocess.DEVNULL,
-            stderr=asyncio.subprocess.DEVNULL
-        )
-        await asyncio.wait_for(clear_proc.wait(), timeout=3)
-        print("[INFO] Logcat buffer 已清除（all buffers）")
-    except Exception as e:
-        print(f"[WARN] 清除 logcat buffer 失敗: {e}")
+    clear_cmd += ['logcat', '-c']
+    subprocess.run(clear_cmd, capture_output=True)
 
-    # 用 -T 時間戳作為雙保險：即使清除失敗，也只串流「現在之後」的 log
-    now_ts = datetime.now().strftime('%m-%d %H:%M:%S.000')
     cmd = [ADB_PATH]
     if device_id:
         cmd += ['-s', device_id]
-    cmd += ['logcat', '-v', 'threadtime', '-T', now_ts]
+    cmd += ['logcat', '-v', 'threadtime']
 
     try:
         logcat_process = await asyncio.create_subprocess_exec(
@@ -270,10 +258,8 @@ async def handle_client(websocket, path=None) -> None:
     await websocket.send(json.dumps({
         'type': 'rules', 'data': load_rules()
     }))
-    loop = asyncio.get_event_loop()
-    devs = await loop.run_in_executor(None, get_devices)
     await websocket.send(json.dumps({
-        'type': 'devices', 'data': devs
+        'type': 'devices', 'data': get_devices()
     }))
 
     try:
@@ -282,14 +268,9 @@ async def handle_client(websocket, path=None) -> None:
                 data = json.loads(raw)
                 cmd = data.get('command', '')
 
-                if cmd != 'ping':
-                    print(f"[CMD] 收到指令: {cmd}")
-
                 if cmd == 'get_devices':
-                    loop = asyncio.get_event_loop()
-                    devs = await loop.run_in_executor(None, get_devices)
                     await websocket.send(json.dumps({
-                        'type': 'devices', 'data': devs
+                        'type': 'devices', 'data': get_devices()
                     }))
 
                 elif cmd == 'get_rules':
@@ -298,8 +279,7 @@ async def handle_client(websocket, path=None) -> None:
                     }))
 
                 elif cmd == 'save_rules':
-                    loop = asyncio.get_event_loop()
-                    await loop.run_in_executor(None, save_rules, data.get('data', {}))
+                    save_rules(data.get('data', {}))
                     await websocket.send(json.dumps({
                         'type': 'rules_saved', 'message': '規格已儲存'
                     }))
@@ -329,10 +309,6 @@ async def handle_client(websocket, path=None) -> None:
         pass
     finally:
         connected_clients.discard(websocket)
-        # 最後一個客戶端離線時，自動停止 logcat 避免 buffer 堆積
-        if not connected_clients:
-            await stop_logcat()
-            print("[INFO] 所有客戶端已離線，logcat 已自動停止")
         print(f"[INFO] 客戶端離線 ({len(connected_clients)} 個)")
 
 

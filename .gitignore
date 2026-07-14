@@ -6,6 +6,7 @@ dist/
 .env.local
 .env*.local
 .vercel
+__pycache__/
 
 # 本地工作紀錄
 memory/

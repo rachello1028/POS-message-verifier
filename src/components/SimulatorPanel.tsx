@@ -79,6 +79,8 @@ export default function SimulatorPanel({
   const [timeoutCount, setTimeoutCount] = useState(1);
   const [fieldOverrides, setFieldOverrides] = useState<{ fid: string; val: string }[]>([]);
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [activeBank, setActiveBank] = useState<string | null>(simStatus?.active_bank ?? null);
+  const [availableBanks, setAvailableBanks] = useState<string[]>(simStatus?.available_banks ?? []);
   const logEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -99,6 +101,14 @@ export default function SimulatorPanel({
       if (entries.length > 0) setFieldOverrides(entries);
     }
   }, [simStatus?.field_overrides]);
+
+  useEffect(() => {
+    if (simStatus?.active_bank !== undefined) setActiveBank(simStatus.active_bank);
+  }, [simStatus?.active_bank]);
+
+  useEffect(() => {
+    if (simStatus?.available_banks) setAvailableBanks(simStatus.available_banks);
+  }, [simStatus?.available_banks]);
 
   useEffect(() => {
     logEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -204,6 +214,12 @@ export default function SimulatorPanel({
   const handleFieldOverrideClear = useCallback(() => {
     setFieldOverrides([]);
     simBridge?.setFieldOverrides({});
+  }, [simBridge]);
+
+  const handleBankChange = useCallback((bank: string) => {
+    const value = bank === 'auto' ? null : bank;
+    setActiveBank(value);
+    simBridge?.setActiveBank(value);
   }, [simBridge]);
 
   const formatAmount = (raw: string): string => {
@@ -514,6 +530,35 @@ export default function SimulatorPanel({
         {/* ── 回應設定面板 ────────────────────────────── */}
         {showConfig && (
           <div className="border-t border-[var(--border)] divide-y divide-[var(--border)]">
+            {/* 銀行規格選擇 */}
+            {availableBanks.length > 0 && (
+              <div className="px-4 py-3">
+                <p className="text-xs text-[var(--fg-muted)] font-medium mb-2">回應規格</p>
+                <div className="flex flex-wrap gap-1.5">
+                  <button
+                    onClick={() => handleBankChange('auto')}
+                    className={`ghost-chip ${activeBank === null ? 'selected' : ''}`}
+                  >
+                    自動匹配
+                  </button>
+                  {availableBanks.map(bank => (
+                    <button
+                      key={bank}
+                      onClick={() => handleBankChange(bank)}
+                      className={`ghost-chip ${activeBank === bank ? 'selected' : ''}`}
+                    >
+                      {bank}
+                    </button>
+                  ))}
+                </div>
+                {activeBank && (
+                  <p className="text-[11px] text-[var(--blue-ink)] mt-1.5">
+                    回應欄位將依「{activeBank}」規格產生
+                  </p>
+                )}
+              </div>
+            )}
+
             {/* 回應碼 */}
             <div className="px-4 py-3">
               <p className="text-xs text-[var(--fg-muted)] font-medium mb-2">預設回應碼</p>

@@ -25,6 +25,8 @@ export interface SimStatus {
   delay: number;
   timeout_mode: string;
   field_overrides: Record<string, string>;
+  active_bank: string | null;
+  available_banks: string[];
 }
 
 export interface SimConnection {
@@ -144,6 +146,8 @@ export class SimBridge {
         delay: (data.delay as number) ?? 0.1,
         timeout_mode: (data.timeout_mode as string) ?? 'none',
         field_overrides: (data.field_overrides as Record<string, string>) ?? {},
+        active_bank: (data.active_bank as string) || null,
+        available_banks: (data.available_banks as string[]) || [],
       });
     } else if (type === 'request') {
       const txId = data.tx_id as number;
@@ -218,5 +222,9 @@ export class SimBridge {
 
   setFieldOverrides(fields: Record<string, string>) {
     this.send({ command: 'set_field_overrides', fields });
+  }
+
+  setActiveBank(bank: string | null) {
+    this.send({ command: 'set_active_bank', bank: bank ?? '' });
   }
 }

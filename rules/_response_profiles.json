@@ -1,0 +1,219 @@
+{
+  "_comment": "各銀行 Host 回應欄位定義。Simulator 依此決定回應電文內容。",
+  "台新TSB": {
+    "description": "台新銀行信用卡授權主機",
+    "mti_map": {
+      "0200": "0210",
+      "0220": "0230",
+      "0400": "0410",
+      "0500": "0510",
+      "0800": "0810"
+    },
+    "response_rules": {
+      "default": {
+        "echo": [3, 4, 11, 14, 41, 42, 49],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "15": "year_date",
+          "37": "rrn",
+          "38": "auth_code",
+          "39": "response_code"
+        },
+        "conditional": {
+          "2": "echo_if_present",
+          "55": "emv_response",
+          "60": "echo_if_present",
+          "62": "echo_if_present"
+        }
+      },
+      "0500": {
+        "echo": [3, 11, 41, 42, 49],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "39": "response_code"
+        },
+        "conditional": {
+          "63": "echo_if_present"
+        }
+      },
+      "0800": {
+        "echo": [3, 11, 41, 42],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "39": "response_code"
+        },
+        "conditional": {}
+      }
+    }
+  },
+  "彰銀CHB電子簽單": {
+    "description": "彰銀電子簽單主機",
+    "mti_map": {
+      "0300": "0310",
+      "0800": "0810"
+    },
+    "response_rules": {
+      "default": {
+        "echo": [3, 4, 11, 37, 41, 42],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "38": "auth_code",
+          "39": "response_code"
+        },
+        "conditional": {
+          "2": "echo_if_present",
+          "14": "echo_if_present",
+          "60": "echo_if_present",
+          "62": "echo_if_present"
+        }
+      }
+    }
+  },
+  "彰銀CHB聚合支付": {
+    "description": "彰銀聚合支付 IMPS 主機",
+    "mti_map": {
+      "0100": "0110",
+      "0200": "0210",
+      "0320": "0330",
+      "0400": "0410",
+      "0500": "0510",
+      "0800": "0810"
+    },
+    "response_rules": {
+      "default": {
+        "echo": [3, 4, 11, 24, 41, 42],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "37": "rrn",
+          "38": "auth_code",
+          "39": "response_code"
+        },
+        "conditional": {
+          "2": "echo_if_present",
+          "14": "echo_if_present",
+          "47": "echo_if_present",
+          "58": "echo_if_present"
+        }
+      },
+      "0320": {
+        "echo": [3, 4, 11, 24, 41, 42],
+        "generate": {
+          "39": "response_code"
+        },
+        "conditional": {}
+      },
+      "0500": {
+        "echo": [3, 11, 24, 41, 42],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "39": "response_code"
+        },
+        "conditional": {}
+      },
+      "0800": {
+        "echo": [3, 11, 24, 41, 42],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "39": "response_code"
+        },
+        "conditional": {
+          "58": "echo_if_present"
+        }
+      }
+    }
+  },
+  "AE": {
+    "description": "美國運通 GEDC 主機",
+    "mti_map": {
+      "0100": "0110",
+      "0200": "0210",
+      "0220": "0230",
+      "0400": "0410",
+      "0500": "0510",
+      "0800": "0810"
+    },
+    "response_rules": {
+      "default": {
+        "echo": [2, 3, 4, 11, 14, 24, 41, 42, 49],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "37": "rrn",
+          "38": "auth_code",
+          "39": "response_code"
+        },
+        "conditional": {
+          "55": "emv_response",
+          "60": "echo_if_present",
+          "62": "echo_if_present"
+        }
+      },
+      "0500": {
+        "echo": [3, 11, 24, 41, 42],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "39": "response_code"
+        },
+        "conditional": {
+          "63": "echo_if_present"
+        }
+      }
+    }
+  },
+  "GP": {
+    "description": "GP 信用卡主機（通用）",
+    "mti_map": {
+      "0100": "0110",
+      "0200": "0210",
+      "0220": "0230",
+      "0400": "0410",
+      "0500": "0510",
+      "0800": "0810"
+    },
+    "response_rules": {
+      "default": {
+        "echo": [2, 3, 4, 11, 14, 24, 41, 42, 49],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "37": "rrn",
+          "38": "auth_code",
+          "39": "response_code"
+        },
+        "conditional": {
+          "55": "emv_response",
+          "60": "echo_if_present",
+          "62": "echo_if_present"
+        }
+      },
+      "0500": {
+        "echo": [3, 11, 41, 42],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "39": "response_code"
+        },
+        "conditional": {
+          "63": "echo_if_present"
+        }
+      },
+      "0800": {
+        "echo": [3, 11, 41, 42],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "39": "response_code"
+        },
+        "conditional": {}
+      }
+    }
+  }
+}

@@ -153,9 +153,17 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
         }
       },
       onConfigUpdated: (cfg) => {
-        if (cfg.default_rc) {
-          setSimStatus(prev => prev ? { ...prev, default_rc: cfg.default_rc as string } : prev);
-        }
+        setSimStatus(prev => {
+          if (!prev) return prev;
+          const updated = { ...prev };
+          if (cfg.default_rc !== undefined) updated.default_rc = cfg.default_rc as string;
+          if (cfg.active_bank !== undefined) updated.active_bank = (cfg.active_bank as string) || null;
+          if (cfg.available_banks !== undefined) updated.available_banks = cfg.available_banks as string[];
+          if (cfg.delay !== undefined) updated.delay = cfg.delay as number;
+          if (cfg.timeout_mode !== undefined) updated.timeout_mode = cfg.timeout_mode as string;
+          if (cfg.field_overrides !== undefined) updated.field_overrides = cfg.field_overrides as Record<string, string>;
+          return updated;
+        });
       },
     }, `ws://127.0.0.1:${simWsPort}`);
     simBridgeRef.current = sim;
