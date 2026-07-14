@@ -430,15 +430,34 @@ class ResponseGenerator:
                 if rule_pc and pc and rule_pc == pc:
                     return (bank_name, tx_name, step)
 
-        # 沒找到精確 PC 匹配，退回只比 MTI 的第一個
+        # 沒找到精確 PC 匹配，退回只比 MTI（但跳過 PC 不吻合的規格）
         for bank_name, bank_rules in search_banks:
             for tx_name, tx_config in bank_rules.items():
                 steps = tx_config.get('steps', [])
                 if not steps:
                     continue
                 step = steps[0]
-                if step.get('mti', '') == mti:
-                    return (bank_name, tx_name, step)
+                if step.get('mti', '') != mti:
+                    continue
+
+                # 若規格有指定特定 PC，且與 request 的 PC 不同，跳過
+                rule_fields = step.get('fields', [])
+                rule_pc = None
+                for f in rule_fields:
+                    fid = str(f.get('id', ''))
+                    if fid == 'REQ_3':
+                        exp = f.get('expected', '')
+                        if exp and exp not in ('NOT_NULL', 'MUST_EXIST',
+                                               'MUST_NOT_EXIST') \
+                                and not exp.startswith('IF_EXIST:') \
+                                and not exp.startswith('REGEX:'):
+                            rule_pc = exp
+                        break
+
+                if rule_pc and pc and rule_pc != pc:
+                    continue  # PC 不吻合，跳過
+
+                return (bank_name, tx_name, step)
 
         return (None, None, None)
 

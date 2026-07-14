@@ -774,7 +774,7 @@ export default function SimulatorPanel({
                     ? <ChevronDown className="w-4 h-4 text-[var(--fg-subtle)] flex-shrink-0" />
                     : <ChevronRight className="w-4 h-4 text-[var(--fg-subtle)] flex-shrink-0" />
                   }
-                  <span className="text-xs text-[var(--fg-subtle)] font-mono w-16 flex-shrink-0">
+                  <span className="text-xs text-[var(--fg-subtle)] font-mono w-24 flex-shrink-0">
                     {tx.timestamp}
                   </span>
                   <span className="badge badge-info text-[10px] py-0.5 flex-shrink-0">
