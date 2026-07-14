@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { CreditCard, FlaskConical, Settings, Wifi, WifiOff, Loader2, AlertTriangle, BookOpen, Terminal, Download, X, Zap, Copy, Pencil, Check, CheckCircle2, Sun, Moon, Bot } from 'lucide-react';
+import { CreditCard, FlaskConical, Settings, Wifi, WifiOff, Loader2, AlertTriangle, BookOpen, Terminal, Download, X, Zap, Copy, Pencil, Check, CheckCircle2, Sun, Moon, Bot, Server } from 'lucide-react';
 import TestPanel from './components/TestPanel';
 import ConfigPanel from './components/ConfigPanel';
 import HelpPanel from './components/HelpPanel';
 import AutoTestPanel from './components/AutoTestPanel';
+import SimulatorPanel from './components/SimulatorPanel';
 import type { AllRules, ConnectionStatus, TransactionResult, TransactionStep, AutoTestScript } from './types';
 import { AdbBridge } from './services/adbBridge';
+import { SimBridge } from './services/simBridge';
+import type { SimTransaction, SimStatus } from './services/simBridge';
 import { transactionsToScript } from './services/scriptConverter';
 
 const EMPTY_RULES: AllRules = {};
@@ -14,7 +17,7 @@ export default function App() {
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     return (localStorage.getItem('pos-theme') as 'dark' | 'light') ?? 'dark';
   });
-  const [activeTab, setActiveTab] = useState<'test' | 'auto' | 'config' | 'help'>('test');
+  const [activeTab, setActiveTab] = useState<'test' | 'auto' | 'sim' | 'config' | 'help'>('test');
   const [connStatus, setConnStatus] = useState<ConnectionStatus>('disconnected');
   const [connMsg, setConnMsg] = useState('');
   const [devices, setDevices] = useState<string[]>([]);
@@ -56,6 +59,16 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
   const [pendingScript, setPendingScript] = useState<AutoTestScript | null>(null);
   const bridgeRef = useRef<AdbBridge | null>(null);
   const autoTxListenerRef = useRef<((tx: TransactionResult) => void) | null>(null);
+
+  // ── Simulator 狀態 ──────────────────────────────────────────────────────
+  const [simConnStatus, setSimConnStatus] = useState<ConnectionStatus>('disconnected');
+  const [simStatus, setSimStatus] = useState<SimStatus | null>(null);
+  const [simTransactions, setSimTransactions] = useState<SimTransaction[]>([]);
+  const [simPosConnections, setSimPosConnections] = useState<string[]>([]);
+  const simBridgeRef = useRef<SimBridge | null>(null);
+  const [simWsPort, setSimWsPort] = useState<string>(
+    () => localStorage.getItem('sim-ws-port') ?? '8001'
+  );
 
   // ── localStorage migration：舊 key 清理 ────────────────────────────────────
   useEffect(() => {
@@ -124,6 +137,37 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
     return () => bridge.disconnect();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bridgePort]);
+
+  // ── Simulator Bridge 初始化 ────────────────────────────────────────────────
+
+  useEffect(() => {
+    const sim = new SimBridge({
+      onStatus: (status) => setSimConnStatus(status),
+      onSimStatus: (s) => setSimStatus(s),
+      onTransaction: (tx) => setSimTransactions(prev => [...prev, tx]),
+      onConnection: (conn) => {
+        if (conn.action === 'connected') {
+          setSimPosConnections(prev => [...prev, conn.address]);
+        } else {
+          setSimPosConnections(prev => prev.filter(a => a !== conn.address));
+        }
+      },
+      onConfigUpdated: (cfg) => {
+        if (cfg.default_rc) {
+          setSimStatus(prev => prev ? { ...prev, default_rc: cfg.default_rc as string } : prev);
+        }
+      },
+    }, `ws://127.0.0.1:${simWsPort}`);
+    simBridgeRef.current = sim;
+    sim.connect();
+
+    return () => sim.disconnect();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [simWsPort]);
+
+  const handleClearSimTransactions = useCallback(() => {
+    setSimTransactions([]);
+  }, []);
 
   // ── 控制函式 ──────────────────────────────────────────────────────────────
 
@@ -205,9 +249,10 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
 
   // ── UI ───────────────────────────────────────────────────────────────────
 
-  const tabs: { id: 'test' | 'auto' | 'config' | 'help'; label: string; icon: React.ReactNode }[] = [
+  const tabs: { id: 'test' | 'auto' | 'sim' | 'config' | 'help'; label: string; icon: React.ReactNode; badge?: number }[] = [
     { id: 'test',   label: '測試驗証面板', icon: <FlaskConical className="w-4 h-4" /> },
     { id: 'auto',   label: '自動化測試',   icon: <Bot className="w-4 h-4" /> },
+    { id: 'sim',    label: '模擬後台',     icon: <Server className="w-4 h-4" />, badge: simTransactions.length || undefined },
     { id: 'config', label: '規格設定管理', icon: <Settings className="w-4 h-4" /> },
     { id: 'help',   label: '操作說明',     icon: <BookOpen className="w-4 h-4" /> },
   ];
@@ -277,6 +322,9 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
                 }`}>
                   {transactions.length}
                 </span>
+              )}
+              {tab.id === 'sim' && simConnStatus === 'connected' && (
+                <span className="ml-1 w-2 h-2 rounded-full bg-[var(--emerald-ink)] inline-block" />
               )}
             </button>
           ))}
@@ -385,6 +433,16 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
             autoTxListenerRef={autoTxListenerRef}
             pendingScript={pendingScript}
             onPendingScriptHandled={() => setPendingScript(null)}
+          />
+        )}
+        {activeTab === 'sim' && (
+          <SimulatorPanel
+            simBridge={simBridgeRef.current}
+            simConnStatus={simConnStatus}
+            simStatus={simStatus}
+            transactions={simTransactions}
+            posConnections={simPosConnections}
+            onClearTransactions={handleClearSimTransactions}
           />
         )}
         {activeTab === 'config' && (
