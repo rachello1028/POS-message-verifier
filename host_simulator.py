@@ -391,73 +391,66 @@ class ResponseGenerator:
         return False
 
     def match_rule(self, mti: str, fields: dict[int, str]) -> tuple:
-        """依 MTI + Processing Code 匹配規格，回傳 (bank, tx_name, rule)"""
+        """依 MTI + Processing Code 匹配規格，回傳 (bank, tx_name, rule)
+        搜尋所有 steps（不只 step[0]），處理多步驟交易如 TC Upload。
+        """
         pc = fields.get(3, '')
-        resp_mti_map = {
-            '0100': '0110', '0200': '0210', '0220': '0230',
-            '0320': '0330', '0400': '0410', '0420': '0430',
-            '0500': '0510', '0800': '0810',
-        }
 
         # 若有指定 active_bank，優先在該銀行規格中搜尋
         search_banks = self.rules.items()
         if self.active_bank and self.active_bank in self.rules:
             search_banks = [(self.active_bank, self.rules[self.active_bank])]
 
+        # 第一輪：精確匹配 MTI + Processing Code
         for bank_name, bank_rules in search_banks:
             for tx_name, tx_config in bank_rules.items():
                 steps = tx_config.get('steps', [])
-                if not steps:
-                    continue
-                step = steps[0]
-                rule_mti = step.get('mti', '')
-                if rule_mti != mti:
-                    continue
+                for step in steps:
+                    rule_mti = step.get('mti', '')
+                    if rule_mti != mti:
+                        continue
 
-                rule_fields = step.get('fields', [])
-                rule_pc = None
-                for f in rule_fields:
-                    fid = str(f.get('id', ''))
-                    if fid == 'REQ_3':
-                        exp = f.get('expected', '')
-                        if exp and exp not in ('NOT_NULL', 'MUST_EXIST',
-                                               'MUST_NOT_EXIST') \
-                                and not exp.startswith('IF_EXIST:') \
-                                and not exp.startswith('REGEX:'):
-                            rule_pc = exp
-                        break
+                    rule_fields = step.get('fields', [])
+                    rule_pc = None
+                    for f in rule_fields:
+                        fid = str(f.get('id', ''))
+                        if fid == 'REQ_3':
+                            exp = f.get('expected', '')
+                            if exp and exp not in ('NOT_NULL', 'MUST_EXIST',
+                                                   'MUST_NOT_EXIST') \
+                                    and not exp.startswith('IF_EXIST:') \
+                                    and not exp.startswith('REGEX:'):
+                                rule_pc = exp
+                            break
 
-                if rule_pc and pc and rule_pc == pc:
+                    if rule_pc and pc and rule_pc == pc:
+                        return (bank_name, tx_name, step)
+
+        # 第二輪：只比 MTI，但跳過 PC 不吻合的規格
+        for bank_name, bank_rules in search_banks:
+            for tx_name, tx_config in bank_rules.items():
+                steps = tx_config.get('steps', [])
+                for step in steps:
+                    if step.get('mti', '') != mti:
+                        continue
+
+                    rule_fields = step.get('fields', [])
+                    rule_pc = None
+                    for f in rule_fields:
+                        fid = str(f.get('id', ''))
+                        if fid == 'REQ_3':
+                            exp = f.get('expected', '')
+                            if exp and exp not in ('NOT_NULL', 'MUST_EXIST',
+                                                   'MUST_NOT_EXIST') \
+                                    and not exp.startswith('IF_EXIST:') \
+                                    and not exp.startswith('REGEX:'):
+                                rule_pc = exp
+                            break
+
+                    if rule_pc and pc and rule_pc != pc:
+                        continue  # PC 不吻合，跳過
+
                     return (bank_name, tx_name, step)
-
-        # 沒找到精確 PC 匹配，退回只比 MTI（但跳過 PC 不吻合的規格）
-        for bank_name, bank_rules in search_banks:
-            for tx_name, tx_config in bank_rules.items():
-                steps = tx_config.get('steps', [])
-                if not steps:
-                    continue
-                step = steps[0]
-                if step.get('mti', '') != mti:
-                    continue
-
-                # 若規格有指定特定 PC，且與 request 的 PC 不同，跳過
-                rule_fields = step.get('fields', [])
-                rule_pc = None
-                for f in rule_fields:
-                    fid = str(f.get('id', ''))
-                    if fid == 'REQ_3':
-                        exp = f.get('expected', '')
-                        if exp and exp not in ('NOT_NULL', 'MUST_EXIST',
-                                               'MUST_NOT_EXIST') \
-                                and not exp.startswith('IF_EXIST:') \
-                                and not exp.startswith('REGEX:'):
-                            rule_pc = exp
-                        break
-
-                if rule_pc and pc and rule_pc != pc:
-                    continue  # PC 不吻合，跳過
-
-                return (bank_name, tx_name, step)
 
         return (None, None, None)
 
