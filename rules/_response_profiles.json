@@ -22,6 +22,7 @@
         },
         "conditional": {
           "2": "echo_if_present",
+          "54": "echo_if_present",
           "55": "emv_response",
           "60": "echo_if_present",
           "62": "echo_if_present"
@@ -67,6 +68,7 @@
         "conditional": {
           "2": "echo_if_present",
           "14": "echo_if_present",
+          "54": "echo_if_present",
           "60": "echo_if_present",
           "62": "echo_if_present"
         }
@@ -97,6 +99,7 @@
           "2": "echo_if_present",
           "14": "echo_if_present",
           "47": "echo_if_present",
+          "54": "echo_if_present",
           "58": "echo_if_present"
         }
       },
@@ -150,6 +153,7 @@
           "39": "response_code"
         },
         "conditional": {
+          "54": "echo_if_present",
           "55": "emv_response",
           "60": "echo_if_present",
           "62": "echo_if_present"

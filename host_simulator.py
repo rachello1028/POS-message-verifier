@@ -553,6 +553,8 @@ class ResponseGenerator:
             if req_mti == '0800' and 59 not in req.fields:
                 resp.fields[59] = '0' * 32
 
+            if 54 in req.fields:
+                resp.fields[54] = req.fields[54]
             if 55 in req.fields:
                 resp.fields[55] = '8A023030'
                 resp.raw_fields[55] = bytes.fromhex('8A023030')
