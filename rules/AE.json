@@ -207,7 +207,7 @@
             "steps": [
                 {
                     "step_name": "銷售_晶片TC",
-                    "mti": "0200",
+                    "mti": "0220",
                     "fields": [
                         {
                             "id": "REQ_2",

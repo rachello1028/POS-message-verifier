@@ -390,43 +390,49 @@ class ResponseGenerator:
             return random.random() < 0.3
         return False
 
+    def _is_concrete_expected(self, exp: str) -> bool:
+        """判斷 expected 值是否為具體比對值（非 NOT_NULL 等通配符）"""
+        if not exp:
+            return False
+        if exp in ('NOT_NULL', 'MUST_EXIST', 'MUST_NOT_EXIST'):
+            return False
+        if exp.startswith('IF_EXIST:') or exp.startswith('REGEX:'):
+            return False
+        return True
+
+    def _score_rule(self, rule_fields: list, fields: dict[int, str]) -> int:
+        """計算規則與實際欄位的匹配分數（具體值吻合 +1，不吻合 -100）"""
+        score = 0
+        for f in rule_fields:
+            fid_str = str(f.get('id', ''))
+            if not fid_str.startswith('REQ_'):
+                continue
+            try:
+                fid = int(fid_str[4:])
+            except ValueError:
+                continue
+            exp = f.get('expected', '')
+            if not self._is_concrete_expected(exp):
+                continue
+            actual = fields.get(fid, '')
+            if actual == exp:
+                score += 1
+            else:
+                score -= 100
+        return score
+
     def match_rule(self, mti: str, fields: dict[int, str]) -> tuple:
-        """依 MTI + Processing Code 匹配規格，回傳 (bank, tx_name, rule)
-        搜尋所有 steps（不只 step[0]），處理多步驟交易如 TC Upload。
+        """依 MTI + 欄位匹配規格，回傳 (bank, tx_name, rule)
+        先篩 MTI + PC，再用 F22 等具體欄位值計算匹配分數，分數最高者勝出。
         """
         pc = fields.get(3, '')
 
-        # 若有指定 active_bank，優先在該銀行規格中搜尋
         search_banks = self.rules.items()
         if self.active_bank and self.active_bank in self.rules:
             search_banks = [(self.active_bank, self.rules[self.active_bank])]
 
-        # 第一輪：精確匹配 MTI + Processing Code
-        for bank_name, bank_rules in search_banks:
-            for tx_name, tx_config in bank_rules.items():
-                steps = tx_config.get('steps', [])
-                for step in steps:
-                    rule_mti = step.get('mti', '')
-                    if rule_mti != mti:
-                        continue
+        candidates = []
 
-                    rule_fields = step.get('fields', [])
-                    rule_pc = None
-                    for f in rule_fields:
-                        fid = str(f.get('id', ''))
-                        if fid == 'REQ_3':
-                            exp = f.get('expected', '')
-                            if exp and exp not in ('NOT_NULL', 'MUST_EXIST',
-                                                   'MUST_NOT_EXIST') \
-                                    and not exp.startswith('IF_EXIST:') \
-                                    and not exp.startswith('REGEX:'):
-                                rule_pc = exp
-                            break
-
-                    if rule_pc and pc and rule_pc == pc:
-                        return (bank_name, tx_name, step)
-
-        # 第二輪：只比 MTI，但跳過 PC 不吻合的規格
         for bank_name, bank_rules in search_banks:
             for tx_name, tx_config in bank_rules.items():
                 steps = tx_config.get('steps', [])
@@ -435,24 +441,32 @@ class ResponseGenerator:
                         continue
 
                     rule_fields = step.get('fields', [])
+
                     rule_pc = None
                     for f in rule_fields:
-                        fid = str(f.get('id', ''))
-                        if fid == 'REQ_3':
+                        if str(f.get('id', '')) == 'REQ_3':
                             exp = f.get('expected', '')
-                            if exp and exp not in ('NOT_NULL', 'MUST_EXIST',
-                                                   'MUST_NOT_EXIST') \
-                                    and not exp.startswith('IF_EXIST:') \
-                                    and not exp.startswith('REGEX:'):
+                            if self._is_concrete_expected(exp):
                                 rule_pc = exp
                             break
 
                     if rule_pc and pc and rule_pc != pc:
-                        continue  # PC 不吻合，跳過
+                        continue
 
-                    return (bank_name, tx_name, step)
+                    pc_match = 1 if (rule_pc and rule_pc == pc) else 0
+                    field_score = self._score_rule(rule_fields, fields)
 
-        return (None, None, None)
+                    candidates.append((
+                        pc_match, field_score,
+                        bank_name, tx_name, step
+                    ))
+
+        if not candidates:
+            return (None, None, None)
+
+        candidates.sort(key=lambda c: (c[0], c[1]), reverse=True)
+        best = candidates[0]
+        return (best[2], best[3], best[4])
 
     def generate_response(self, req: Iso8583Message) -> Iso8583Message:
         """依 request 生成 response（使用 response profile 或通用邏輯）"""
@@ -828,6 +842,21 @@ class HostSimulator:
 
                 bank, tx_name, rule = self.generator.match_rule(
                     req.mti, req.fields)
+
+                # 依 F22 Entry Mode 補充過卡方式（規格未區分時）
+                if tx_name and 22 in req.fields:
+                    entry = req.fields[22][:2]  # 前兩碼 = PAN entry mode
+                    suffixes = {
+                        '02': '刷卡', '05': '晶片', '07': '感應',
+                        '90': '刷卡', '91': '感應',
+                    }
+                    suffix = suffixes.get(entry)
+                    if suffix:
+                        has_suffix = any(s in tx_name for s in
+                                         ('刷卡', '晶片', '感應', '手輸',
+                                          'FALLBACK', '4DBC'))
+                        if not has_suffix:
+                            tx_name = f"{tx_name}_{suffix}"
 
                 # 偵測特殊交易類型：依欄位存在性修正交易名稱
                 if tx_name:
