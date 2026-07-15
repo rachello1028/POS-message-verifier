@@ -190,6 +190,8 @@
         },
         "conditional": {
           "55": "emv_response",
+          "58": "echo_if_present",
+          "59": "echo_if_present",
           "60": "echo_if_present",
           "62": "echo_if_present"
         }
