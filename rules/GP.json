@@ -16,7 +16,7 @@
                         {
                             "id": "REQ_3",
                             "name": "Processing Code",
-                            "expected": "NOT_NULL"
+                            "expected": "300000"
                         },
                         {
                             "id": "REQ_4",
@@ -225,7 +225,7 @@
                         {
                             "id": "REQ_3",
                             "name": "Processing Code",
-                            "expected": "NOT_NULL"
+                            "expected": "000000"
                         },
                         {
                             "id": "REQ_4",
@@ -327,7 +327,7 @@
                         {
                             "id": "REQ_3",
                             "name": "Processing Code",
-                            "expected": "NOT_NULL"
+                            "expected": "020000"
                         },
                         {
                             "id": "REQ_4",
@@ -424,7 +424,7 @@
                         {
                             "id": "REQ_3",
                             "name": "Processing Code",
-                            "expected": "NOT_NULL"
+                            "expected": "200000"
                         },
                         {
                             "id": "REQ_4",
@@ -521,7 +521,7 @@
                         {
                             "id": "REQ_3",
                             "name": "Processing Code",
-                            "expected": "NOT_NULL"
+                            "expected": "000000"
                         },
                         {
                             "id": "REQ_4",
@@ -613,7 +613,7 @@
                         {
                             "id": "REQ_3",
                             "name": "Processing Code",
-                            "expected": "NOT_NULL"
+                            "expected": "000000"
                         },
                         {
                             "id": "REQ_4",
@@ -705,7 +705,7 @@
                         {
                             "id": "REQ_3",
                             "name": "Processing Code",
-                            "expected": "NOT_NULL"
+                            "expected": "020000"
                         },
                         {
                             "id": "REQ_4",
@@ -812,7 +812,7 @@
                         {
                             "id": "REQ_3",
                             "name": "Processing Code",
-                            "expected": "NOT_NULL"
+                            "expected": "020000"
                         },
                         {
                             "id": "REQ_4",
@@ -1205,7 +1205,7 @@
                         {
                             "id": "REQ_3",
                             "name": "Processing Code",
-                            "expected": "NOT_NULL"
+                            "expected": "330000"
                         },
                         {
                             "id": "REQ_4",
@@ -1295,6 +1295,11 @@
                     "mti": "0800",
                     "fields": [
                         {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "310000"
+                        },
+                        {
                             "id": "REQ_11",
                             "name": "System Trace Audit Number",
                             "expected": "NOT_NULL"
@@ -1336,6 +1341,11 @@
                     "step_name": "更換 TMK",
                     "mti": "0800",
                     "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "300000"
+                        },
                         {
                             "id": "REQ_11",
                             "name": "System Trace Audit Number",
@@ -1386,7 +1396,7 @@
                         {
                             "id": "REQ_3",
                             "name": "Processing Code",
-                            "expected": "NOT_NULL"
+                            "expected": "340000"
                         },
                         {
                             "id": "REQ_4",
@@ -1478,7 +1488,7 @@
                         {
                             "id": "REQ_3",
                             "name": "Processing Code",
-                            "expected": "NOT_NULL"
+                            "expected": "350000"
                         },
                         {
                             "id": "REQ_4",
@@ -2264,7 +2274,7 @@
                         {
                             "id": "REQ_3",
                             "name": "Processing Code",
-                            "expected": "NOT_NULL"
+                            "expected": "370000"
                         },
                         {
                             "id": "REQ_11",
@@ -2306,7 +2316,7 @@
                         {
                             "id": "REQ_3",
                             "name": "Processing Code",
-                            "expected": "NOT_NULL"
+                            "expected": "380000"
                         },
                         {
                             "id": "REQ_11",
@@ -2363,7 +2373,7 @@
                         {
                             "id": "REQ_3",
                             "name": "Processing Code",
-                            "expected": "NOT_NULL"
+                            "expected": "390000"
                         },
                         {
                             "id": "REQ_11",
@@ -2415,7 +2425,7 @@
                         {
                             "id": "REQ_3",
                             "name": "Processing Code",
-                            "expected": "NOT_NULL"
+                            "expected": "000000"
                         },
                         {
                             "id": "REQ_4",
@@ -2517,7 +2527,7 @@
                         {
                             "id": "REQ_3",
                             "name": "Processing Code",
-                            "expected": "NOT_NULL"
+                            "expected": "250000"
                         },
                         {
                             "id": "REQ_4",
