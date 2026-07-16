@@ -862,6 +862,10 @@ class HostSimulator:
                 if tx_name:
                     if 54 in req.fields and req.fields[54].strip():
                         tx_name = '小費'
+                    elif '分期' not in tx_name and 63 in req.fields:
+                        f63 = req.fields[63]
+                        if f63[:2] == '10' and len(f63) >= 12:
+                            tx_name = f"分期{tx_name}"
 
                 print(f"  [#{tx_id}] {ts} ← REQ {req.summary()}")
                 if bank:

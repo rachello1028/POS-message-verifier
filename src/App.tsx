@@ -144,7 +144,9 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
     const sim = new SimBridge({
       onStatus: (status) => setSimConnStatus(status),
       onSimStatus: (s) => setSimStatus(s),
-      onTransaction: (tx) => setSimTransactions(prev => [...prev, tx]),
+      onTransaction: (tx) => setSimTransactions(prev =>
+        prev.some(t => t.tx_id === tx.tx_id) ? prev : [...prev, tx]
+      ),
       onConnection: (conn) => {
         if (conn.action === 'connected') {
           setSimPosConnections(prev => [...prev, conn.address]);
