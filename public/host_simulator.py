@@ -349,9 +349,12 @@ class Iso8583Message:
 class ResponseGenerator:
     """根據 rules/ 規格和 request 電文生成回應"""
 
-    def __init__(self, rules: dict, default_response_code: str = '00'):
+    def __init__(self, rules: dict, default_response_code: str = '00',
+                 response_profiles: dict = None):
         self.rules = rules
         self.default_rc = default_response_code
+        self.response_profiles = response_profiles or {}
+        self.active_bank: str | None = None  # 指定使用哪家銀行規格回應
         self.auth_counter = random.randint(100000, 999999)
         self.rrn_counter = random.randint(100000000000, 999999999999)
         self.overrides: dict[str, str] = {}
@@ -387,68 +390,112 @@ class ResponseGenerator:
             return random.random() < 0.3
         return False
 
+    def _is_concrete_expected(self, exp: str) -> bool:
+        """判斷 expected 值是否為具體比對值（非 NOT_NULL 等通配符）"""
+        if not exp:
+            return False
+        if exp in ('NOT_NULL', 'MUST_EXIST', 'MUST_NOT_EXIST'):
+            return False
+        if exp.startswith('IF_EXIST:') or exp.startswith('REGEX:'):
+            return False
+        return True
+
+    def _score_rule(self, rule_fields: list, fields: dict[int, str]) -> int:
+        """計算規則與實際欄位的匹配分數（具體值吻合 +1，不吻合 -100）"""
+        score = 0
+        for f in rule_fields:
+            fid_str = str(f.get('id', ''))
+            if not fid_str.startswith('REQ_'):
+                continue
+            try:
+                fid = int(fid_str[4:])
+            except ValueError:
+                continue
+            exp = f.get('expected', '')
+            if not self._is_concrete_expected(exp):
+                continue
+            actual = fields.get(fid, '')
+            if actual == exp:
+                score += 1
+            else:
+                score -= 100
+        return score
+
     def match_rule(self, mti: str, fields: dict[int, str]) -> tuple:
-        """依 MTI + Processing Code 匹配規格，回傳 (bank, tx_name, rule)"""
+        """依 MTI + 欄位匹配規格，回傳 (bank, tx_name, rule)
+        先篩 MTI + PC，再用 F22 等具體欄位值計算匹配分數，分數最高者勝出。
+        """
         pc = fields.get(3, '')
-        resp_mti_map = {
-            '0100': '0110', '0200': '0210', '0220': '0230',
-            '0320': '0330', '0400': '0410', '0420': '0430',
-            '0500': '0510', '0800': '0810',
-        }
 
-        for bank_name, bank_rules in self.rules.items():
+        search_banks = self.rules.items()
+        if self.active_bank and self.active_bank in self.rules:
+            search_banks = [(self.active_bank, self.rules[self.active_bank])]
+
+        candidates = []
+
+        for bank_name, bank_rules in search_banks:
             for tx_name, tx_config in bank_rules.items():
                 steps = tx_config.get('steps', [])
-                if not steps:
-                    continue
-                step = steps[0]
-                rule_mti = step.get('mti', '')
-                if rule_mti != mti:
-                    continue
+                for step in steps:
+                    if step.get('mti', '') != mti:
+                        continue
 
-                rule_fields = step.get('fields', [])
-                rule_pc = None
-                for f in rule_fields:
-                    fid = str(f.get('id', ''))
-                    if fid == 'REQ_3':
-                        exp = f.get('expected', '')
-                        if exp and exp not in ('NOT_NULL', 'MUST_EXIST',
-                                               'MUST_NOT_EXIST') \
-                                and not exp.startswith('IF_EXIST:') \
-                                and not exp.startswith('REGEX:'):
-                            rule_pc = exp
-                        break
+                    rule_fields = step.get('fields', [])
 
-                if rule_pc and pc and rule_pc == pc:
-                    return (bank_name, tx_name, step)
+                    rule_pc = None
+                    for f in rule_fields:
+                        if str(f.get('id', '')) == 'REQ_3':
+                            exp = f.get('expected', '')
+                            if self._is_concrete_expected(exp):
+                                rule_pc = exp
+                            break
 
-        # 沒找到精確 PC 匹配，退回只比 MTI 的第一個
-        for bank_name, bank_rules in self.rules.items():
-            for tx_name, tx_config in bank_rules.items():
-                steps = tx_config.get('steps', [])
-                if not steps:
-                    continue
-                step = steps[0]
-                if step.get('mti', '') == mti:
-                    return (bank_name, tx_name, step)
+                    if rule_pc and pc and rule_pc != pc:
+                        continue
 
-        return (None, None, None)
+                    pc_match = 1 if (rule_pc and rule_pc == pc) else 0
+                    field_score = self._score_rule(rule_fields, fields)
+
+                    candidates.append((
+                        pc_match, field_score,
+                        bank_name, tx_name, step
+                    ))
+
+        if not candidates:
+            return (None, None, None)
+
+        candidates.sort(key=lambda c: (c[0], c[1]), reverse=True)
+        best = candidates[0]
+        return (best[2], best[3], best[4])
 
     def generate_response(self, req: Iso8583Message) -> Iso8583Message:
-        """依 request 生成 response"""
+        """依 request 生成 response（使用 response profile 或通用邏輯）"""
         resp = Iso8583Message()
         resp.tpdu = req.tpdu
 
-        # Response MTI = Request MTI + 10
+        # Response MTI
         req_mti = req.mti
-        resp_mti_map = {
+        default_mti_map = {
             '0100': '0110', '0200': '0210', '0220': '0230',
-            '0320': '0330', '0400': '0410', '0420': '0430',
+            '0300': '0310', '0320': '0330',
+            '0400': '0410', '0420': '0430',
             '0500': '0510', '0800': '0810',
         }
-        resp.mti = resp_mti_map.get(req_mti, str(int(req_mti) + 10).zfill(4))
 
         bank, tx_name, rule = self.match_rule(req_mti, req.fields)
+
+        # 決定使用哪個 profile
+        profile_bank = self.active_bank or bank
+        profile = self.response_profiles.get(profile_bank)
+
+        # 取得 MTI mapping
+        if profile and 'mti_map' in profile:
+            resp.mti = profile['mti_map'].get(req_mti,
+                       default_mti_map.get(req_mti,
+                       str(int(req_mti) + 10).zfill(4)))
+        else:
+            resp.mti = default_mti_map.get(req_mti,
+                       str(int(req_mti) + 10).zfill(4))
 
         # 決定回應碼
         override_key = f"{bank}|{tx_name}" if bank else None
@@ -459,44 +506,82 @@ class ResponseGenerator:
 
         now = datetime.now()
 
-        # 從 request 回傳的欄位（只 echo host 真正會回的）
-        echo_fields = [2, 3, 4, 11, 14, 41, 42, 49]
-        for fid in echo_fields:
-            if fid in req.fields:
-                resp.fields[fid] = req.fields[fid]
-                if fid in req.raw_fields:
-                    resp.raw_fields[fid] = req.raw_fields[fid]
+        # === 使用 response profile 生成回應 ===
+        if profile and 'response_rules' in profile:
+            rules_set = profile['response_rules']
+            # 優先找 MTI 專屬規則，否則用 default
+            rr = rules_set.get(req_mti, rules_set.get('default', {}))
 
-        # Host 產生的回應欄位
-        resp.fields[12] = now.strftime('%H%M%S')
-        resp.fields[13] = now.strftime('%m%d')
-        resp.fields[37] = req.fields.get(37, self._next_rrn())
-        resp.fields[38] = self._next_auth_code()
-        resp.fields[39] = rc
+            # Echo fields
+            for fid in rr.get('echo', []):
+                if fid in req.fields:
+                    resp.fields[fid] = req.fields[fid]
+                    if fid in req.raw_fields:
+                        resp.raw_fields[fid] = req.raw_fields[fid]
 
-        # 0800 (Key Exchange) 特殊處理：加入 Field 59 key data
-        if req_mti == '0800':
-            if 59 not in req.fields:
-                resp.fields[59] = '0' * 32  # 模擬 working key
+            # Generate fields
+            for fid_str, gen_type in rr.get('generate', {}).items():
+                fid = int(fid_str)
+                if gen_type == 'time':
+                    resp.fields[fid] = now.strftime('%H%M%S')
+                elif gen_type == 'date':
+                    resp.fields[fid] = now.strftime('%m%d')
+                elif gen_type == 'year_date':
+                    resp.fields[fid] = now.strftime('%m%d')
+                elif gen_type == 'rrn':
+                    resp.fields[fid] = req.fields.get(37, self._next_rrn())
+                elif gen_type == 'auth_code':
+                    resp.fields[fid] = self._next_auth_code()
+                elif gen_type == 'response_code':
+                    resp.fields[fid] = rc
 
-        # 如果 request 有 Field 55 (ICC data)，回應也帶
-        if 55 in req.fields:
-            # 模擬最小化的 EMV 回應：Tag 8A (ARC) = "00"
-            resp.fields[55] = '8A023030'
-            resp.raw_fields[55] = bytes.fromhex('8A023030')
+            # Conditional fields
+            for fid_str, cond_type in rr.get('conditional', {}).items():
+                fid = int(fid_str)
+                if cond_type == 'echo_if_present':
+                    if fid in req.fields:
+                        resp.fields[fid] = req.fields[fid]
+                        if fid in req.raw_fields:
+                            resp.raw_fields[fid] = req.raw_fields[fid]
+                elif cond_type == 'emv_response':
+                    if fid in req.fields:
+                        # 模擬 EMV 回應：Tag 8A (ARC)
+                        resp.fields[fid] = '8A023030'
+                        resp.raw_fields[fid] = bytes.fromhex('8A023030')
 
-        # 如果 request 有 Field 60 (batch number)，echo 回去
-        if 60 in req.fields:
-            resp.fields[60] = req.fields[60]
+        else:
+            # === Fallback: 通用回應邏輯（無 profile 時）===
+            echo_fields = [2, 3, 4, 11, 14, 41, 42, 49]
+            for fid in echo_fields:
+                if fid in req.fields:
+                    resp.fields[fid] = req.fields[fid]
+                    if fid in req.raw_fields:
+                        resp.raw_fields[fid] = req.raw_fields[fid]
 
-        # 如果 request 有 Field 62 (invoice number)，echo 回去
-        if 62 in req.fields:
-            resp.fields[62] = req.fields[62]
+            resp.fields[12] = now.strftime('%H%M%S')
+            resp.fields[13] = now.strftime('%m%d')
+            resp.fields[37] = req.fields.get(37, self._next_rrn())
+            resp.fields[38] = self._next_auth_code()
+            resp.fields[39] = rc
 
-        # Settlement response：加入 Field 63 totals
-        if req_mti == '0500':
-            resp.fields[63] = req.fields.get(63, '000000000000')
+            if req_mti == '0800' and 59 not in req.fields:
+                resp.fields[59] = '0' * 32
 
+            if 54 in req.fields:
+                resp.fields[54] = req.fields[54]
+            if 55 in req.fields:
+                resp.fields[55] = '8A023030'
+                resp.raw_fields[55] = bytes.fromhex('8A023030')
+
+            if 60 in req.fields:
+                resp.fields[60] = req.fields[60]
+            if 62 in req.fields:
+                resp.fields[62] = req.fields[62]
+
+            if req_mti == '0500':
+                resp.fields[63] = req.fields.get(63, '000000000000')
+
+        # 全域欄位覆蓋（Web UI 設定的）
         for fid_str, val in self.field_overrides.items():
             try:
                 fid = int(fid_str)
@@ -517,7 +602,7 @@ def load_rules(rules_dir: str) -> dict:
         print(f"[WARN] 規格目錄不存在: {rules_dir}")
         return merged
     for fname in sorted(os.listdir(rules_dir)):
-        if not fname.endswith('.json'):
+        if not fname.endswith('.json') or fname.startswith('_'):
             continue
         fpath = os.path.join(rules_dir, fname)
         try:
@@ -527,6 +612,22 @@ def load_rules(rules_dir: str) -> dict:
         except Exception as e:
             print(f"[WARN] 讀取 {fname} 失敗: {e}")
     return merged
+
+
+def load_response_profiles(rules_dir: str) -> dict:
+    """載入回應欄位定義檔"""
+    profile_path = os.path.join(rules_dir, '_response_profiles.json')
+    if not os.path.isfile(profile_path):
+        print("[INFO] 未找到 _response_profiles.json，使用通用回應")
+        return {}
+    try:
+        with open(profile_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            # 移除 _comment 等非銀行欄位
+            return {k: v for k, v in data.items() if not k.startswith('_')}
+    except Exception as e:
+        print(f"[WARN] 讀取 _response_profiles.json 失敗: {e}")
+        return {}
 
 
 def get_local_ip():
@@ -589,6 +690,8 @@ class HostSimulator:
             'delay': self.response_delay,
             'timeout_mode': self.generator.timeout_mode,
             'field_overrides': self.generator.field_overrides,
+            'active_bank': self.generator.active_bank,
+            'available_banks': list(self.generator.response_profiles.keys()),
         }, ensure_ascii=False))
         try:
             async for raw in ws:
@@ -639,6 +742,18 @@ class HostSimulator:
                         })
                         fo = self.generator.field_overrides
                         print(f"[SIM] 欄位覆蓋: {fo if fo else '(清除)'}")
+                    elif cmd == 'set_active_bank':
+                        bank = data.get('bank', None)
+                        if bank == '' or bank == 'auto':
+                            self.generator.active_bank = None
+                            print("[SIM] 切換為自動匹配模式")
+                        else:
+                            self.generator.active_bank = bank
+                            print(f"[SIM] 指定銀行規格: {bank}")
+                        await self.ws_broadcast({
+                            'type': 'config_updated',
+                            'active_bank': self.generator.active_bank,
+                        })
                     elif cmd == 'ping':
                         await ws.send(json.dumps({'type': 'pong'}))
                 except json.JSONDecodeError:
@@ -727,6 +842,26 @@ class HostSimulator:
 
                 bank, tx_name, rule = self.generator.match_rule(
                     req.mti, req.fields)
+
+                # 依 F22 Entry Mode 補充過卡方式（規格未區分時）
+                if tx_name and 22 in req.fields:
+                    entry = req.fields[22][:2]  # 前兩碼 = PAN entry mode
+                    suffixes = {
+                        '02': '刷卡', '05': '晶片', '07': '感應',
+                        '90': '刷卡', '91': '感應',
+                    }
+                    suffix = suffixes.get(entry)
+                    if suffix:
+                        has_suffix = any(s in tx_name for s in
+                                         ('刷卡', '晶片', '感應', '手輸',
+                                          'FALLBACK', '4DBC'))
+                        if not has_suffix:
+                            tx_name = f"{tx_name}_{suffix}"
+
+                # 偵測特殊交易類型：依欄位存在性修正交易名稱
+                if tx_name:
+                    if 54 in req.fields and req.fields[54].strip():
+                        tx_name = '小費'
 
                 print(f"  [#{tx_id}] {ts} ← REQ {req.summary()}")
                 if bank:
@@ -918,6 +1053,8 @@ def main():
                     help='長度 header 格式 (預設 2-bytes-be)')
     ap.add_argument('--delay', type=float, default=0.1,
                     help='回應延遲秒數 (預設 0.1)')
+    ap.add_argument('--bank', default=None,
+                    help='指定使用哪家銀行規格回應 (預設自動匹配)')
     ap.add_argument('--self-test', action='store_true',
                     help='執行自我測試')
     args = ap.parse_args()
@@ -929,6 +1066,8 @@ def main():
     # 載入規格
     rules_dir = os.path.join(os.path.dirname(__file__), 'rules')
     rules = load_rules(rules_dir)
+    response_profiles = load_response_profiles(rules_dir)
+
     if rules:
         banks = list(rules.keys())
         total = sum(len(v) for v in rules.values())
@@ -938,7 +1077,17 @@ def main():
     else:
         print("[WARN] 未載入任何規格，將使用通用回應")
 
-    gen = ResponseGenerator(rules, args.response_code)
+    if response_profiles:
+        print(f"[INFO] 已載入 {len(response_profiles)} 份回應 profile: "
+              f"{', '.join(response_profiles.keys())}")
+    else:
+        print("[INFO] 未載入回應 profile，使用通用回應邏輯")
+
+    gen = ResponseGenerator(rules, args.response_code, response_profiles)
+    if args.bank:
+        gen.active_bank = args.bank
+        print(f"[INFO] 指定銀行: {args.bank}")
+
     sim = HostSimulator(
         gen,
         tcp_port=args.port,
