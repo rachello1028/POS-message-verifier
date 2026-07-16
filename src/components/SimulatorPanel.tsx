@@ -81,7 +81,10 @@ export default function SimulatorPanel({
   const [timeoutCount, setTimeoutCount] = useState(1);
   const [fieldOverrides, setFieldOverrides] = useState<{ fid: string; val: string }[]>([]);
   const [showAdvanced, setShowAdvanced] = useState(false);
-  const [activeBank, setActiveBank] = useState<string | null>(simStatus?.active_bank ?? null);
+  const [activeBank, setActiveBank] = useState<string | null>(() => {
+    const saved = localStorage.getItem('sim_active_bank');
+    return simStatus?.active_bank ?? saved ?? null;
+  });
   const [availableBanks, setAvailableBanks] = useState<string[]>(
     simStatus?.available_banks?.length ? simStatus.available_banks : AVAILABLE_BANKS_FALLBACK
   );
@@ -106,8 +109,17 @@ export default function SimulatorPanel({
   }, [simStatus?.field_overrides]);
 
   useEffect(() => {
-    if (simStatus?.active_bank !== undefined) setActiveBank(simStatus.active_bank);
-  }, [simStatus?.active_bank]);
+    if (simStatus?.active_bank) {
+      setActiveBank(simStatus.active_bank);
+      localStorage.setItem('sim_active_bank', simStatus.active_bank);
+    } else if (!simStatus?.active_bank && simBridge) {
+      const saved = localStorage.getItem('sim_active_bank');
+      if (saved) {
+        setActiveBank(saved);
+        simBridge.setActiveBank(saved);
+      }
+    }
+  }, [simStatus?.active_bank, simBridge]);
 
   useEffect(() => {
     if (simStatus?.available_banks?.length) setAvailableBanks(simStatus.available_banks);
@@ -216,9 +228,9 @@ export default function SimulatorPanel({
   }, [simBridge]);
 
   const handleBankChange = useCallback((bank: string) => {
-    const value = bank === 'auto' ? null : bank;
-    setActiveBank(value);
-    simBridge?.setActiveBank(value);
+    setActiveBank(bank);
+    simBridge?.setActiveBank(bank);
+    localStorage.setItem('sim_active_bank', bank);
   }, [simBridge]);
 
   const formatAmount = (raw: string): string => {
@@ -534,12 +546,6 @@ export default function SimulatorPanel({
               <div className="px-4 py-3">
                 <p className="text-xs text-[var(--fg-muted)] font-medium mb-2">回應規格</p>
                 <div className="flex flex-wrap gap-1.5">
-                  <button
-                    onClick={() => handleBankChange('auto')}
-                    className={`ghost-chip ${activeBank === null ? 'selected' : ''}`}
-                  >
-                    自動匹配
-                  </button>
                   {availableBanks.map(bank => (
                     <button
                       key={bank}
