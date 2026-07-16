@@ -453,5 +453,96 @@
         }
       }
     }
+  },
+  "中信CTBC": {
+    "description": "中信銀行信用卡授權主機",
+    "mti_map": {
+      "0100": "0110",
+      "0200": "0210",
+      "0220": "0230",
+      "0320": "0330",
+      "0400": "0410",
+      "0500": "0510"
+    },
+    "response_rules": {
+      "default": {
+        "_comment": "Sale/Void/Refund (0200→0210)",
+        "echo": [3, 4, 11, 24, 41],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "37": "rrn",
+          "38": "auth_code",
+          "39": "response_code"
+        },
+        "conditional": {
+          "54": "echo_if_present",
+          "55": "emv_response",
+          "63": "echo_if_present"
+        }
+      },
+      "0100": {
+        "_comment": "Pre-Auth (0100→0110)",
+        "echo": [3, 11, 24, 41],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "37": "rrn",
+          "38": "auth_code",
+          "39": "response_code"
+        },
+        "conditional": {
+          "55": "emv_response",
+          "63": "echo_if_present"
+        }
+      },
+      "0220": {
+        "_comment": "Offline/Adjust/Tips (0220→0230)",
+        "echo": [3, 11, 24, 41],
+        "generate": {
+          "37": "rrn",
+          "39": "response_code"
+        },
+        "conditional": {
+          "63": "echo_if_present"
+        }
+      },
+      "0320": {
+        "_comment": "Batch Upload (0320→0330)",
+        "echo": [3, 11, 24, 41],
+        "generate": {
+          "39": "response_code"
+        },
+        "conditional": {
+          "63": "echo_if_present"
+        }
+      },
+      "0400": {
+        "_comment": "Reversal (0400→0410)",
+        "echo": [3, 11, 24, 41],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "37": "rrn",
+          "39": "response_code"
+        },
+        "conditional": {
+          "63": "echo_if_present"
+        }
+      },
+      "0500": {
+        "_comment": "Settlement (0500→0510)",
+        "echo": [3, 11, 24, 41],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "37": "rrn",
+          "39": "response_code"
+        },
+        "conditional": {
+          "63": "echo_if_present"
+        }
+      }
+    }
   }
 }

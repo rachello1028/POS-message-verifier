@@ -58,7 +58,7 @@ New-Item -Path $cmdPath -Force | Out-Null
 Set-ItemProperty -Path $cmdPath -Name "(Default)" -Value ('"{0}" "%1"' -f $batPath)
 Write-Host "Done! Host Simulator protocol registered." -ForegroundColor Green`;
 
-const AVAILABLE_BANKS_FALLBACK = ['台新TSB', '彰銀CHB電子簽單', '彰銀CHB聚合支付', 'AE', 'GP'];
+const AVAILABLE_BANKS_FALLBACK = ['台新TSB', '中信CTBC', '彰銀CHB電子簽單', '彰銀CHB聚合支付', 'AE', 'GP'];
 
 export default function SimulatorPanel({
   simBridge, simConnStatus, simStatus, transactions, posConnections,
