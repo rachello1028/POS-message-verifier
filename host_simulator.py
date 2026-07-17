@@ -435,39 +435,39 @@ class ResponseGenerator:
         """
         pc = fields.get(3, '')
 
-        search_banks = self.rules.items()
-        if self.active_bank and self.active_bank in self.rules:
-            search_banks = [(self.active_bank, self.rules[self.active_bank])]
+        def _search(banks):
+            results = []
+            for bank_name, bank_rules in banks:
+                for tx_name, tx_config in bank_rules.items():
+                    steps = tx_config.get('steps', [])
+                    for step in steps:
+                        if step.get('mti', '') != mti:
+                            continue
+                        rule_fields = step.get('fields', [])
+                        rule_pc = None
+                        for f in rule_fields:
+                            if str(f.get('id', '')) == 'REQ_3':
+                                exp = f.get('expected', '')
+                                if self._is_concrete_expected(exp):
+                                    rule_pc = exp
+                                break
+                        if rule_pc and pc and rule_pc != pc:
+                            continue
+                        pc_match = 1 if (rule_pc and rule_pc == pc) else 0
+                        field_score = self._score_rule(rule_fields, fields)
+                        results.append((
+                            pc_match, field_score,
+                            bank_name, tx_name, step
+                        ))
+            return results
 
+        # 先搜 active_bank，最佳匹配分數為負才搜全部
         candidates = []
-
-        for bank_name, bank_rules in search_banks:
-            for tx_name, tx_config in bank_rules.items():
-                steps = tx_config.get('steps', [])
-                for step in steps:
-                    if step.get('mti', '') != mti:
-                        continue
-
-                    rule_fields = step.get('fields', [])
-
-                    rule_pc = None
-                    for f in rule_fields:
-                        if str(f.get('id', '')) == 'REQ_3':
-                            exp = f.get('expected', '')
-                            if self._is_concrete_expected(exp):
-                                rule_pc = exp
-                            break
-
-                    if rule_pc and pc and rule_pc != pc:
-                        continue
-
-                    pc_match = 1 if (rule_pc and rule_pc == pc) else 0
-                    field_score = self._score_rule(rule_fields, fields)
-
-                    candidates.append((
-                        pc_match, field_score,
-                        bank_name, tx_name, step
-                    ))
+        if self.active_bank and self.active_bank in self.rules:
+            candidates = _search([(self.active_bank, self.rules[self.active_bank])])
+            candidates.sort(key=lambda c: (c[0], c[1]), reverse=True)
+        if not candidates or candidates[0][1] < 0:
+            candidates = _search(self.rules.items())
 
         if not candidates:
             return (None, None, None)
