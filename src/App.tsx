@@ -143,7 +143,10 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
   useEffect(() => {
     const sim = new SimBridge({
       onStatus: (status) => setSimConnStatus(status),
-      onSimStatus: (s) => setSimStatus(s),
+      onSimStatus: (s) => {
+        setSimStatus(s);
+        setSimTransactions([]);
+      },
       onTransaction: (tx) => setSimTransactions(prev =>
         prev.some(t => t.tx_id === tx.tx_id) ? prev : [...prev, tx]
       ),

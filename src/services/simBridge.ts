@@ -136,6 +136,7 @@ export class SimBridge {
     const type = data.type as string;
 
     if (type === 'sim_status') {
+      this.pendingTx.clear();
       this.callbacks.onSimStatus({
         connected: true,
         tcp_port: data.tcp_port as number,

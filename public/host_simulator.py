@@ -14,6 +14,7 @@ POS Host Simulator — 模擬銀行後台
 import asyncio
 import json
 import os
+import re
 import socket
 import struct
 import random
@@ -59,6 +60,7 @@ FIELD_DEFS = {
     24: ('n',   'FIXED',   3, 'Network International Identifier'),
     25: ('n',   'FIXED',   2, 'Point of Service Condition Code'),
     26: ('n',   'FIXED',   2, 'Point of Service Capture Code'),
+    27: ('n',   'FIXED',   2, 'Authorization ID Response Length'),
     28: ('an',  'FIXED',   9, 'Amount, Transaction Fee'),
     32: ('n',   'LLVAR',  11, 'Acquiring Institution ID'),
     35: ('z',   'LLVAR',  37, 'Track II Data'),
@@ -396,7 +398,7 @@ class ResponseGenerator:
             return False
         if exp in ('NOT_NULL', 'MUST_EXIST', 'MUST_NOT_EXIST'):
             return False
-        if exp.startswith('IF_EXIST:') or exp.startswith('REGEX:'):
+        if exp.startswith('IF_EXIST:'):
             return False
         return True
 
@@ -415,7 +417,13 @@ class ResponseGenerator:
             if not self._is_concrete_expected(exp):
                 continue
             actual = fields.get(fid, '')
-            if actual == exp:
+            if exp.startswith('REGEX:'):
+                pattern = exp[6:]
+                if actual and re.match(pattern, actual):
+                    score += 1
+                else:
+                    score -= 100
+            elif actual == exp:
                 score += 1
             else:
                 score -= 100
@@ -581,6 +589,77 @@ class ResponseGenerator:
             if req_mti == '0500':
                 resp.fields[63] = req.fields.get(63, '000000000000')
 
+        # GP 分期回應：在 F63 追加 Table 31（分期資料）+ Table 32（手續費）
+        if profile_bank == 'GP' and 63 in req.fields and 4 in req.fields:
+            f63_req = req.fields[63]
+            idx = f63_req.find('10')
+            if idx >= 0 and idx + 12 <= len(f63_req) and f63_req[idx+2:idx+12].isdigit():
+                merch_num = f63_req[idx+2:idx+12]
+                pppp = merch_num[6:10]
+                period = int(pppp[:2])
+                if period > 0:
+                    try:
+                        amount_yuan = int(req.fields[4]) // 100
+                    except ValueError:
+                        amount_yuan = 0
+                    if amount_yuan > 0:
+                        monthly = amount_yuan // period
+                        first = amount_yuan - monthly * (period - 1)
+                        monthly_str = str(monthly).zfill(9)
+                        duration_str = str(period).zfill(3)
+                        first_str = str(first).zfill(9)
+                        t31 = chr(0x00) + chr(0x33) + '31' + merch_num + monthly_str + duration_str + first_str
+                        t32 = chr(0x00) + chr(0x09) + '32' + '0000000'
+                        base_f63 = resp.fields.get(63, f63_req)
+                        resp.fields[63] = base_f63 + t31 + t32
+                        if 63 in resp.raw_fields:
+                            del resp.raw_fields[63]
+
+        # 台新TSB 分期回應：F63 填入分期計算資料 (64 bytes)
+        if profile_bank == '台新TSB' and req.fields.get(27) == '02' and 4 in req.fields:
+            try:
+                amount_cents = int(req.fields[4])
+            except ValueError:
+                amount_cents = 0
+            if amount_cents > 0:
+                period = 3
+                req_f63 = req.fields.get(63, '')
+                if len(req_f63) >= 2 and req_f63[:2].isdigit() and int(req_f63[:2]) > 0:
+                    period = int(req_f63[:2])
+                monthly_cents = amount_cents // period
+                first_cents = amount_cents - monthly_cents * (period - 1)
+                resp.fields[63] = (
+                    str(period).zfill(2) +
+                    str(first_cents).zfill(12) +
+                    str(monthly_cents).zfill(12) +
+                    '0' * 12 +  # 手續費
+                    '0' * 12 +  # 首期手續費
+                    '0' * 12 +  # 每期手續費
+                    '00'        # Filler
+                )
+                if 63 in resp.raw_fields:
+                    del resp.raw_fields[63]
+
+        # 台新TSB 紅利回應：F56 填入點數折抵資料 (51 bytes)
+        if profile_bank == '台新TSB' and req.fields.get(27) == '01' and 4 in req.fields:
+            try:
+                amount_cents = int(req.fields[4])
+            except ValueError:
+                amount_cents = 0
+            if amount_cents > 0:
+                amount_yuan = amount_cents // 100
+                order_no = resp.fields.get(37, '000000000000')[:12].ljust(12)
+                resp.fields[56] = (
+                    'Y' +
+                    order_no +
+                    str(amount_yuan).zfill(7) +   # 折抵點數（模擬 1:1）
+                    str(amount_cents).zfill(12) +  # 折抵金額
+                    '0' * 12 +                     # 實付金額（全額折抵）
+                    '0099999'                      # 剩餘點數
+                )
+                if 56 in resp.raw_fields:
+                    del resp.raw_fields[56]
+
         # 全域欄位覆蓋（Web UI 設定的）
         for fid_str, val in self.field_overrides.items():
             try:
@@ -663,6 +742,7 @@ class HostSimulator:
         self.ws_clients: set = set()
         self.tx_counter = 0
         self.running = False
+        self.last_tx_name: dict[str, str] = {}  # TID → 上一筆主交易名稱
 
     async def ws_broadcast(self, data: dict):
         if not self.ws_clients:
@@ -843,6 +923,20 @@ class HostSimulator:
                 bank, tx_name, rule = self.generator.match_rule(
                     req.mti, req.fields)
 
+                tid = req.fields.get(41, '')
+
+                # TC Upload (0220/F3=250000) 沿用上一筆主交易的名稱
+                if req.mti == '0220' and req.fields.get(3) == '250000' and tid:
+                    last = self.last_tx_name.get(tid)
+                    if last and tx_name and '一般銷售' in tx_name:
+                        suffix = tx_name.split('_', 1)[1] if '_' in tx_name else ''
+                        base = last.split('_', 1)[0]
+                        tx_name = f"{base}_{suffix}" if suffix else base
+
+                # 記住主交易名稱供後續 TC Upload 使用
+                if req.mti in ('0100', '0200') and tid and tx_name:
+                    self.last_tx_name[tid] = tx_name
+
                 # 依 F22 Entry Mode 補充過卡方式（規格未區分時）
                 if tx_name and 22 in req.fields:
                     entry = req.fields[22][:2]  # 前兩碼 = PAN entry mode
@@ -864,7 +958,8 @@ class HostSimulator:
                         tx_name = '小費'
                     elif '分期' not in tx_name and 63 in req.fields:
                         f63 = req.fields[63]
-                        if f63[:2] == '10' and len(f63) >= 12:
+                        idx = f63.find('10')
+                        if idx >= 0 and idx + 12 <= len(f63) and f63[idx+2:idx+12].isdigit():
                             tx_name = f"分期{tx_name}"
 
                 print(f"  [#{tx_id}] {ts} ← REQ {req.summary()}")
