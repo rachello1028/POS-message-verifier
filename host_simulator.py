@@ -939,10 +939,13 @@ class HostSimulator:
 
                 # 依 F22 Entry Mode 補充過卡方式（規格未區分時）
                 if tx_name and 22 in req.fields:
-                    entry = req.fields[22][:2]  # 前兩碼 = PAN entry mode
+                    f22 = req.fields[22]
+                    entry = f22[1:3] if len(f22) >= 3 else f22[:2]
                     suffixes = {
-                        '02': '刷卡', '05': '晶片', '07': '感應',
-                        '90': '刷卡', '91': '感應',
+                        '01': '手輸', '02': '刷卡', '05': '晶片',
+                        '07': '感應', '77': '感應', '71': '感應',
+                        '80': 'FALLBACK', '90': 'FALLBACK',
+                        '91': '感應', '92': 'FALLBACK',
                     }
                     suffix = suffixes.get(entry)
                     if suffix:

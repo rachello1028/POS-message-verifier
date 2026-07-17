@@ -127,7 +127,7 @@ DEFAULT_RULES = {
 def load_rules() -> dict:
     os.makedirs(RULES_DIR, exist_ok=True)
     merged = {}
-    files = sorted(f for f in os.listdir(RULES_DIR) if f.endswith('.json'))
+    files = sorted(f for f in os.listdir(RULES_DIR) if f.endswith('.json') and not f.startswith('_'))
     if not files:
         save_rules(DEFAULT_RULES)
         return DEFAULT_RULES
