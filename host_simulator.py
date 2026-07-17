@@ -461,11 +461,18 @@ class ResponseGenerator:
                         ))
             return results
 
-        # 先搜 active_bank，最佳匹配分數為負才搜全部
+        # 先搜 active_bank（含對應的 _SmartPay 子規格），最佳匹配分數為負才搜全部
         candidates = []
-        if self.active_bank and self.active_bank in self.rules:
-            candidates = _search([(self.active_bank, self.rules[self.active_bank])])
-            candidates.sort(key=lambda c: (c[0], c[1]), reverse=True)
+        if self.active_bank:
+            priority_banks = []
+            if self.active_bank in self.rules:
+                priority_banks.append((self.active_bank, self.rules[self.active_bank]))
+            sub_key = f"{self.active_bank}_SmartPay"
+            if sub_key in self.rules:
+                priority_banks.append((sub_key, self.rules[sub_key]))
+            if priority_banks:
+                candidates = _search(priority_banks)
+                candidates.sort(key=lambda c: (c[0], c[1]), reverse=True)
         if not candidates or candidates[0][1] < 0:
             candidates = _search(self.rules.items())
 
@@ -661,18 +668,26 @@ class ResponseGenerator:
                 if 56 in resp.raw_fields:
                     del resp.raw_fields[56]
 
-        # SmartPay 回應：F58 需包含 TAG F9 回應代碼
-        if (profile_bank == 'SmartPay' or
-                (not profile_bank and req.fields.get(3, '')[:4] == '0025')):
-            pc = req.fields.get(3, '')
-            if pc.startswith('0025') or pc.startswith('0026'):
-                f58_tag_f9 = b'F9\x04'
+        # SmartPay 回應：依銀行決定 TAG/Field
+        # GP → F57 + TAG S9 | TSB → F58 + TAG F9
+        pc = req.fields.get(3, '')
+        is_smartpay = pc.startswith('0025') or pc.startswith('0026') or pc.startswith('9200')
+        if is_smartpay and (profile_bank in ('GP', 'SmartPay', 'GP_SmartPay') or
+                (not profile_bank and is_smartpay)):
+            if profile_bank == 'GP' or profile_bank == 'GP_SmartPay':
+                tag_id = b'S9'
+                field_no = 57
+            else:
+                tag_id = b'F9'
+                field_no = 58
+            if not pc.startswith('9200'):
+                tag_data = tag_id + b'\x04'
                 if rc == '00':
-                    f58_tag_f9 += b'4001'
+                    tag_data += b'4001'
                 else:
-                    f58_tag_f9 += b'2999'
-                resp.fields[58] = f58_tag_f9.decode('ascii', errors='replace')
-                resp.raw_fields[58] = f58_tag_f9
+                    tag_data += b'2999'
+                resp.fields[field_no] = tag_data.decode('ascii', errors='replace')
+                resp.raw_fields[field_no] = tag_data
 
         # 全域欄位覆蓋（Web UI 設定的）
         for fid_str, val in self.field_overrides.items():
