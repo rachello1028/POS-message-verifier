@@ -13,6 +13,21 @@ import { transactionsToScript } from './services/scriptConverter';
 
 const EMPTY_RULES: AllRules = {};
 
+function cleanRules(raw: AllRules): AllRules {
+  const clean: AllRules = {};
+  for (const [k, v] of Object.entries(raw)) {
+    if (k.startsWith('_')) continue;
+    if (typeof v !== 'object' || v === null) continue;
+    const inner = v as Record<string, unknown>;
+    const hasRuleShape = Object.values(inner).some(
+      tx => typeof tx === 'object' && tx !== null && 'steps' in (tx as Record<string, unknown>)
+    );
+    if (!hasRuleShape) continue;
+    clean[k] = v;
+  }
+  return clean;
+}
+
 export default function App() {
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     return (localStorage.getItem('pos-theme') as 'dark' | 'light') ?? 'dark';
@@ -25,18 +40,7 @@ export default function App() {
     try {
       const cached = localStorage.getItem('pos-rules-cache');
       if (cached) {
-        const parsed = JSON.parse(cached) as AllRules;
-        const clean: AllRules = {};
-        for (const [k, v] of Object.entries(parsed)) {
-          if (k.startsWith('_')) continue;
-          if (typeof v !== 'object' || v === null) continue;
-          const inner = v as Record<string, unknown>;
-          const hasRuleShape = Object.values(inner).some(
-            tx => typeof tx === 'object' && tx !== null && 'steps' in (tx as Record<string, unknown>)
-          );
-          if (!hasRuleShape) continue;
-          clean[k] = v;
-        }
+        const clean = cleanRules(JSON.parse(cached) as AllRules);
         return Object.keys(clean).length > 0 ? clean : EMPTY_RULES;
       }
     } catch { /* ignore */ }
@@ -121,9 +125,9 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
       },
       onDevices: (list) => setDevices(list),
       onRules: (r) => {
-        // Bridge 連線時傳來的規格以檔案為準，更新本地快取
-        setRules(r);
-        localStorage.setItem('pos-rules-cache', JSON.stringify(r));
+        const cleaned = cleanRules(r);
+        setRules(cleaned);
+        localStorage.setItem('pos-rules-cache', JSON.stringify(cleaned));
       },
       onRulesSaved: () => {},
       onTransaction: (tx) => {

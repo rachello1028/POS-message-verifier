@@ -757,6 +757,7 @@ class HostSimulator:
         self.tx_counter = 0
         self.running = False
         self.last_tx_name: dict[str, str] = {}  # TID → 上一筆主交易名稱
+        self.last_tx_bank: dict[str, str] = {}  # TID → 上一筆主交易銀行
 
     async def ws_broadcast(self, data: dict):
         if not self.ws_clients:
@@ -947,9 +948,22 @@ class HostSimulator:
                         base = last.split('_', 1)[0]
                         tx_name = f"{base}_{suffix}" if suffix else base
 
-                # 記住主交易名稱供後續 TC Upload 使用
+                # 0202 Confirm 沿用上一筆主交易名稱（加 Confirm 後綴）
+                if req.mti == '0202' and tid:
+                    last = self.last_tx_name.get(tid)
+                    if last:
+                        if not tx_name:
+                            tx_name = f"{last}_Confirm"
+                        elif 'Confirm' not in tx_name:
+                            tx_name = f"{tx_name}_Confirm"
+                        if not bank:
+                            bank = self.last_tx_bank.get(tid)
+
+                # 記住主交易名稱供後續 TC Upload / Confirm 使用
                 if req.mti in ('0100', '0200') and tid and tx_name:
                     self.last_tx_name[tid] = tx_name
+                    if bank:
+                        self.last_tx_bank[tid] = bank
 
                 # 依 F22 Entry Mode 補充過卡方式（規格未區分時）
                 if tx_name and 22 in req.fields:
