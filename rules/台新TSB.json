@@ -4601,6 +4601,169 @@
                     ]
                 }
             ]
+        },
+        "紅利銷售_晶片卡感應": {
+            "type": "multi-step",
+            "description": "EMV晶片卡感應紅利交易",
+            "steps": [
+                {
+                    "step_name": "主交易",
+                    "mti": "0200",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "000000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_15",
+                            "name": "Date, Year",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "POS Entry Mode",
+                            "expected": "REGEX:^377[12]$"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "POS Condition Code",
+                            "expected": "99"
+                        },
+                        {
+                            "id": "REQ_27",
+                            "name": "Cash Redemption Flag",
+                            "expected": "01"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55_5A",
+                            "name": "Application PAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55_9F26",
+                            "name": "Application Cryptogram",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55_9F27",
+                            "name": "Cryptogram Information Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "Redemption Related Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "RSP_56",
+                            "name": "Redemption Related Data",
+                            "expected": "NOT_NULL"
+                        }
+                    ]
+                },
+                {
+                    "step_name": "TC Upload",
+                    "mti": "0220",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "250000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "POS Entry Mode",
+                            "expected": "REGEX:^377[12]$"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "POS Condition Code",
+                            "expected": "99"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55_9F26",
+                            "name": "Application Cryptogram",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55_9F27",
+                            "name": "Cryptogram Information Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
         }
     }
 }
