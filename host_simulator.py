@@ -484,7 +484,8 @@ class ResponseGenerator:
         # Response MTI
         req_mti = req.mti
         default_mti_map = {
-            '0100': '0110', '0200': '0210', '0220': '0230',
+            '0100': '0110', '0200': '0210', '0202': '0212',
+            '0220': '0230',
             '0300': '0310', '0320': '0330',
             '0400': '0410', '0420': '0430',
             '0500': '0510', '0800': '0810',
@@ -659,6 +660,19 @@ class ResponseGenerator:
                 )
                 if 56 in resp.raw_fields:
                     del resp.raw_fields[56]
+
+        # SmartPay 回應：F58 需包含 TAG F9 回應代碼
+        if (profile_bank == 'SmartPay' or
+                (not profile_bank and req.fields.get(3, '')[:4] == '0025')):
+            pc = req.fields.get(3, '')
+            if pc.startswith('0025') or pc.startswith('0026'):
+                f58_tag_f9 = b'F9\x04'
+                if rc == '00':
+                    f58_tag_f9 += b'4001'
+                else:
+                    f58_tag_f9 += b'2999'
+                resp.fields[58] = f58_tag_f9.decode('ascii', errors='replace')
+                resp.raw_fields[58] = f58_tag_f9
 
         # 全域欄位覆蓋（Web UI 設定的）
         for fid_str, val in self.field_overrides.items():

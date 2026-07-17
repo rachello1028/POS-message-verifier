@@ -544,5 +544,44 @@
         }
       }
     }
+  },
+  "SmartPay": {
+    "description": "台新 SmartPay 電子票證主機",
+    "mti_map": {
+      "0100": "0110",
+      "0200": "0210",
+      "0202": "0212",
+      "0500": "0510"
+    },
+    "response_rules": {
+      "default": {
+        "_comment": "消費扣款/取消/退費/授權完成 (0200→0210, 0202→0212)",
+        "echo": [3, 4, 11, 24, 41],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "37": "rrn",
+          "38": "auth_code",
+          "39": "response_code"
+        },
+        "conditional": {
+          "62": "echo_if_present"
+        }
+      },
+      "0500": {
+        "_comment": "結帳 (0500→0510)",
+        "echo": [3, 11, 24, 41],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "37": "rrn",
+          "38": "auth_code",
+          "39": "response_code"
+        },
+        "conditional": {
+          "63": "echo_if_present"
+        }
+      }
+    }
   }
 }

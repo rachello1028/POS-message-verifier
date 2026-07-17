@@ -1,0 +1,264 @@
+{
+    "SmartPay": {
+        "消費扣款_變動費率": {
+            "type": "multi-step",
+            "description": "SmartPay 消費扣款（變動費率）",
+            "steps": [
+                {
+                    "step_name": "主交易",
+                    "mti": "0200",
+                    "fields": [
+                        { "id": "REQ_3", "name": "Processing Code", "expected": "002541" },
+                        { "id": "REQ_4", "name": "Amount", "expected": "NOT_NULL" },
+                        { "id": "REQ_11", "name": "STAN", "expected": "NOT_NULL" },
+                        { "id": "REQ_22", "name": "POS Entry Mode", "expected": "NOT_NULL" },
+                        { "id": "REQ_24", "name": "NII", "expected": "NOT_NULL" },
+                        { "id": "REQ_25", "name": "POS Condition Code", "expected": "NOT_NULL" },
+                        { "id": "REQ_35", "name": "Card Data", "expected": "NOT_NULL" },
+                        { "id": "REQ_41", "name": "Terminal ID", "expected": "NOT_NULL" },
+                        { "id": "REQ_42", "name": "Merchant ID", "expected": "NOT_NULL" },
+                        { "id": "REQ_58", "name": "Private Data", "expected": "NOT_NULL" },
+                        { "id": "REQ_62", "name": "Invoice No", "expected": "NOT_NULL" },
+                        { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+                    ]
+                },
+                {
+                    "step_name": "Confirm",
+                    "mti": "0202",
+                    "fields": [
+                        { "id": "REQ_3", "name": "Processing Code", "expected": "002641" },
+                        { "id": "REQ_4", "name": "Amount", "expected": "NOT_NULL" },
+                        { "id": "REQ_11", "name": "STAN", "expected": "NOT_NULL" },
+                        { "id": "REQ_12", "name": "Time", "expected": "NOT_NULL" },
+                        { "id": "REQ_13", "name": "Date", "expected": "NOT_NULL" },
+                        { "id": "REQ_22", "name": "POS Entry Mode", "expected": "NOT_NULL" },
+                        { "id": "REQ_24", "name": "NII", "expected": "NOT_NULL" },
+                        { "id": "REQ_25", "name": "POS Condition Code", "expected": "NOT_NULL" },
+                        { "id": "REQ_35", "name": "Card Data", "expected": "NOT_NULL" },
+                        { "id": "REQ_37", "name": "RRN", "expected": "NOT_NULL" },
+                        { "id": "REQ_38", "name": "Auth Code", "expected": "NOT_NULL" },
+                        { "id": "REQ_41", "name": "Terminal ID", "expected": "NOT_NULL" },
+                        { "id": "REQ_42", "name": "Merchant ID", "expected": "NOT_NULL" },
+                        { "id": "REQ_62", "name": "Invoice No", "expected": "NOT_NULL" },
+                        { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+                    ]
+                }
+            ]
+        },
+        "消費扣款_固定費率": {
+            "type": "multi-step",
+            "description": "SmartPay 消費扣款（固定費率）",
+            "steps": [
+                {
+                    "step_name": "主交易",
+                    "mti": "0200",
+                    "fields": [
+                        { "id": "REQ_3", "name": "Processing Code", "expected": "002525" },
+                        { "id": "REQ_4", "name": "Amount", "expected": "NOT_NULL" },
+                        { "id": "REQ_11", "name": "STAN", "expected": "NOT_NULL" },
+                        { "id": "REQ_22", "name": "POS Entry Mode", "expected": "NOT_NULL" },
+                        { "id": "REQ_24", "name": "NII", "expected": "NOT_NULL" },
+                        { "id": "REQ_25", "name": "POS Condition Code", "expected": "NOT_NULL" },
+                        { "id": "REQ_35", "name": "Card Data", "expected": "NOT_NULL" },
+                        { "id": "REQ_41", "name": "Terminal ID", "expected": "NOT_NULL" },
+                        { "id": "REQ_42", "name": "Merchant ID", "expected": "NOT_NULL" },
+                        { "id": "REQ_58", "name": "Private Data", "expected": "NOT_NULL" },
+                        { "id": "REQ_62", "name": "Invoice No", "expected": "NOT_NULL" },
+                        { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+                    ]
+                },
+                {
+                    "step_name": "Confirm",
+                    "mti": "0202",
+                    "fields": [
+                        { "id": "REQ_3", "name": "Processing Code", "expected": "002625" },
+                        { "id": "REQ_4", "name": "Amount", "expected": "NOT_NULL" },
+                        { "id": "REQ_11", "name": "STAN", "expected": "NOT_NULL" },
+                        { "id": "REQ_24", "name": "NII", "expected": "NOT_NULL" },
+                        { "id": "REQ_41", "name": "Terminal ID", "expected": "NOT_NULL" },
+                        { "id": "REQ_62", "name": "Invoice No", "expected": "NOT_NULL" },
+                        { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+                    ]
+                }
+            ]
+        },
+        "取消消費扣款": {
+            "type": "multi-step",
+            "description": "SmartPay 取消消費扣款（變動費率）",
+            "steps": [
+                {
+                    "step_name": "主交易",
+                    "mti": "0200",
+                    "fields": [
+                        { "id": "REQ_3", "name": "Processing Code", "expected": "002542" },
+                        { "id": "REQ_4", "name": "Amount", "expected": "NOT_NULL" },
+                        { "id": "REQ_11", "name": "STAN", "expected": "NOT_NULL" },
+                        { "id": "REQ_12", "name": "Time", "expected": "NOT_NULL" },
+                        { "id": "REQ_13", "name": "Date", "expected": "NOT_NULL" },
+                        { "id": "REQ_22", "name": "POS Entry Mode", "expected": "NOT_NULL" },
+                        { "id": "REQ_24", "name": "NII", "expected": "NOT_NULL" },
+                        { "id": "REQ_25", "name": "POS Condition Code", "expected": "NOT_NULL" },
+                        { "id": "REQ_35", "name": "Card Data", "expected": "NOT_NULL" },
+                        { "id": "REQ_37", "name": "RRN", "expected": "NOT_NULL" },
+                        { "id": "REQ_41", "name": "Terminal ID", "expected": "NOT_NULL" },
+                        { "id": "REQ_42", "name": "Merchant ID", "expected": "NOT_NULL" },
+                        { "id": "REQ_58", "name": "Private Data", "expected": "NOT_NULL" },
+                        { "id": "REQ_62", "name": "Invoice No", "expected": "NOT_NULL" },
+                        { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+                    ]
+                },
+                {
+                    "step_name": "Confirm",
+                    "mti": "0202",
+                    "fields": [
+                        { "id": "REQ_3", "name": "Processing Code", "expected": "002642" },
+                        { "id": "REQ_4", "name": "Amount", "expected": "NOT_NULL" },
+                        { "id": "REQ_11", "name": "STAN", "expected": "NOT_NULL" },
+                        { "id": "REQ_24", "name": "NII", "expected": "NOT_NULL" },
+                        { "id": "REQ_41", "name": "Terminal ID", "expected": "NOT_NULL" },
+                        { "id": "REQ_62", "name": "Invoice No", "expected": "NOT_NULL" },
+                        { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+                    ]
+                }
+            ]
+        },
+        "退費": {
+            "type": "multi-step",
+            "description": "SmartPay 消費扣款退費（變動費率）",
+            "steps": [
+                {
+                    "step_name": "主交易",
+                    "mti": "0200",
+                    "fields": [
+                        { "id": "REQ_3", "name": "Processing Code", "expected": "002543" },
+                        { "id": "REQ_4", "name": "Amount", "expected": "NOT_NULL" },
+                        { "id": "REQ_11", "name": "STAN", "expected": "NOT_NULL" },
+                        { "id": "REQ_22", "name": "POS Entry Mode", "expected": "NOT_NULL" },
+                        { "id": "REQ_24", "name": "NII", "expected": "NOT_NULL" },
+                        { "id": "REQ_25", "name": "POS Condition Code", "expected": "NOT_NULL" },
+                        { "id": "REQ_35", "name": "Card Data", "expected": "NOT_NULL" },
+                        { "id": "REQ_37", "name": "RRN", "expected": "NOT_NULL" },
+                        { "id": "REQ_41", "name": "Terminal ID", "expected": "NOT_NULL" },
+                        { "id": "REQ_42", "name": "Merchant ID", "expected": "NOT_NULL" },
+                        { "id": "REQ_58", "name": "Private Data", "expected": "NOT_NULL" },
+                        { "id": "REQ_62", "name": "Invoice No", "expected": "NOT_NULL" },
+                        { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+                    ]
+                },
+                {
+                    "step_name": "Confirm",
+                    "mti": "0202",
+                    "fields": [
+                        { "id": "REQ_3", "name": "Processing Code", "expected": "002643" },
+                        { "id": "REQ_4", "name": "Amount", "expected": "NOT_NULL" },
+                        { "id": "REQ_11", "name": "STAN", "expected": "NOT_NULL" },
+                        { "id": "REQ_24", "name": "NII", "expected": "NOT_NULL" },
+                        { "id": "REQ_41", "name": "Terminal ID", "expected": "NOT_NULL" },
+                        { "id": "REQ_62", "name": "Invoice No", "expected": "NOT_NULL" },
+                        { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+                    ]
+                }
+            ]
+        },
+        "預先授權": {
+            "type": "multi-step",
+            "description": "SmartPay 預先授權（變動費率）",
+            "steps": [
+                {
+                    "step_name": "主交易",
+                    "mti": "0100",
+                    "fields": [
+                        { "id": "REQ_3", "name": "Processing Code", "expected": "002551" },
+                        { "id": "REQ_4", "name": "Amount", "expected": "NOT_NULL" },
+                        { "id": "REQ_11", "name": "STAN", "expected": "NOT_NULL" },
+                        { "id": "REQ_22", "name": "POS Entry Mode", "expected": "NOT_NULL" },
+                        { "id": "REQ_24", "name": "NII", "expected": "NOT_NULL" },
+                        { "id": "REQ_25", "name": "POS Condition Code", "expected": "NOT_NULL" },
+                        { "id": "REQ_35", "name": "Card Data", "expected": "NOT_NULL" },
+                        { "id": "REQ_41", "name": "Terminal ID", "expected": "NOT_NULL" },
+                        { "id": "REQ_42", "name": "Merchant ID", "expected": "NOT_NULL" },
+                        { "id": "REQ_58", "name": "Private Data", "expected": "NOT_NULL" },
+                        { "id": "REQ_62", "name": "Invoice No", "expected": "NOT_NULL" },
+                        { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+                    ]
+                }
+            ]
+        },
+        "授權完成": {
+            "type": "multi-step",
+            "description": "SmartPay 授權完成（變動費率）",
+            "steps": [
+                {
+                    "step_name": "主交易",
+                    "mti": "0200",
+                    "fields": [
+                        { "id": "REQ_3", "name": "Processing Code", "expected": "002552" },
+                        { "id": "REQ_4", "name": "Amount", "expected": "NOT_NULL" },
+                        { "id": "REQ_11", "name": "STAN", "expected": "NOT_NULL" },
+                        { "id": "REQ_22", "name": "POS Entry Mode", "expected": "NOT_NULL" },
+                        { "id": "REQ_24", "name": "NII", "expected": "NOT_NULL" },
+                        { "id": "REQ_25", "name": "POS Condition Code", "expected": "NOT_NULL" },
+                        { "id": "REQ_35", "name": "Card Data", "expected": "NOT_NULL" },
+                        { "id": "REQ_37", "name": "RRN", "expected": "NOT_NULL" },
+                        { "id": "REQ_41", "name": "Terminal ID", "expected": "NOT_NULL" },
+                        { "id": "REQ_42", "name": "Merchant ID", "expected": "NOT_NULL" },
+                        { "id": "REQ_58", "name": "Private Data", "expected": "NOT_NULL" },
+                        { "id": "REQ_62", "name": "Invoice No", "expected": "NOT_NULL" },
+                        { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+                    ]
+                },
+                {
+                    "step_name": "Confirm",
+                    "mti": "0202",
+                    "fields": [
+                        { "id": "REQ_3", "name": "Processing Code", "expected": "002652" },
+                        { "id": "REQ_4", "name": "Amount", "expected": "NOT_NULL" },
+                        { "id": "REQ_11", "name": "STAN", "expected": "NOT_NULL" },
+                        { "id": "REQ_24", "name": "NII", "expected": "NOT_NULL" },
+                        { "id": "REQ_41", "name": "Terminal ID", "expected": "NOT_NULL" },
+                        { "id": "REQ_62", "name": "Invoice No", "expected": "NOT_NULL" },
+                        { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+                    ]
+                }
+            ]
+        },
+        "退費通知查詢": {
+            "type": "multi-step",
+            "description": "SmartPay 消費扣款退費通知查詢",
+            "steps": [
+                {
+                    "step_name": "主交易",
+                    "mti": "0200",
+                    "fields": [
+                        { "id": "REQ_3", "name": "Processing Code", "expected": "002547" },
+                        { "id": "REQ_11", "name": "STAN", "expected": "NOT_NULL" },
+                        { "id": "REQ_24", "name": "NII", "expected": "NOT_NULL" },
+                        { "id": "REQ_41", "name": "Terminal ID", "expected": "NOT_NULL" },
+                        { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+                    ]
+                }
+            ]
+        },
+        "結帳": {
+            "type": "multi-step",
+            "description": "SmartPay 結帳交易",
+            "steps": [
+                {
+                    "step_name": "主交易",
+                    "mti": "0500",
+                    "fields": [
+                        { "id": "REQ_3", "name": "Processing Code", "expected": "920000" },
+                        { "id": "REQ_11", "name": "STAN", "expected": "NOT_NULL" },
+                        { "id": "REQ_24", "name": "NII", "expected": "NOT_NULL" },
+                        { "id": "REQ_41", "name": "Terminal ID", "expected": "NOT_NULL" },
+                        { "id": "REQ_42", "name": "Merchant ID", "expected": "NOT_NULL" },
+                        { "id": "REQ_60", "name": "Batch Number", "expected": "NOT_NULL" },
+                        { "id": "REQ_62", "name": "Invoice No", "expected": "NOT_NULL" },
+                        { "id": "REQ_63", "name": "Settlement Data", "expected": "NOT_NULL" },
+                        { "id": "RSP_39", "name": "Response Code", "expected": "00" }
+                    ]
+                }
+            ]
+        }
+    }
+}
