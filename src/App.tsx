@@ -24,7 +24,21 @@ export default function App() {
   const [rules, setRules] = useState<AllRules>(() => {
     try {
       const cached = localStorage.getItem('pos-rules-cache');
-      if (cached) return JSON.parse(cached) as AllRules;
+      if (cached) {
+        const parsed = JSON.parse(cached) as AllRules;
+        const clean: AllRules = {};
+        for (const [k, v] of Object.entries(parsed)) {
+          if (k.startsWith('_')) continue;
+          if (typeof v !== 'object' || v === null) continue;
+          const inner = v as Record<string, unknown>;
+          const hasRuleShape = Object.values(inner).some(
+            tx => typeof tx === 'object' && tx !== null && 'steps' in (tx as Record<string, unknown>)
+          );
+          if (!hasRuleShape) continue;
+          clean[k] = v;
+        }
+        return Object.keys(clean).length > 0 ? clean : EMPTY_RULES;
+      }
     } catch { /* ignore */ }
     return EMPTY_RULES;
   });
