@@ -437,7 +437,9 @@
           "39": "response_code"
         },
         "conditional": {
-          "59": "echo_if_present"
+          "59": "echo_if_present",
+          "60": "echo_if_present",
+          "63": "echo_if_present"
         }
       },
       "0800": {
