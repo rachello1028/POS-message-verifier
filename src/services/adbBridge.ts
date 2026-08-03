@@ -10,6 +10,7 @@ export interface BridgeCallbacks {
   onRulesSaved: () => void;
   onTransaction: (tx: TransactionResult) => void;
   onError: (msg: string) => void;
+  onLogcatExited?: () => void;
 }
 
 const HEARTBEAT_INTERVAL_MS = 25_000;  // 每 25 秒送一次 ping
@@ -218,6 +219,10 @@ export class AdbBridge {
           break;
         case 'logcat_stopped':
           console.log('[Bridge] Logcat stopped');
+          break;
+        case 'logcat_exited':
+          console.warn('[Bridge] Logcat process exited unexpectedly');
+          this.callbacks.onLogcatExited?.();
           break;
         case 'logcat':
           this.processLogLine(data.message as string);

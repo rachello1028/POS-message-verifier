@@ -219,6 +219,10 @@ async def start_logcat(device_id: str = '') -> None:
     except Exception as e:
         print(f"[ERROR] Logcat error: {e}")
         await broadcast(json.dumps({'type': 'error', 'message': str(e)}))
+    finally:
+        logcat_process = None
+        print("[WARN] Logcat 進程已結束")
+        await broadcast(json.dumps({'type': 'logcat_exited', 'message': 'Logcat 進程已結束，請重新開始監聽'}))
 
 
 async def stop_logcat() -> None:
