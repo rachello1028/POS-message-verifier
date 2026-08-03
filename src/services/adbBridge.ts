@@ -231,9 +231,13 @@ export class AdbBridge {
           console.warn('[Bridge] Logcat process exited unexpectedly');
           this.callbacks.onLogcatExited?.();
           break;
-        case 'logcat':
-          this.processLogLine(data.message as string);
+        case 'logcat': {
+          const msg = data.message as string;
+          if (msg.includes('REAL SEND') || msg.includes('RECEIVE DATA UnPack END'))
+            console.log('[LOGCAT]', msg.slice(-60));
+          this.processLogLine(msg);
           break;
+        }
         case 'error':
           this.callbacks.onError(data.message as string);
           break;
@@ -250,6 +254,7 @@ export class AdbBridge {
    */
   private processLogLine(line: string): void {
     if (line.includes('REAL SEND DATA Pack START')) {
+      console.log('[CAPTURE] START — 開始收集');
       this.isCapturing = true;
       this.logBuffer = [line];
       return;
@@ -259,9 +264,11 @@ export class AdbBridge {
       this.logBuffer.push(line);
 
       if (line.includes('RECEIVE DATA UnPack END')) {
+        console.log('[CAPTURE] END — 收集完成，共', this.logBuffer.length, '行');
         this.isCapturing = false;
         const rawLog = this.logBuffer.join('\n');
         const parsed = parseIsoLog(rawLog);
+        console.log('[PARSE] MTI:', parsed['REQ_.MTI'], '| keys:', Object.keys(parsed).length);
         this.logBuffer = [];
         this.evaluateBuffer(parsed, rawLog);
       }
@@ -269,10 +276,14 @@ export class AdbBridge {
   }
 
   private evaluateBuffer(parsed: Record<string, string>, rawLog?: string): void {
-    if (this.pendingSteps.length === 0) return;
+    if (this.pendingSteps.length === 0) {
+      console.warn('[EVAL] pendingSteps 為空，跳過');
+      return;
+    }
     const actualMti = (parsed['REQ_.MTI'] ?? '').replace('0x', '').trim();
     const expectedStep = this.pendingSteps[this.currentStepIdx];
     const expectedMti = expectedStep.mti.trim();
+    console.log(`[EVAL] actualMTI="${actualMti}" expectedMTI="${expectedMti}" stepIdx=${this.currentStepIdx}/${this.pendingSteps.length}`);
 
     // MTI 不符合這一步
     if (actualMti && !actualMti.includes(expectedMti)) {
