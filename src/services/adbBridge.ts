@@ -38,6 +38,7 @@ export class AdbBridge {
   // Log 緩衝（收集一段完整電文 REQ+RSP）
   private logBuffer: string[] = [];
   private isCapturing = false;
+  private monitoringDevice: string | null = null;
 
   constructor(callbacks: BridgeCallbacks, url?: string) {
     this.callbacks = callbacks;
@@ -55,6 +56,7 @@ export class AdbBridge {
         if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
         this.callbacks.onStatus('connected', 'ADB Bridge 連線成功');
         this.startHeartbeat();
+        this.resumeLogcat();
       };
 
       this.ws.onclose = () => {
@@ -103,6 +105,7 @@ export class AdbBridge {
           this.reconnectCount = 0;
           this.callbacks.onStatus('connected', 'ADB Bridge 連線成功');
           this.startHeartbeat();
+          this.resumeLogcat();
         };
         this.ws.onclose = () => {
           this.stopHeartbeat();
@@ -144,6 +147,13 @@ export class AdbBridge {
     if (this.pongTimer)      { clearTimeout(this.pongTimer);       this.pongTimer = null; }
   }
 
+  private resumeLogcat(): void {
+    if (this.monitoringDevice !== null) {
+      console.log('[Bridge] 重連後自動恢復 logcat:', this.monitoringDevice);
+      this.send({ command: 'start_logcat', device: this.monitoringDevice });
+    }
+  }
+
   private send(data: object): void {
     if (this.ws?.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(data));
@@ -157,10 +167,12 @@ export class AdbBridge {
   }
 
   startLogcat(device: string): void {
+    this.monitoringDevice = device;
     this.send({ command: 'start_logcat', device });
   }
 
   stopLogcat(): void {
+    this.monitoringDevice = null;
     this.send({ command: 'stop_logcat' });
   }
 

@@ -214,6 +214,8 @@ async def start_logcat(device_id: str = '') -> None:
 
             decoded = line.decode('utf-8', errors='ignore').strip()
             if decoded and any(p in decoded for p in INCLUDE_PATTERNS):
+                short = decoded[-80:] if len(decoded) > 80 else decoded
+                print(f"  >> {short}")
                 await broadcast(json.dumps({'type': 'logcat', 'message': decoded}))
 
     except Exception as e:
