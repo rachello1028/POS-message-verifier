@@ -56,7 +56,6 @@ export class AdbBridge {
         if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
         this.callbacks.onStatus('connected', 'ADB Bridge 連線成功');
         this.startHeartbeat();
-        this.resumeLogcat();
       };
 
       this.ws.onclose = () => {
@@ -65,6 +64,10 @@ export class AdbBridge {
           this.callbacks.onStatus('disconnected');
         } else {
           this.callbacks.onStatus('disconnected', '連線已中斷');
+          if (this.monitoringDevice !== null) {
+            this.monitoringDevice = null;
+            this.callbacks.onLogcatExited?.();
+          }
           this.scheduleReconnect();
         }
       };
@@ -105,7 +108,6 @@ export class AdbBridge {
           this.reconnectCount = 0;
           this.callbacks.onStatus('connected', 'ADB Bridge 連線成功');
           this.startHeartbeat();
-          this.resumeLogcat();
         };
         this.ws.onclose = () => {
           this.stopHeartbeat();
@@ -145,13 +147,6 @@ export class AdbBridge {
   private stopHeartbeat(): void {
     if (this.heartbeatTimer) { clearInterval(this.heartbeatTimer); this.heartbeatTimer = null; }
     if (this.pongTimer)      { clearTimeout(this.pongTimer);       this.pongTimer = null; }
-  }
-
-  private resumeLogcat(): void {
-    if (this.monitoringDevice !== null) {
-      console.log('[Bridge] 重連後自動恢復 logcat:', this.monitoringDevice);
-      this.send({ command: 'start_logcat', device: this.monitoringDevice });
-    }
   }
 
   private send(data: object): void {

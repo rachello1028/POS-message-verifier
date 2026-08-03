@@ -137,7 +137,6 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
       onError: (msg) => console.error('[Bridge Error]', msg),
       onLogcatExited: () => {
         setIsMonitoring(false);
-        alert('Logcat 進程已結束，請重新開始監聽');
       },
     }, `ws://127.0.0.1:${bridgePort}`);
     bridgeRef.current = bridge;

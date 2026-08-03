@@ -197,6 +197,7 @@ async def start_logcat(device_id: str = '') -> None:
         cmd += ['-s', device_id]
     cmd += ['logcat', '-v', 'threadtime']
 
+    my_process = None
     try:
         logcat_process = await asyncio.create_subprocess_exec(
             *cmd,
@@ -215,18 +216,16 @@ async def start_logcat(device_id: str = '') -> None:
 
             decoded = line.decode('utf-8', errors='ignore').strip()
             if decoded and any(p in decoded for p in INCLUDE_PATTERNS):
-                short = decoded[-80:] if len(decoded) > 80 else decoded
-                print(f"  >> {short}")
                 await broadcast(json.dumps({'type': 'logcat', 'message': decoded}))
 
     except Exception as e:
         print(f"[ERROR] Logcat error: {e}")
         await broadcast(json.dumps({'type': 'error', 'message': str(e)}))
     finally:
-        if logcat_process is my_process:
+        if my_process and logcat_process is my_process:
             logcat_process = None
-            print("[WARN] Logcat 進程已結束")
-            await broadcast(json.dumps({'type': 'logcat_exited', 'message': 'Logcat 進程已結束，請重新開始監聯'}))
+            print("[WARN] Logcat 進程意外結束")
+            await broadcast(json.dumps({'type': 'logcat_exited'}))
 
 
 async def stop_logcat() -> None:
