@@ -203,12 +203,13 @@ async def start_logcat(device_id: str = '') -> None:
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE
         )
+        my_process = logcat_process
         print(f"[INFO] Logcat 開始 (device: {device_id or 'default'})")
 
         while True:
-            if logcat_process is None:
+            if logcat_process is not my_process:
                 break
-            line = await logcat_process.stdout.readline()
+            line = await my_process.stdout.readline()
             if not line:
                 break
 
@@ -220,9 +221,10 @@ async def start_logcat(device_id: str = '') -> None:
         print(f"[ERROR] Logcat error: {e}")
         await broadcast(json.dumps({'type': 'error', 'message': str(e)}))
     finally:
-        logcat_process = None
-        print("[WARN] Logcat 進程已結束")
-        await broadcast(json.dumps({'type': 'logcat_exited', 'message': 'Logcat 進程已結束，請重新開始監聽'}))
+        if logcat_process is my_process:
+            logcat_process = None
+            print("[WARN] Logcat 進程已結束")
+            await broadcast(json.dumps({'type': 'logcat_exited', 'message': 'Logcat 進程已結束，請重新開始監聽'}))
 
 
 async def stop_logcat() -> None:
