@@ -39,6 +39,8 @@ export class AdbBridge {
   private logBuffer: string[] = [];
   private isCapturing = false;
   private monitoringDevice: string | null = null;
+  private stepTimeoutTimer: ReturnType<typeof setTimeout> | null = null;
+  private static readonly STEP_TIMEOUT_MS = 15_000;
 
   constructor(callbacks: BridgeCallbacks, url?: string) {
     this.callbacks = callbacks;
@@ -184,17 +186,18 @@ export class AdbBridge {
     this.currentBank = bank;
     this.currentTransType = transType;
     this.pendingSteps = steps;
-    // 全部重置，避免舊次殘留狀態影響新一次
     this.currentStepIdx = 0;
     this.accumulatedStepResults = [];
     this.logBuffer = [];
     this.isCapturing = false;
+    this.clearStepTimeout();
   }
 
   resetTransaction(): void {
     this.currentStepIdx = 0;
     this.accumulatedStepResults = [];
     this.logBuffer = [];
+    this.clearStepTimeout();
     this.isCapturing = false;
   }
 
@@ -231,13 +234,9 @@ export class AdbBridge {
           console.warn('[Bridge] Logcat process exited unexpectedly');
           this.callbacks.onLogcatExited?.();
           break;
-        case 'logcat': {
-          const msg = data.message as string;
-          if (msg.includes('REAL SEND') || msg.includes('RECEIVE DATA UnPack END'))
-            console.log('[LOGCAT]', msg.slice(-60));
-          this.processLogLine(msg);
+        case 'logcat':
+          this.processLogLine(data.message as string);
           break;
-        }
         case 'error':
           this.callbacks.onError(data.message as string);
           break;
@@ -254,7 +253,6 @@ export class AdbBridge {
    */
   private processLogLine(line: string): void {
     if (line.includes('REAL SEND DATA Pack START')) {
-      console.log('[CAPTURE] START — 開始收集');
       this.isCapturing = true;
       this.logBuffer = [line];
       return;
@@ -264,11 +262,9 @@ export class AdbBridge {
       this.logBuffer.push(line);
 
       if (line.includes('RECEIVE DATA UnPack END')) {
-        console.log('[CAPTURE] END — 收集完成，共', this.logBuffer.length, '行');
         this.isCapturing = false;
         const rawLog = this.logBuffer.join('\n');
         const parsed = parseIsoLog(rawLog);
-        console.log('[PARSE] MTI:', parsed['REQ_.MTI'], '| keys:', Object.keys(parsed).length);
         this.logBuffer = [];
         this.evaluateBuffer(parsed, rawLog);
       }
@@ -276,36 +272,22 @@ export class AdbBridge {
   }
 
   private evaluateBuffer(parsed: Record<string, string>, rawLog?: string): void {
-    if (this.pendingSteps.length === 0) {
-      console.warn('[EVAL] pendingSteps 為空，跳過');
-      return;
-    }
+    if (this.pendingSteps.length === 0) return;
     const actualMti = (parsed['REQ_.MTI'] ?? '').replace('0x', '').trim();
     const expectedStep = this.pendingSteps[this.currentStepIdx];
     const expectedMti = expectedStep.mti.trim();
-    console.log(`[EVAL] actualMTI="${actualMti}" expectedMTI="${expectedMti}" stepIdx=${this.currentStepIdx}/${this.pendingSteps.length}`);
 
     // MTI 不符合這一步
     if (actualMti && !actualMti.includes(expectedMti)) {
       // 檢查是否是新的一筆交易開始（MTI 符合第一步驟）
       const firstStepMti = this.pendingSteps[0].mti.trim();
       if (actualMti.includes(firstStepMti)) {
-        // 如果之前有累積的結果，先輸出為未完成的交易
         if (this.accumulatedStepResults.length > 0) {
-          this.txCounter++;
-          const tx: TransactionResult = {
-            id: this.txCounter,
-            timestamp: new Date().toLocaleTimeString('zh-TW'),
-            bank: this.currentBank,
-            transactionType: this.currentTransType,
-            pass: false,
-            steps: [...this.accumulatedStepResults],
-          };
-          this.callbacks.onTransaction(tx);
+          this.emitTransaction(false);
+        } else {
+          this.currentStepIdx = 0;
+          this.accumulatedStepResults = [];
         }
-        // 重置並重新評估
-        this.currentStepIdx = 0;
-        this.accumulatedStepResults = [];
         // 遞迴呼叫自己來處理這筆新交易
         this.evaluateBuffer(parsed, rawLog);
         return;
@@ -336,26 +318,47 @@ export class AdbBridge {
 
     this.accumulatedStepResults.push(stepResult);
     this.currentStepIdx++;
+    this.clearStepTimeout();
 
     // 所有步驟都完成
     if (this.currentStepIdx >= this.pendingSteps.length) {
-      this.txCounter++;
-      const allPass = this.accumulatedStepResults.every(s => s.pass);
+      this.emitTransaction(true);
+    } else {
+      // 還有步驟未完成，啟動超時計時器
+      this.stepTimeoutTimer = setTimeout(() => {
+        console.warn(`[TIMEOUT] 第 ${this.currentStepIdx + 1} 步超時未到，輸出已完成的 ${this.accumulatedStepResults.length} 步`);
+        this.emitTransaction(false);
+      }, AdbBridge.STEP_TIMEOUT_MS);
+    }
+  }
 
-      const tx: TransactionResult = {
-        id: this.txCounter,
-        timestamp: new Date().toLocaleTimeString('zh-TW'),
-        bank: this.currentBank,
-        transactionType: this.currentTransType,
-        pass: allPass,
-        steps: [...this.accumulatedStepResults],
-      };
+  private emitTransaction(allStepsComplete: boolean): void {
+    this.clearStepTimeout();
+    if (this.accumulatedStepResults.length === 0) return;
 
-      this.callbacks.onTransaction(tx);
+    this.txCounter++;
+    const allPass = allStepsComplete && this.accumulatedStepResults.every(s => s.pass);
 
-      // 重置，等待下一筆交易
-      this.currentStepIdx = 0;
-      this.accumulatedStepResults = [];
+    const tx: TransactionResult = {
+      id: this.txCounter,
+      timestamp: new Date().toLocaleTimeString('zh-TW'),
+      bank: this.currentBank,
+      transactionType: this.currentTransType,
+      pass: allPass,
+      steps: [...this.accumulatedStepResults],
+      incomplete: !allStepsComplete,
+    };
+
+    this.callbacks.onTransaction(tx);
+
+    this.currentStepIdx = 0;
+    this.accumulatedStepResults = [];
+  }
+
+  private clearStepTimeout(): void {
+    if (this.stepTimeoutTimer) {
+      clearTimeout(this.stepTimeoutTimer);
+      this.stepTimeoutTimer = null;
     }
   }
 

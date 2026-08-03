@@ -443,6 +443,11 @@ export default function TestPanel({
                     }`}>
                       {tx.pass ? '✅ 完美通過' : '❌ 驗証失敗'}
                     </span>
+                    {tx.incomplete && (
+                      <span className="badge text-[var(--amber-ink)] bg-[var(--amber-soft)] border-[var(--amber-line)]">
+                        ⚠ 步驟未完成 ({tx.steps.length}/{tx.steps.length + 1}+)
+                      </span>
+                    )}
                     <span className="text-xs text-[var(--fg-subtle)]">{tx.timestamp}</span>
                   </div>
                   <div className="text-xs text-[var(--fg-muted)] mt-0.5">

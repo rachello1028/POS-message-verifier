@@ -68,6 +68,7 @@ export interface TransactionResult {
   transactionType: string;
   pass: boolean;
   steps: StepResult[];
+  incomplete?: boolean;
 }
 
 // ─── 自動化測試相關型別 ──────────────────────────────────────────────────────
