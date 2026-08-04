@@ -543,7 +543,7 @@ class ResponseGenerator:
                 elif gen_type == 'date':
                     resp.fields[fid] = now.strftime('%m%d')
                 elif gen_type == 'year_date':
-                    resp.fields[fid] = now.strftime('%m%d')
+                    resp.fields[fid] = now.strftime('%Y')
                 elif gen_type == 'rrn':
                     resp.fields[fid] = req.fields.get(37, self._next_rrn())
                 elif gen_type == 'auth_code':
