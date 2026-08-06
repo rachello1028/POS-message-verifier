@@ -790,7 +790,7 @@ export default function SimulatorPanel({
                     </span>
                   )}
                   <span className="text-xs text-[var(--fg-muted)] font-mono flex-shrink-0">
-                    {formatAmount(tx.req_fields['4'])}
+                    {formatAmount(tx.req_fields['4']?.replace(/^0+$/, '') ? tx.req_fields['4'] : tx.resp_fields?.['4'] ?? tx.req_fields['4'])}
                   </span>
                   <span className={`badge text-[10px] py-0.5 flex-shrink-0 ${
                     isError || isTimeout ? 'badge-warning' : isApproved ? 'badge-success' : 'badge-error'
