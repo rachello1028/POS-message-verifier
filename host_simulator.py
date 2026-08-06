@@ -739,11 +739,16 @@ class ResponseGenerator:
                 amt_in_resp = resp.fields.get(4, '').replace('0', '')
                 if not amt_in_resp and 4 in orig_resp:
                     resp.fields[4] = orig_resp[4]
-                for fid in (56, 58):
-                    if fid in orig_resp and fid not in resp.fields:
-                        resp.fields[fid] = orig_resp[fid]
-                        if fid in orig.get('raw', {}):
-                            resp.raw_fields[fid] = orig['raw'][fid]
+                # F56: 退貨 request 的 F56 只帶 RRN 做查詢用，response 應回傳原始交易的完整紅利資料
+                if 56 in orig_resp:
+                    resp.fields[56] = orig_resp[56]
+                    if 56 in orig.get('raw', {}):
+                        resp.raw_fields[56] = orig['raw'][56]
+                # F58: 僅在 response 未帶時補入
+                if 58 in orig_resp and 58 not in resp.fields:
+                    resp.fields[58] = orig_resp[58]
+                    if 58 in orig.get('raw', {}):
+                        resp.raw_fields[58] = orig['raw'][58]
 
         # 全域欄位覆蓋（Web UI 設定的）
         for fid_str, val in self.field_overrides.items():
