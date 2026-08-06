@@ -76,6 +76,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -258,6 +263,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 },
@@ -620,6 +630,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -702,6 +717,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -774,6 +794,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -856,6 +881,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -953,6 +983,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -1050,6 +1085,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -1137,6 +1177,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -1224,6 +1269,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -1301,6 +1351,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -1388,6 +1443,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -1470,6 +1530,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -1557,6 +1622,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -1746,6 +1816,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -1838,6 +1913,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -2146,6 +2226,11 @@
                             "id": "RSP_58_P1",
                             "name": "Terminal Working Key",
                             "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -2228,6 +2313,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -2320,6 +2410,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 },
@@ -2477,6 +2572,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -2549,6 +2649,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -2641,6 +2746,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -2723,6 +2833,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         },
                         {
                             "id": "RSP_56",
@@ -2820,6 +2935,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         },
                         {
                             "id": "RSP_56",
@@ -2968,6 +3088,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -3065,6 +3190,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -3142,6 +3272,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -3229,6 +3364,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 },
@@ -3381,6 +3521,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -3473,6 +3618,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -3575,6 +3725,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -3647,6 +3802,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -3739,6 +3899,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -3826,6 +3991,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
@@ -3917,6 +4087,11 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
                         },
                         {
                             "id": "RSP_56",

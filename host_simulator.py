@@ -364,7 +364,52 @@ class ResponseGenerator:
         self.timeout_mode: str = 'none'
         self.timeout_count: int = 0
         self.tx_since_timeout: int = 0
-        self.tx_history: dict[str, dict] = {}  # (bank|invoice) → 原始交易欄位
+        self.tx_history: dict[str, dict] = {}  # (bank|tid) → 原始交易欄位
+        self.tx_no_counter = random.randint(100000000000, 999999999999)
+
+    def _next_transaction_no(self) -> str:
+        """生成 Transaction_No: Y + YYMMDD + 12 位流水號"""
+        self.tx_no_counter += 1
+        if self.tx_no_counter > 999999999999:
+            self.tx_no_counter = 100000000000
+        now = datetime.now()
+        return 'Y' + now.strftime('%y%m%d') + str(self.tx_no_counter).zfill(12)
+
+    @staticmethod
+    def _parse_f58_tags(raw: bytes) -> list[tuple[bytes, bytes]]:
+        """解析 F58 TLV 子 tag（2-byte tag + 1-byte length + data）"""
+        tags = []
+        i = 0
+        while i + 3 <= len(raw):
+            tag = raw[i:i+2]
+            length = raw[i+2]
+            if i + 3 + length > len(raw):
+                break
+            data = raw[i+3:i+3+length]
+            tags.append((tag, data))
+            i += 3 + length
+        return tags
+
+    @staticmethod
+    def _build_f58(tags: list[tuple[bytes, bytes]]) -> bytes:
+        """從 tag list 重建 F58 raw bytes"""
+        result = b''
+        for tag, data in tags:
+            result += tag + bytes([len(data)]) + data
+        return result
+
+    def _inject_f58_qj(self, resp: 'Iso8583Message', tx_no: str | None = None):
+        """在 F58 中注入/替換 QJ (Transaction_No) tag"""
+        if 58 not in resp.raw_fields:
+            return
+        tags = self._parse_f58_tags(resp.raw_fields[58])
+        if tx_no is None:
+            tx_no = self._next_transaction_no()
+        new_tags = [(t, d) for t, d in tags if t != b'QJ']
+        new_tags.append((b'QJ', tx_no.encode('ascii')))
+        new_raw = self._build_f58(new_tags)
+        resp.raw_fields[58] = new_raw
+        resp.fields[58] = new_raw.decode('ascii', errors='replace')
 
     def _next_auth_code(self) -> str:
         self.auth_counter += 1
@@ -727,9 +772,13 @@ class ResponseGenerator:
                 resp.fields[field_no] = tag_data.decode('ascii', errors='replace')
                 resp.raw_fields[field_no] = tag_data
 
-        # ── 退貨/取消回查原始交易 ──
+        # ── 台新TSB F58 QJ Transaction_No ──
         pc = req.fields.get(3, '')
         tid = req.fields.get(41, '')
+        if profile_bank == '台新TSB' and 58 in resp.raw_fields:
+            self._inject_f58_qj(resp)
+
+        # ── 退貨/取消回查原始交易 ──
         is_refund_or_void = pc[:2] in ('02', '20', '22', '32')
         if is_refund_or_void and tid:
             orig = self._lookup_original(profile_bank, tid, req)
@@ -744,8 +793,8 @@ class ResponseGenerator:
                     resp.fields[56] = orig_resp[56]
                     if 56 in orig.get('raw', {}):
                         resp.raw_fields[56] = orig['raw'][56]
-                # F58: 僅在 response 未帶時補入
-                if 58 in orig_resp and 58 not in resp.fields:
+                # F58: 用原始交易的版本覆蓋（含 QJ Transaction_No）
+                if 58 in orig_resp:
                     resp.fields[58] = orig_resp[58]
                     if 58 in orig.get('raw', {}):
                         resp.raw_fields[58] = orig['raw'][58]
