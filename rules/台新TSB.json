@@ -4101,6 +4101,68 @@
                     ]
                 }
             ]
+        },
+        "查詢原始卡號_交易識別碼": {
+            "type": "multi-step",
+            "description": "交易識別碼查詢原始卡號（退貨前查詢）",
+            "steps": [
+                {
+                    "step_name": "查詢原始卡號",
+                    "mti": "0100",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "390000"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "RSP_58_QJ",
+                            "name": "Transaction_No",
+                            "expected": "NOT_NULL"
+                        }
+                    ]
+                }
+            ]
         }
     }
 }
