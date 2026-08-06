@@ -233,6 +233,7 @@ class Iso8583Message:
                     else:
                         raw = data[pos:pos+flen]
                         pos += flen
+                        msg.raw_fields[bit] = raw
                         msg.fields[bit] = raw.decode('ascii', errors='replace')
             except Exception as e:
                 print(f"  [WARN] 解析 Field {bit} 失敗 (pos={pos}): {e}")
