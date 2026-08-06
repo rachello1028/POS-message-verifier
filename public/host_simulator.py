@@ -404,6 +404,13 @@ class ResponseGenerator:
         ref_auth = req.fields.get(38, '')
         ref_rrn = req.fields.get(37, '')
 
+        # 從 F56 提取原始 RRN（格式：Y + 12 位 RRN + 點數資料）
+        f56 = req.fields.get(56, '')
+        if f56.startswith('Y') and len(f56) >= 13:
+            ref_rrn_from_f56 = f56[1:13]
+        else:
+            ref_rrn_from_f56 = ''
+
         # 1. 用 Auth Code 精確匹配
         if ref_auth:
             for entry in reversed(history):
@@ -411,12 +418,13 @@ class ResponseGenerator:
                     print(f"  [HISTORY] 回查成功 (Auth Code={ref_auth})")
                     return entry
 
-        # 2. 用 RRN 精確匹配
-        if ref_rrn:
-            for entry in reversed(history):
-                if entry['resp'].get(37) == ref_rrn:
-                    print(f"  [HISTORY] 回查成功 (RRN={ref_rrn})")
-                    return entry
+        # 2. 用 RRN 精確匹配（直接欄位或從 F56 提取）
+        for rrn in (ref_rrn, ref_rrn_from_f56):
+            if rrn:
+                for entry in reversed(history):
+                    if entry['resp'].get(37) == rrn:
+                        print(f"  [HISTORY] 回查成功 (RRN={rrn})")
+                        return entry
 
         # 3. Fallback: 最近一筆
         print(f"  [HISTORY] 回查 fallback: 使用最近一筆交易")
