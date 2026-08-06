@@ -24,7 +24,6 @@
           "39": "response_code"
         },
         "conditional": {
-          "2": "echo_if_present",
           "54": "echo_if_present",
           "55": "emv_response",
           "56": "echo_if_present",
