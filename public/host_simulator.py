@@ -461,7 +461,7 @@ class ResponseGenerator:
                         ))
             return results
 
-        # 先搜 active_bank（含對應的 _SmartPay 子規格），最佳匹配分數為負才搜全部
+        # 先搜 active_bank（含對應的 _SmartPay 子規格）
         candidates = []
         if self.active_bank:
             priority_banks = []
@@ -473,7 +473,7 @@ class ResponseGenerator:
             if priority_banks:
                 candidates = _search(priority_banks)
                 candidates.sort(key=lambda c: (c[0], c[1]), reverse=True)
-        if not candidates or candidates[0][1] < 0:
+        if not candidates:
             candidates = _search(self.rules.items())
 
         if not candidates:
