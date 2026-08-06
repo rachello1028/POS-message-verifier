@@ -364,6 +364,7 @@ class ResponseGenerator:
         self.timeout_mode: str = 'none'
         self.timeout_count: int = 0
         self.tx_since_timeout: int = 0
+        self.tx_history: dict[str, dict] = {}  # (bank|invoice) → 原始交易欄位
 
     def _next_auth_code(self) -> str:
         self.auth_counter += 1
@@ -391,6 +392,35 @@ class ResponseGenerator:
         if self.timeout_mode == 'random':
             return random.random() < 0.3
         return False
+
+    def _lookup_original(self, bank: str, tid: str, req: 'Iso8583Message') -> dict | None:
+        """從交易歷史中查找退貨/取消對應的原始交易"""
+        bank_tid = f"{bank}|{tid}"
+        history = self.tx_history.get(bank_tid, [])
+        if not history:
+            print(f"  [HISTORY] 回查失敗: {bank_tid} 無歷史紀錄")
+            return None
+
+        ref_auth = req.fields.get(38, '')
+        ref_rrn = req.fields.get(37, '')
+
+        # 1. 用 Auth Code 精確匹配
+        if ref_auth:
+            for entry in reversed(history):
+                if entry['resp'].get(38) == ref_auth:
+                    print(f"  [HISTORY] 回查成功 (Auth Code={ref_auth})")
+                    return entry
+
+        # 2. 用 RRN 精確匹配
+        if ref_rrn:
+            for entry in reversed(history):
+                if entry['resp'].get(37) == ref_rrn:
+                    print(f"  [HISTORY] 回查成功 (RRN={ref_rrn})")
+                    return entry
+
+        # 3. Fallback: 最近一筆
+        print(f"  [HISTORY] 回查 fallback: 使用最近一筆交易")
+        return history[-1]
 
     def _is_concrete_expected(self, exp: str) -> bool:
         """判斷 expected 值是否為具體比對值（非 NOT_NULL 等通配符）"""
@@ -689,6 +719,24 @@ class ResponseGenerator:
                 resp.fields[field_no] = tag_data.decode('ascii', errors='replace')
                 resp.raw_fields[field_no] = tag_data
 
+        # ── 退貨/取消回查原始交易 ──
+        pc = req.fields.get(3, '')
+        tid = req.fields.get(41, '')
+        is_refund_or_void = pc[:2] in ('02', '20', '22', '32')
+        if is_refund_or_void and tid:
+            orig = self._lookup_original(profile_bank, tid, req)
+            if orig:
+                orig_resp = orig['resp']
+                orig_req = orig['req']
+                amt_in_resp = resp.fields.get(4, '').replace('0', '')
+                if not amt_in_resp and 4 in orig_resp:
+                    resp.fields[4] = orig_resp[4]
+                for fid in (56, 58):
+                    if fid in orig_resp and fid not in resp.fields:
+                        resp.fields[fid] = orig_resp[fid]
+                        if fid in orig.get('raw', {}):
+                            resp.raw_fields[fid] = orig['raw'][fid]
+
         # 全域欄位覆蓋（Web UI 設定的）
         for fid_str, val in self.field_overrides.items():
             try:
@@ -696,6 +744,21 @@ class ResponseGenerator:
                 resp.fields[fid] = val
             except ValueError:
                 pass
+
+        # ── 儲存交易到歷史（銷售/預授權等主交易，回應碼 00）──
+        is_primary = pc[:2] in ('00', '30') and req_mti in ('0100', '0200') and rc == '00'
+        if is_primary and tid:
+            entry = {
+                'resp': {k: v for k, v in resp.fields.items()},
+                'req': {k: v for k, v in req.fields.items()},
+                'raw': {k: v for k, v in resp.raw_fields.items()},
+            }
+            bank_tid = f"{profile_bank}|{tid}"
+            if bank_tid not in self.tx_history:
+                self.tx_history[bank_tid] = []
+            self.tx_history[bank_tid].append(entry)
+            invoice = req.fields.get(62, '')
+            print(f"  [HISTORY] 儲存: bank={profile_bank} tid={tid} invoice={invoice} amt={resp.fields.get(4, '?')}")
 
         return resp
 
