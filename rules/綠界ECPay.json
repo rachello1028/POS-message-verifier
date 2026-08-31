@@ -1,0 +1,2204 @@
+{
+    "綠界ECPay": {
+        "一般消費": {
+            "type": "multi-step",
+            "description": "Sale (信用卡消費)",
+            "steps": [
+                {
+                    "step_name": "消費",
+                    "mti": "0200",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "003000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "STAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "POS Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "NII",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "POS Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_35",
+                            "name": "Track 2 Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "EMV Chip Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "ECPay Definition Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_OD",
+                            "name": "Merchant Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_PN",
+                            "name": "Card Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_ED",
+                            "name": "Expire Day",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MN",
+                            "name": "Machine Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_SK",
+                            "name": "Data Encrypt Method",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58",
+                            "name": "Installment/Redeem",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_12",
+                            "name": "Time",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_13",
+                            "name": "Date",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_38",
+                            "name": "Auth Code",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "RSP_56_TN",
+                            "name": "ECPay Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_56_AQ",
+                            "name": "Acquirer Name",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_56_SD",
+                            "name": "Sub Merchant Name",
+                            "expected": "NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "EMV TC Upload": {
+            "type": "multi-step",
+            "description": "EMV TC Upload (交易憑證上傳)",
+            "steps": [
+                {
+                    "step_name": "TC Upload",
+                    "mti": "0220",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "PAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "253000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "STAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_12",
+                            "name": "Time",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_13",
+                            "name": "Date",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "POS Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "NII",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "POS Condition Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "EMV Chip Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "ECPay Definition Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_38",
+                            "name": "Auth Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "取消消費": {
+            "type": "multi-step",
+            "description": "Void Sale (取消消費)",
+            "steps": [
+                {
+                    "step_name": "取消消費",
+                    "mti": "0200",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "PAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "023000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "STAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "POS Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "NII",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "POS Condition Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Auth Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "ECPay Definition Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_OD",
+                            "name": "Merchant Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_PN",
+                            "name": "Card Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_ED",
+                            "name": "Expire Day",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MN",
+                            "name": "Machine Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_SK",
+                            "name": "Data Encrypt Method",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_TN",
+                            "name": "ECPay Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58",
+                            "name": "Installment/Redeem",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_12",
+                            "name": "Time",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_13",
+                            "name": "Date",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "RSP_56_TN",
+                            "name": "ECPay Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_56_AQ",
+                            "name": "Acquirer Name",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_56_SD",
+                            "name": "Sub Merchant Name",
+                            "expected": "NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "退貨": {
+            "type": "multi-step",
+            "description": "Refund (退貨)",
+            "steps": [
+                {
+                    "step_name": "退貨",
+                    "mti": "0200",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "203000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "STAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "POS Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "NII",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "POS Condition Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Auth Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "EMV Chip Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "ECPay Definition Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_PN",
+                            "name": "Card Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_ED",
+                            "name": "Expire Day",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MN",
+                            "name": "Machine Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_SK",
+                            "name": "Data Encrypt Method",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_TN",
+                            "name": "ECPay Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58",
+                            "name": "Installment/Redeem",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_12",
+                            "name": "Time",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_13",
+                            "name": "Date",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "RSP_56_TN",
+                            "name": "ECPay Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_56_AQ",
+                            "name": "Acquirer Name",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_56_SD",
+                            "name": "Sub Merchant Name",
+                            "expected": "NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "取消退貨": {
+            "type": "multi-step",
+            "description": "Void Refund (取消退貨)",
+            "steps": [
+                {
+                    "step_name": "取消退貨",
+                    "mti": "0200",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "PAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "223000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "STAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "POS Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "NII",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "POS Condition Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Auth Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "ECPay Definition Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_OD",
+                            "name": "Merchant Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_PN",
+                            "name": "Card Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_ED",
+                            "name": "Expire Day",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MN",
+                            "name": "Machine Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_SK",
+                            "name": "Data Encrypt Method",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_TN",
+                            "name": "ECPay Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58",
+                            "name": "Installment/Redeem",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_12",
+                            "name": "Time",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_13",
+                            "name": "Date",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "RSP_56_TN",
+                            "name": "ECPay Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_56_AQ",
+                            "name": "Acquirer Name",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_56_SD",
+                            "name": "Sub Merchant Name",
+                            "expected": "NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "預授權": {
+            "type": "multi-step",
+            "description": "Pre-Auth (預授權)",
+            "steps": [
+                {
+                    "step_name": "預授權",
+                    "mti": "0100",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "003000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "STAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "POS Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "NII",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "POS Condition Code",
+                            "expected": "06"
+                        },
+                        {
+                            "id": "REQ_35",
+                            "name": "Track 2 Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "EMV Chip Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "ECPay Definition Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_OD",
+                            "name": "Merchant Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_PN",
+                            "name": "Card Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_ED",
+                            "name": "Expire Day",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MN",
+                            "name": "Machine Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_SK",
+                            "name": "Data Encrypt Method",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_12",
+                            "name": "Time",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_13",
+                            "name": "Date",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_38",
+                            "name": "Auth Code",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "RSP_56_TN",
+                            "name": "ECPay Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_56_AQ",
+                            "name": "Acquirer Name",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_56_SD",
+                            "name": "Sub Merchant Name",
+                            "expected": "NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "取消預授權": {
+            "type": "multi-step",
+            "description": "Void Pre-Auth (取消預授權)",
+            "steps": [
+                {
+                    "step_name": "取消預授權",
+                    "mti": "0100",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "PAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "023000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "STAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "POS Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "NII",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "POS Condition Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Auth Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "ECPay Definition Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_OD",
+                            "name": "Merchant Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_PN",
+                            "name": "Card Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_ED",
+                            "name": "Expire Day",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MN",
+                            "name": "Machine Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_SK",
+                            "name": "Data Encrypt Method",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_TN",
+                            "name": "ECPay Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_12",
+                            "name": "Time",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_13",
+                            "name": "Date",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_38",
+                            "name": "Auth Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "RSP_56_TN",
+                            "name": "ECPay Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_56_AQ",
+                            "name": "Acquirer Name",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_56_SD",
+                            "name": "Sub Merchant Name",
+                            "expected": "NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "預授權完成": {
+            "type": "multi-step",
+            "description": "Auth-Complete (預授權完成)",
+            "steps": [
+                {
+                    "step_name": "預授權完成",
+                    "mti": "0220",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "003000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "STAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "POS Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "NII",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "POS Condition Code",
+                            "expected": "06"
+                        },
+                        {
+                            "id": "REQ_35",
+                            "name": "Track 2 Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "EMV Chip Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "ECPay Definition Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_OD",
+                            "name": "Merchant Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_PN",
+                            "name": "Card Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_ED",
+                            "name": "Expire Day",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MN",
+                            "name": "Machine Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_SK",
+                            "name": "Data Encrypt Method",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_TN",
+                            "name": "ECPay Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_12",
+                            "name": "Time",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_13",
+                            "name": "Date",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_38",
+                            "name": "Auth Code",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "RSP_56_TN",
+                            "name": "ECPay Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_56_AQ",
+                            "name": "Acquirer Name",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_56_SD",
+                            "name": "Sub Merchant Name",
+                            "expected": "NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "取消預授權完成": {
+            "type": "multi-step",
+            "description": "Void Auth-Complete (取消預授權完成)",
+            "steps": [
+                {
+                    "step_name": "取消預授權完成",
+                    "mti": "0220",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "PAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "023000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "STAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "POS Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "NII",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "POS Condition Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Auth Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "ECPay Definition Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_OD",
+                            "name": "Merchant Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_PN",
+                            "name": "Card Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_ED",
+                            "name": "Expire Day",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MN",
+                            "name": "Machine Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_SK",
+                            "name": "Data Encrypt Method",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_TN",
+                            "name": "ECPay Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_12",
+                            "name": "Time",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_13",
+                            "name": "Date",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_38",
+                            "name": "Auth Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "RSP_56_TN",
+                            "name": "ECPay Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_56_AQ",
+                            "name": "Acquirer Name",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_56_SD",
+                            "name": "Sub Merchant Name",
+                            "expected": "NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "沖正_消費": {
+            "type": "multi-step",
+            "description": "Reversal (沖正_消費)",
+            "steps": [
+                {
+                    "step_name": "沖正_消費",
+                    "mti": "0400",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "PAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "003000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "STAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "POS Entry Mode",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "NII",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "POS Condition Code",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "RRN",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "ECPay Definition Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_12",
+                            "name": "Time",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_13",
+                            "name": "Date",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "沖正_取消消費": {
+            "type": "multi-step",
+            "description": "Reversal (沖正_取消消費)",
+            "steps": [
+                {
+                    "step_name": "沖正_取消消費",
+                    "mti": "0400",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "PAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "023000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "STAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "POS Entry Mode",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "NII",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "POS Condition Code",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "RRN",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "ECPay Definition Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_12",
+                            "name": "Time",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_13",
+                            "name": "Date",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "沖正_退貨": {
+            "type": "multi-step",
+            "description": "Reversal (沖正_退貨)",
+            "steps": [
+                {
+                    "step_name": "沖正_退貨",
+                    "mti": "0400",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "PAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "203000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "STAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "POS Entry Mode",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "NII",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "POS Condition Code",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "RRN",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "ECPay Definition Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_12",
+                            "name": "Time",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_13",
+                            "name": "Date",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "沖正_取消退貨": {
+            "type": "multi-step",
+            "description": "Reversal (沖正_取消退貨)",
+            "steps": [
+                {
+                    "step_name": "沖正_取消退貨",
+                    "mti": "0400",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "PAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "223000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "STAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "POS Entry Mode",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "NII",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "POS Condition Code",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "RRN",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "ECPay Definition Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_12",
+                            "name": "Time",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_13",
+                            "name": "Date",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "結帳_Initial": {
+            "type": "multi-step",
+            "description": "Initial Settlement",
+            "steps": [
+                {
+                    "step_name": "結帳_Initial",
+                    "mti": "0500",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "920000"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "STAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "NII",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_39",
+                            "name": "Response Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "ECPay Definition Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MN",
+                            "name": "Machine Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_SK",
+                            "name": "Data Encrypt Method",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_60",
+                            "name": "Batch Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Batch Totals",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_12",
+                            "name": "Time",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_13",
+                            "name": "Date",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "RSP_63",
+                            "name": "Batch Totals",
+                            "expected": "NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "結帳_After Upload": {
+            "type": "multi-step",
+            "description": "After Transaction Upload Settlement",
+            "steps": [
+                {
+                    "step_name": "結帳_After Upload",
+                    "mti": "0500",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "960000"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "STAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "NII",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_39",
+                            "name": "Response Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "ECPay Definition Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MN",
+                            "name": "Machine Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_SK",
+                            "name": "Data Encrypt Method",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_60",
+                            "name": "Batch Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Batch Totals",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_12",
+                            "name": "Time",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_13",
+                            "name": "Date",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "RSP_63",
+                            "name": "Batch Totals",
+                            "expected": "NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "批次上傳": {
+            "type": "multi-step",
+            "description": "Batch Upload (批次交易上傳)",
+            "steps": [
+                {
+                    "step_name": "批次上傳",
+                    "mti": "0320",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "STAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "NII",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "簽到_Logon": {
+            "type": "multi-step",
+            "description": "Logon (簽到換Key)",
+            "steps": [
+                {
+                    "step_name": "簽到_Logon",
+                    "mti": "0800",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "800001"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "STAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "NII",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "ECPay Definition Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MN",
+                            "name": "Machine Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MT",
+                            "name": "Machine Type",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_12",
+                            "name": "Time",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_13",
+                            "name": "Date",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "結帳前換Key": {
+            "type": "multi-step",
+            "description": "Before Settlement Change Key",
+            "steps": [
+                {
+                    "step_name": "結帳前換Key",
+                    "mti": "0800",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "800002"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "STAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "NII",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "ECPay Definition Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MN",
+                            "name": "Machine Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MT",
+                            "name": "Machine Type",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_12",
+                            "name": "Time",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_13",
+                            "name": "Date",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "結帳後換Key": {
+            "type": "multi-step",
+            "description": "After Settlement Change Key",
+            "steps": [
+                {
+                    "step_name": "結帳後換Key",
+                    "mti": "0800",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "800003"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "STAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "NII",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "ECPay Definition Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MN",
+                            "name": "Machine Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MT",
+                            "name": "Machine Type",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_12",
+                            "name": "Time",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_13",
+                            "name": "Date",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
+                    ]
+                }
+            ]
+        },
+        "詢問閘道規格": {
+            "type": "multi-step",
+            "description": "QueryGatewaySpecification",
+            "steps": [
+                {
+                    "step_name": "詢問閘道規格",
+                    "mti": "0800",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "800005"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "STAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "NII",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "ECPay Definition Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_PN",
+                            "name": "Card Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MN",
+                            "name": "Machine Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MT",
+                            "name": "Machine Type",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_TT",
+                            "name": "Trade Type",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_SK",
+                            "name": "Data Encrypt Method",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_12",
+                            "name": "Time",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_13",
+                            "name": "Date",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "RSP_56_MS",
+                            "name": "Message Specification",
+                            "expected": "NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

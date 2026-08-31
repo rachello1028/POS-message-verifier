@@ -366,6 +366,7 @@ class ResponseGenerator:
         self.timeout_count: int = 0
         self.tx_since_timeout: int = 0
         self.tx_history: dict[str, dict] = {}  # (bank|tid) → 原始交易欄位
+        self.tx_by_qj: dict[str, dict] = {}  # QJ Transaction_No → 原始交易
         self.tx_no_counter = random.randint(100000000000, 999999999999)
 
     def _next_transaction_no(self) -> str:
@@ -399,6 +400,106 @@ class ResponseGenerator:
             result += tag + bytes([len(data)]) + data
         return result
 
+    @staticmethod
+    def _parse_ecpay_f56_tags(raw: bytes) -> list[tuple[str, str]]:
+        """解析 ECPay F56 TLV（2-byte ASCII tag + 2-byte ASCII length + data）"""
+        tags = []
+        text = raw.decode('ascii', errors='replace')
+        i = 0
+        while i + 4 <= len(text):
+            tag = text[i:i+2]
+            try:
+                length = int(text[i+2:i+4])
+            except ValueError:
+                break
+            if i + 4 + length > len(text):
+                break
+            data = text[i+4:i+4+length]
+            tags.append((tag, data))
+            i += 4 + length
+        return tags
+
+    @staticmethod
+    def _build_ecpay_f56(tags: list[tuple[str, str]]) -> bytes:
+        """從 tag list 重建 ECPay F56（2-byte tag + 2-byte ASCII length + data）"""
+        result = ''
+        for tag, data in tags:
+            result += tag + str(len(data)).zfill(2) + data
+        return result.encode('ascii')
+
+    def _generate_ecpay_f56_response(self, req: 'Iso8583Message',
+                                      resp: 'Iso8583Message'):
+        """為 ECPay 生成 F56 回應子 tag（TN/AQ/SD）"""
+        if 56 not in req.raw_fields and 56 not in req.fields:
+            return
+        raw = req.raw_fields.get(56, req.fields.get(56, '').encode('ascii'))
+        req_tags = self._parse_ecpay_f56_tags(raw)
+        resp_tags = list(req_tags)
+        existing = {t for t, _ in resp_tags}
+        tid = req.fields.get(41, '00000000')
+        now = datetime.now()
+        if 'TN' not in existing:
+            tn = tid + now.strftime('%y%m%d%H%M%S')
+            resp_tags.append(('TN', tn.ljust(20)))
+        if 'AQ' not in existing:
+            resp_tags.append(('AQ', 'ECPay Acquirer'.ljust(32)))
+        if 'SD' not in existing:
+            resp_tags.append(('SD', 'ECPay SubMerchant'.ljust(80)))
+        new_raw = self._build_ecpay_f56(resp_tags)
+        resp.fields[56] = new_raw.decode('ascii', errors='replace')
+        resp.raw_fields[56] = new_raw
+
+    def _generate_ecpay_f58_response(self, req: 'Iso8583Message',
+                                      resp: 'Iso8583Message'):
+        """為 ECPay 生成 F58 分期(Table 20)/紅利(Table 21) 回應"""
+        if 58 not in req.raw_fields and 58 not in req.fields:
+            return
+        raw = req.raw_fields.get(58, req.fields.get(58, '').encode('ascii'))
+        text = raw.decode('ascii', errors='replace')
+        if len(text) < 4:
+            return
+        table_id = text[2:4] if len(text) >= 4 else ''
+        try:
+            amount_cents = int(req.fields.get(4, '0'))
+        except ValueError:
+            amount_cents = 0
+        if table_id == '20' and amount_cents > 0:
+            period = 3
+            if len(text) >= 7:
+                try:
+                    p = int(text[5:7])
+                    if 1 <= p <= 99:
+                        period = p
+                except ValueError:
+                    pass
+            monthly = amount_cents // (period * 100)
+            first = (amount_cents // 100) - monthly * (period - 1)
+            f58_resp = (
+                'I' +
+                str(period).zfill(2) +
+                str(first).zfill(8) +
+                str(monthly).zfill(8) +
+                '0' * 6 +
+                '00'
+            )
+            resp.fields[58] = f58_resp
+            if 58 in resp.raw_fields:
+                del resp.raw_fields[58]
+        elif table_id == '21' and amount_cents > 0:
+            amount_yuan = amount_cents // 100
+            f58_resp = (
+                '000000' +
+                '0' +
+                '00' +
+                'P' +
+                str(amount_yuan).zfill(10) +
+                str(amount_yuan).zfill(10) +
+                '0' * 12
+            )
+            resp.fields[58] = f58_resp
+            if 58 in resp.raw_fields:
+                del resp.raw_fields[58]
+
     def _inject_f58_qj(self, resp: 'Iso8583Message', tx_no: str | None = None):
         """在 F58 中注入/替換 QJ (Transaction_No) tag"""
         if 58 not in resp.raw_fields:
@@ -411,6 +512,17 @@ class ResponseGenerator:
         new_raw = self._build_f58(new_tags)
         resp.raw_fields[58] = new_raw
         resp.fields[58] = new_raw.decode('ascii', errors='replace')
+
+    def _extract_qj_from_f58(self, msg: 'Iso8583Message') -> str | None:
+        """從 F58 中提取 QJ Transaction_No"""
+        if 58 not in msg.raw_fields:
+            return None
+        tags = self._parse_f58_tags(msg.raw_fields[58])
+        for tag, data in tags:
+            if tag == b'QJ':
+                val = data.decode('ascii', errors='replace').strip()
+                return val if val and val != 'Y' else None
+        return None
 
     def _next_auth_code(self) -> str:
         self.auth_counter += 1
@@ -773,11 +885,35 @@ class ResponseGenerator:
                 resp.fields[field_no] = tag_data.decode('ascii', errors='replace')
                 resp.raw_fields[field_no] = tag_data
 
+        # ── 綠界ECPay F56 回應（TN/AQ/SD）──
+        if profile_bank == '綠界ECPay':
+            self._generate_ecpay_f56_response(req, resp)
+            self._generate_ecpay_f58_response(req, resp)
+
         # ── 台新TSB F58 QJ Transaction_No ──
         pc = req.fields.get(3, '')
         tid = req.fields.get(41, '')
+        generated_qj = None
         if profile_bank == '台新TSB' and 58 in resp.raw_fields:
-            self._inject_f58_qj(resp)
+            generated_qj = self._next_transaction_no()
+            self._inject_f58_qj(resp, generated_qj)
+
+        # ── 台新TSB F3=390000 交易識別碼查詢原始卡號 ──
+        if profile_bank == '台新TSB' and pc == '390000':
+            qj = self._extract_qj_from_f58(req)
+            if qj:
+                orig = self.tx_by_qj.get(qj)
+                if orig:
+                    orig_req = orig['req']
+                    if 2 in orig_req:
+                        resp.fields[2] = orig_req[2]
+                        if 2 in orig.get('raw', {}):
+                            resp.raw_fields[2] = orig['raw_req'][2]
+                    if 14 in orig_req:
+                        resp.fields[14] = orig_req[14]
+                    print(f"  [HISTORY] QJ 查詢成功: {qj} → PAN={resp.fields.get(2, '?')}")
+                else:
+                    print(f"  [HISTORY] QJ 查詢失敗: {qj} 無歷史紀錄")
 
         # ── 退貨/取消回查原始交易 ──
         is_refund_or_void = pc[:2] in ('02', '20', '22', '32')
@@ -815,13 +951,16 @@ class ResponseGenerator:
                 'resp': {k: v for k, v in resp.fields.items()},
                 'req': {k: v for k, v in req.fields.items()},
                 'raw': {k: v for k, v in resp.raw_fields.items()},
+                'raw_req': {k: v for k, v in req.raw_fields.items()},
             }
             bank_tid = f"{profile_bank}|{tid}"
             if bank_tid not in self.tx_history:
                 self.tx_history[bank_tid] = []
             self.tx_history[bank_tid].append(entry)
+            if generated_qj:
+                self.tx_by_qj[generated_qj] = entry
             invoice = req.fields.get(62, '')
-            print(f"  [HISTORY] 儲存: bank={profile_bank} tid={tid} invoice={invoice} amt={resp.fields.get(4, '?')}")
+            print(f"  [HISTORY] 儲存: bank={profile_bank} tid={tid} invoice={invoice} qj={generated_qj or '—'}")
 
         return resp
 

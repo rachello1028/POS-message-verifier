@@ -14,7 +14,13 @@
     "response_rules": {
       "default": {
         "_comment": "Sale/Refund/Void/Pre-Auth Complete (0200→0210)",
-        "echo": [3, 4, 11, 24, 41],
+        "echo": [
+          3,
+          4,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -35,7 +41,13 @@
       },
       "0100": {
         "_comment": "Pre-Auth/Void Pre-Auth/Token Register/Account Verify (0100→0110)",
-        "echo": [3, 4, 11, 24, 41],
+        "echo": [
+          3,
+          4,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -51,7 +63,12 @@
       },
       "0220": {
         "_comment": "Offline Sale/TC Upload/Void Offline/Adjust/Tips (0220→0230)",
-        "echo": [3, 11, 24, 41],
+        "echo": [
+          3,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "37": "rrn",
           "39": "response_code"
@@ -60,7 +77,11 @@
       },
       "0320": {
         "_comment": "Batch Upload (0320→0330)",
-        "echo": [11, 24, 41],
+        "echo": [
+          11,
+          24,
+          41
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -71,7 +92,12 @@
       },
       "0400": {
         "_comment": "Reversal (0400→0410)",
-        "echo": [3, 11, 24, 41],
+        "echo": [
+          3,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -88,7 +114,12 @@
       },
       "0500": {
         "_comment": "Settle/Close Batch (0500→0510)",
-        "echo": [3, 11, 24, 41],
+        "echo": [
+          3,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -101,7 +132,12 @@
       },
       "0800": {
         "_comment": "Change Key/Logon (0800→0810)",
-        "echo": [3, 11, 24, 41],
+        "echo": [
+          3,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -123,7 +159,14 @@
     },
     "response_rules": {
       "default": {
-        "echo": [3, 4, 11, 37, 41, 42],
+        "echo": [
+          3,
+          4,
+          11,
+          37,
+          41,
+          42
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -152,7 +195,14 @@
     },
     "response_rules": {
       "default": {
-        "echo": [3, 4, 11, 24, 41, 42],
+        "echo": [
+          3,
+          4,
+          11,
+          24,
+          41,
+          42
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -169,14 +219,27 @@
         }
       },
       "0320": {
-        "echo": [3, 4, 11, 24, 41, 42],
+        "echo": [
+          3,
+          4,
+          11,
+          24,
+          41,
+          42
+        ],
         "generate": {
           "39": "response_code"
         },
         "conditional": {}
       },
       "0500": {
-        "echo": [3, 11, 24, 41, 42],
+        "echo": [
+          3,
+          11,
+          24,
+          41,
+          42
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -185,7 +248,13 @@
         "conditional": {}
       },
       "0800": {
-        "echo": [3, 11, 24, 41, 42],
+        "echo": [
+          3,
+          11,
+          24,
+          41,
+          42
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -211,7 +280,13 @@
     "response_rules": {
       "default": {
         "_comment": "Financial Transaction Sale/Refund/Void (0200→0210)",
-        "echo": [3, 4, 11, 24, 41],
+        "echo": [
+          3,
+          4,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -232,7 +307,13 @@
       },
       "0100": {
         "_comment": "Authorization (0100→0110)",
-        "echo": [3, 4, 11, 24, 41],
+        "echo": [
+          3,
+          4,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -251,7 +332,13 @@
       },
       "0220": {
         "_comment": "Financial Advice - Offline/Adjustment (0220→0230)",
-        "echo": [3, 4, 11, 24, 41],
+        "echo": [
+          3,
+          4,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "37": "rrn",
           "39": "response_code"
@@ -264,7 +351,13 @@
       },
       "0320": {
         "_comment": "Transaction Upload Advice (0320→0330)",
-        "echo": [3, 11, 24, 41, 42],
+        "echo": [
+          3,
+          11,
+          24,
+          41,
+          42
+        ],
         "generate": {
           "39": "response_code"
         },
@@ -281,7 +374,13 @@
       },
       "0400": {
         "_comment": "Reversal (0400→0410)",
-        "echo": [3, 4, 11, 24, 41],
+        "echo": [
+          3,
+          4,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -293,7 +392,12 @@
       },
       "0500": {
         "_comment": "Reconciliation/Batch Close (0500→0510)",
-        "echo": [3, 11, 24, 41],
+        "echo": [
+          3,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -308,7 +412,12 @@
       },
       "0800": {
         "_comment": "Maintenance/Logon/Init (0800→0810)",
-        "echo": [3, 11, 24, 41],
+        "echo": [
+          3,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "39": "response_code"
         },
@@ -335,7 +444,12 @@
     "response_rules": {
       "default": {
         "_comment": "Sale/Void/Refund/Pre-Auth Complete (0200→0210)",
-        "echo": [3, 11, 24, 41],
+        "echo": [
+          3,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -356,7 +470,12 @@
       },
       "0100": {
         "_comment": "Pre-Auth/Authorization/Inquire (0100→0110)",
-        "echo": [3, 11, 24, 41],
+        "echo": [
+          3,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -374,7 +493,12 @@
       },
       "0220": {
         "_comment": "Offline Sale/Sale Completion/Adjust/Tip (0220→0230)",
-        "echo": [3, 11, 24, 41],
+        "echo": [
+          3,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -391,7 +515,12 @@
       },
       "0320": {
         "_comment": "Batch Upload (0320→0330)",
-        "echo": [3, 11, 24, 41],
+        "echo": [
+          3,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -409,7 +538,11 @@
       },
       "0400": {
         "_comment": "Reversal (0400→0410)",
-        "echo": [11, 24, 41],
+        "echo": [
+          11,
+          24,
+          41
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -427,7 +560,12 @@
       },
       "0500": {
         "_comment": "Settle (0500→0510)",
-        "echo": [3, 11, 24, 41],
+        "echo": [
+          3,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -443,7 +581,12 @@
       },
       "0800": {
         "_comment": "Key Exchange (0800→0810)",
-        "echo": [3, 11, 24, 41],
+        "echo": [
+          3,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -469,7 +612,13 @@
     "response_rules": {
       "default": {
         "_comment": "Sale/Void/Refund (0200→0210)",
-        "echo": [3, 4, 11, 24, 41],
+        "echo": [
+          3,
+          4,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -485,7 +634,12 @@
       },
       "0100": {
         "_comment": "Pre-Auth (0100→0110)",
-        "echo": [3, 11, 24, 41],
+        "echo": [
+          3,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -500,7 +654,12 @@
       },
       "0220": {
         "_comment": "Offline/Adjust/Tips (0220→0230)",
-        "echo": [3, 11, 24, 41],
+        "echo": [
+          3,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "37": "rrn",
           "39": "response_code"
@@ -511,7 +670,12 @@
       },
       "0320": {
         "_comment": "Batch Upload (0320→0330)",
-        "echo": [3, 11, 24, 41],
+        "echo": [
+          3,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "39": "response_code"
         },
@@ -521,7 +685,12 @@
       },
       "0400": {
         "_comment": "Reversal (0400→0410)",
-        "echo": [3, 11, 24, 41],
+        "echo": [
+          3,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -534,7 +703,12 @@
       },
       "0500": {
         "_comment": "Settlement (0500→0510)",
-        "echo": [3, 11, 24, 41],
+        "echo": [
+          3,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -558,7 +732,13 @@
     "response_rules": {
       "default": {
         "_comment": "消費扣款/取消/退費/授權完成 (0200→0210, 0202→0212)",
-        "echo": [3, 4, 11, 24, 41],
+        "echo": [
+          3,
+          4,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -572,7 +752,12 @@
       },
       "0500": {
         "_comment": "結帳 (0500→0510)",
-        "echo": [3, 11, 24, 41],
+        "echo": [
+          3,
+          11,
+          24,
+          41
+        ],
         "generate": {
           "12": "time",
           "13": "date",
@@ -582,6 +767,154 @@
         },
         "conditional": {
           "63": "echo_if_present"
+        }
+      }
+    }
+  },
+  "綠界ECPay": {
+    "description": "綠界科技 ECPay 收單授權主機",
+    "mti_map": {
+      "0100": "0110",
+      "0200": "0210",
+      "0220": "0230",
+      "0320": "0330",
+      "0400": "0410",
+      "0500": "0510",
+      "0800": "0810"
+    },
+    "response_rules": {
+      "default": {
+        "_comment": "Sale/Void/Refund (0200→0210)",
+        "echo": [
+          3,
+          4,
+          11,
+          24,
+          41
+        ],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "37": "rrn",
+          "38": "auth_code",
+          "39": "response_code"
+        },
+        "conditional": {
+          "55": "emv_response",
+          "56": "echo_if_present",
+          "58": "echo_if_present"
+        }
+      },
+      "0100": {
+        "_comment": "Pre-Auth/Void Pre-Auth (0100→0110)",
+        "echo": [
+          3,
+          4,
+          11,
+          24,
+          41
+        ],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "37": "rrn",
+          "38": "auth_code",
+          "39": "response_code"
+        },
+        "conditional": {
+          "55": "emv_response",
+          "56": "echo_if_present"
+        }
+      },
+      "0220": {
+        "_comment": "Auth-Complete/Void Auth-Complete/TC Upload (0220→0230)",
+        "echo": [
+          3,
+          4,
+          11,
+          24,
+          41
+        ],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "37": "rrn",
+          "38": "auth_code",
+          "39": "response_code"
+        },
+        "conditional": {
+          "55": "emv_response",
+          "56": "echo_if_present"
+        }
+      },
+      "0320": {
+        "_comment": "Batch Upload (0320→0330)",
+        "echo": [
+          3,
+          11,
+          24,
+          41
+        ],
+        "generate": {
+          "39": "response_code"
+        },
+        "conditional": {}
+      },
+      "0400": {
+        "_comment": "Reversal (0400→0410)",
+        "echo": [
+          3,
+          4,
+          11,
+          24,
+          41
+        ],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "37": "rrn",
+          "39": "response_code"
+        },
+        "conditional": {
+          "56": "echo_if_present"
+        }
+      },
+      "0500": {
+        "_comment": "Settlement (0500→0510)",
+        "echo": [
+          3,
+          11,
+          24,
+          41,
+          42
+        ],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "37": "rrn",
+          "39": "response_code"
+        },
+        "conditional": {
+          "56": "echo_if_present",
+          "63": "echo_if_present"
+        }
+      },
+      "0800": {
+        "_comment": "Logon/Change Key/Query (0800→0810)",
+        "echo": [
+          3,
+          11,
+          24,
+          41,
+          42
+        ],
+        "generate": {
+          "12": "time",
+          "13": "date",
+          "39": "response_code"
+        },
+        "conditional": {
+          "56": "echo_if_present"
         }
       }
     }
