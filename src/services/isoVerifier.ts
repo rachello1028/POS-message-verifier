@@ -77,9 +77,16 @@ export function parseIsoLog(logText: string): Record<string, string> {
     } else if (line.includes('Tag') && parentField) {
       blockData[`${parentField}_${nameRaw}`] = val;
       blockData[`${parentField}_TAG_${nameRaw}`] = val;
+      // F55 等欄位的值全在子 TAG 裡，parentField 本身可能是空的
+      if (!blockData[parentField]) {
+        blockData[parentField] = `(${nameRaw}:${val})`;
+      }
     } else if (parentField) {
       // Sub-field（無 Field/Tag 關鍵字）：58_M6, 58_MA, 58_QJ
       blockData[`${parentField}_${nameRaw}`] = val;
+      if (!blockData[parentField]) {
+        blockData[parentField] = `(${nameRaw}:${val})`;
+      }
     }
   }
 
