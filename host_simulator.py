@@ -445,6 +445,10 @@ class ResponseGenerator:
             resp_tags.append(('AQ', 'ECPay Acquirer'.ljust(32)))
         if 'SD' not in existing:
             resp_tags.append(('SD', 'ECPay SubMerchant'.ljust(80)))
+        if 'NI' not in existing:
+            resp_tags.append(('NI', 'B00807'))
+        if 'MS' not in existing:
+            resp_tags.append(('MS', 'NCCC'.ljust(10)))
         new_raw = self._build_ecpay_f56(resp_tags)
         resp.fields[56] = new_raw.decode('ascii', errors='replace')
         resp.raw_fields[56] = new_raw
