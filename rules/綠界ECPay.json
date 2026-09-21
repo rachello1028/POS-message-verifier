@@ -31,7 +31,7 @@
                         {
                             "id": "REQ_24",
                             "name": "NII",
-                            "expected": "NOT_NULL"
+                            "expected": "REGEX:^080[23]$|^0817$"
                         },
                         {
                             "id": "REQ_25",
@@ -149,7 +149,6 @@
         },
         "一般消費_晶片插卡": {
             "type": "multi-step",
-            "description": "Sale EMV Chip (晶片插卡消費，含 TC Upload)",
             "steps": [
                 {
                     "step_name": "消費授權",
@@ -178,7 +177,7 @@
                         {
                             "id": "REQ_24",
                             "name": "NII",
-                            "expected": "NOT_NULL"
+                            "expected": "REGEX:^080[23]$|^0817$"
                         },
                         {
                             "id": "REQ_25",
@@ -266,11 +265,6 @@
                             "expected": "NOT_NULL"
                         },
                         {
-                            "id": "RSP_38",
-                            "name": "Auth Code",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
@@ -339,7 +333,7 @@
                         {
                             "id": "REQ_24",
                             "name": "NII",
-                            "expected": "NOT_NULL"
+                            "expected": "REGEX:^080[23]$|^0817$"
                         },
                         {
                             "id": "REQ_25",
@@ -412,11 +406,6 @@
                             "expected": "NOT_NULL"
                         },
                         {
-                            "id": "RSP_38",
-                            "name": "Auth Code",
-                            "expected": "NOT_NULL"
-                        },
-                        {
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
@@ -466,7 +455,7 @@
                         {
                             "id": "REQ_24",
                             "name": "NII",
-                            "expected": "NOT_NULL"
+                            "expected": "REGEX:^080[23]$|^0817$"
                         },
                         {
                             "id": "REQ_25",
@@ -608,7 +597,7 @@
                         {
                             "id": "REQ_24",
                             "name": "NII",
-                            "expected": "NOT_NULL"
+                            "expected": "REGEX:^080[23]$|^0817$"
                         },
                         {
                             "id": "REQ_25",
@@ -750,7 +739,7 @@
                         {
                             "id": "REQ_24",
                             "name": "NII",
-                            "expected": "NOT_NULL"
+                            "expected": "REGEX:^080[23]$|^0817$"
                         },
                         {
                             "id": "REQ_25",
@@ -906,7 +895,7 @@
                         {
                             "id": "REQ_24",
                             "name": "NII",
-                            "expected": "NOT_NULL"
+                            "expected": "REGEX:^080[23]$|^0817$"
                         },
                         {
                             "id": "REQ_25",
@@ -1033,7 +1022,7 @@
                         {
                             "id": "REQ_24",
                             "name": "NII",
-                            "expected": "NOT_NULL"
+                            "expected": "REGEX:^080[23]$|^0817$"
                         },
                         {
                             "id": "REQ_25",
@@ -1068,7 +1057,7 @@
                         {
                             "id": "REQ_56_OD",
                             "name": "Merchant Order Number",
-                            "expected": "NOT_NULL"
+                            "expected": "IF_EXIST:NOT_NULL"
                         },
                         {
                             "id": "REQ_56_PN",
@@ -1175,7 +1164,7 @@
                         {
                             "id": "REQ_24",
                             "name": "NII",
-                            "expected": "NOT_NULL"
+                            "expected": "REGEX:^080[23]$|^0817$"
                         },
                         {
                             "id": "REQ_25",
@@ -1327,7 +1316,7 @@
                         {
                             "id": "REQ_24",
                             "name": "NII",
-                            "expected": "NOT_NULL"
+                            "expected": "REGEX:^080[23]$|^0817$"
                         },
                         {
                             "id": "REQ_25",
@@ -1459,7 +1448,7 @@
                         {
                             "id": "REQ_24",
                             "name": "NII",
-                            "expected": "NOT_NULL"
+                            "expected": "REGEX:^080[23]$|^0817$"
                         },
                         {
                             "id": "REQ_25",
@@ -1616,7 +1605,7 @@
                         {
                             "id": "REQ_24",
                             "name": "NII",
-                            "expected": "NOT_NULL"
+                            "expected": "REGEX:^080[23]$|^0817$"
                         },
                         {
                             "id": "REQ_25",
@@ -1768,7 +1757,7 @@
                         {
                             "id": "REQ_24",
                             "name": "NII",
-                            "expected": "NOT_NULL"
+                            "expected": "REGEX:^080[23]$|^0817$"
                         },
                         {
                             "id": "REQ_25",
@@ -1895,7 +1884,7 @@
                         {
                             "id": "REQ_24",
                             "name": "NII",
-                            "expected": "NOT_NULL"
+                            "expected": "REGEX:^080[23]$|^0817$"
                         },
                         {
                             "id": "REQ_25",
@@ -2022,7 +2011,7 @@
                         {
                             "id": "REQ_24",
                             "name": "NII",
-                            "expected": "NOT_NULL"
+                            "expected": "REGEX:^080[23]$|^0817$"
                         },
                         {
                             "id": "REQ_25",
@@ -2149,7 +2138,7 @@
                         {
                             "id": "REQ_24",
                             "name": "NII",
-                            "expected": "NOT_NULL"
+                            "expected": "REGEX:^080[23]$|^0817$"
                         },
                         {
                             "id": "REQ_25",
@@ -2256,7 +2245,7 @@
                         {
                             "id": "REQ_24",
                             "name": "NII",
-                            "expected": "NOT_NULL"
+                            "expected": "REGEX:^080[23]$|^0817$"
                         },
                         {
                             "id": "REQ_37",
@@ -2353,7 +2342,7 @@
                         {
                             "id": "REQ_24",
                             "name": "NII",
-                            "expected": "NOT_NULL"
+                            "expected": "REGEX:^080[23]$|^0817$"
                         },
                         {
                             "id": "REQ_37",
@@ -2455,7 +2444,7 @@
                         {
                             "id": "REQ_24",
                             "name": "NII",
-                            "expected": "NOT_NULL"
+                            "expected": "REGEX:^080[23]$|^0817$"
                         },
                         {
                             "id": "REQ_41",
@@ -2532,7 +2521,7 @@
                         {
                             "id": "REQ_24",
                             "name": "NII",
-                            "expected": "NOT_NULL"
+                            "expected": "REGEX:^080[23]$|^0817$"
                         },
                         {
                             "id": "REQ_41",
@@ -2599,7 +2588,7 @@
                         {
                             "id": "REQ_24",
                             "name": "NII",
-                            "expected": "NOT_NULL"
+                            "expected": "REGEX:^080[23]$|^0817$"
                         },
                         {
                             "id": "REQ_41",
@@ -2666,7 +2655,7 @@
                         {
                             "id": "REQ_24",
                             "name": "NII",
-                            "expected": "NOT_NULL"
+                            "expected": "REGEX:^080[23]$|^0817$"
                         },
                         {
                             "id": "REQ_41",
@@ -2733,7 +2722,7 @@
                         {
                             "id": "REQ_24",
                             "name": "NII",
-                            "expected": "NOT_NULL"
+                            "expected": "REGEX:^080[23]$|^0817$"
                         },
                         {
                             "id": "REQ_41",
