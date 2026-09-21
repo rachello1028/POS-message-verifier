@@ -26,7 +26,7 @@
                         {
                             "id": "REQ_22",
                             "name": "POS Entry Mode",
-                            "expected": "REGEX:^90"
+                            "expected": "REGEX:^502"
                         },
                         {
                             "id": "REQ_24",
@@ -173,7 +173,7 @@
                         {
                             "id": "REQ_22",
                             "name": "POS Entry Mode",
-                            "expected": "REGEX:^05"
+                            "expected": "REGEX:^5(05|95)"
                         },
                         {
                             "id": "REQ_24",
@@ -419,7 +419,7 @@
                         {
                             "id": "REQ_22",
                             "name": "POS Entry Mode",
-                            "expected": "REGEX:^05"
+                            "expected": "REGEX:^5(05|95)"
                         },
                         {
                             "id": "REQ_24",
@@ -616,7 +616,7 @@
                         {
                             "id": "REQ_22",
                             "name": "POS Entry Mode",
-                            "expected": "REGEX:^07"
+                            "expected": "REGEX:^507"
                         },
                         {
                             "id": "REQ_24",
@@ -843,7 +843,7 @@
                         {
                             "id": "REQ_22",
                             "name": "POS Entry Mode",
-                            "expected": "REGEX:^01"
+                            "expected": "REGEX:^501"
                         },
                         {
                             "id": "REQ_24",
@@ -985,7 +985,7 @@
                         {
                             "id": "REQ_22",
                             "name": "POS Entry Mode",
-                            "expected": "REGEX:^05"
+                            "expected": "REGEX:^5(05|95)"
                         },
                         {
                             "id": "REQ_24",
@@ -1246,7 +1246,7 @@
                         {
                             "id": "REQ_22",
                             "name": "POS Entry Mode",
-                            "expected": "REGEX:^05"
+                            "expected": "REGEX:^5(05|95)"
                         },
                         {
                             "id": "REQ_24",
@@ -1600,7 +1600,7 @@
                         {
                             "id": "REQ_22",
                             "name": "POS Entry Mode",
-                            "expected": "REGEX:^90"
+                            "expected": "REGEX:^502"
                         },
                         {
                             "id": "REQ_24",
@@ -1742,7 +1742,7 @@
                         {
                             "id": "REQ_22",
                             "name": "POS Entry Mode",
-                            "expected": "REGEX:^07"
+                            "expected": "REGEX:^507"
                         },
                         {
                             "id": "REQ_24",
@@ -1964,7 +1964,7 @@
                         {
                             "id": "REQ_22",
                             "name": "POS Entry Mode",
-                            "expected": "REGEX:^01"
+                            "expected": "REGEX:^501"
                         },
                         {
                             "id": "REQ_24",
@@ -2258,7 +2258,7 @@
                         {
                             "id": "REQ_22",
                             "name": "POS Entry Mode",
-                            "expected": "REGEX:^90"
+                            "expected": "REGEX:^502"
                         },
                         {
                             "id": "REQ_24",
@@ -2400,7 +2400,7 @@
                         {
                             "id": "REQ_22",
                             "name": "POS Entry Mode",
-                            "expected": "REGEX:^05"
+                            "expected": "REGEX:^5(05|95)"
                         },
                         {
                             "id": "REQ_24",
@@ -2627,7 +2627,7 @@
                         {
                             "id": "REQ_22",
                             "name": "POS Entry Mode",
-                            "expected": "REGEX:^07"
+                            "expected": "REGEX:^507"
                         },
                         {
                             "id": "REQ_24",
@@ -2849,7 +2849,7 @@
                         {
                             "id": "REQ_22",
                             "name": "POS Entry Mode",
-                            "expected": "REGEX:^01"
+                            "expected": "REGEX:^501"
                         },
                         {
                             "id": "REQ_24",
@@ -3128,7 +3128,7 @@
                         {
                             "id": "REQ_22",
                             "name": "POS Entry Mode",
-                            "expected": "REGEX:^90"
+                            "expected": "REGEX:^502"
                         },
                         {
                             "id": "REQ_24",
@@ -3275,7 +3275,7 @@
                         {
                             "id": "REQ_22",
                             "name": "POS Entry Mode",
-                            "expected": "REGEX:^07"
+                            "expected": "REGEX:^507"
                         },
                         {
                             "id": "REQ_24",
@@ -3502,7 +3502,7 @@
                         {
                             "id": "REQ_22",
                             "name": "POS Entry Mode",
-                            "expected": "REGEX:^01"
+                            "expected": "REGEX:^501"
                         },
                         {
                             "id": "REQ_24",
