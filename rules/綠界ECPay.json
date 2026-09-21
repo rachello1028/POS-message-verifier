@@ -89,44 +89,151 @@
                             "expected": "NOT_NULL"
                         },
                         {
-                            "id": "REQ_56_MD",
-                            "name": "ECPay Merchant ID",
+                            "id": "REQ_58",
+                            "name": "Installment/Redeem",
                             "expected": "IF_EXIST:NOT_NULL"
                         },
                         {
-                            "id": "REQ_56_TD",
-                            "name": "ECPay Terminal ID",
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_12",
+                            "name": "Time",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_13",
+                            "name": "Date",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_38",
+                            "name": "Auth Code",
                             "expected": "IF_EXIST:NOT_NULL"
                         },
                         {
-                            "id": "REQ_56_TT",
-                            "name": "Trade Type",
-                            "expected": "IF_EXIST:NOT_NULL"
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
                         },
                         {
-                            "id": "REQ_56_IM",
-                            "name": "Installment Period",
-                            "expected": "IF_EXIST:NOT_NULL"
+                            "id": "RSP_56_TN",
+                            "name": "ECPay Order Number",
+                            "expected": "NOT_NULL"
                         },
                         {
-                            "id": "REQ_56_RM",
-                            "name": "Redeem Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
+                            "id": "RSP_56_AQ",
+                            "name": "Acquirer Name",
+                            "expected": "NOT_NULL"
                         },
                         {
-                            "id": "REQ_56_CU",
-                            "name": "UnionPay Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
+                            "id": "RSP_56_SD",
+                            "name": "Sub Merchant Name",
+                            "expected": "NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "一般消費_晶片插卡": {
+            "type": "multi-step",
+            "description": "Sale EMV Chip (晶片插卡消費，含 TC Upload)",
+            "steps": [
+                {
+                    "step_name": "消費授權",
+                    "mti": "0200",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "003000"
                         },
                         {
-                            "id": "REQ_56_PS",
-                            "name": "ECPay POS Serial Number",
-                            "expected": "IF_EXIST:NOT_NULL"
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
                         },
                         {
-                            "id": "REQ_56_NI",
-                            "name": "Receipt to Cloud",
-                            "expected": "IF_EXIST:NOT_NULL"
+                            "id": "REQ_11",
+                            "name": "STAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "POS Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "NII",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "POS Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_35",
+                            "name": "Track 2 Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "EMV Chip Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "ECPay Definition Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_OD",
+                            "name": "Merchant Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_PN",
+                            "name": "Card Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_ED",
+                            "name": "Expire Day",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MN",
+                            "name": "Machine Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_SK",
+                            "name": "Data Encrypt Method",
+                            "expected": "NOT_NULL"
                         },
                         {
                             "id": "REQ_58",
@@ -182,25 +289,9 @@
                             "id": "RSP_56_SD",
                             "name": "Sub Merchant Name",
                             "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "RSP_56_NI",
-                            "name": "Receipt to Cloud",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "RSP_56_MS",
-                            "name": "Message Specification",
-                            "expected": "IF_EXIST:NOT_NULL"
                         }
                     ]
-                }
-            ]
-        },
-        "EMV TC Upload": {
-            "type": "multi-step",
-            "description": "EMV TC Upload (交易憑證上傳)",
-            "steps": [
+                },
                 {
                     "step_name": "TC Upload",
                     "mti": "0220",
@@ -276,6 +367,41 @@
                             "expected": "IF_EXIST:NOT_NULL"
                         },
                         {
+                            "id": "REQ_56_OD",
+                            "name": "Merchant Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_PN",
+                            "name": "Card Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_ED",
+                            "name": "Expire Day",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MN",
+                            "name": "Machine Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_SK",
+                            "name": "Data Encrypt Method",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_D1",
+                            "name": "Transaction Certificate Value",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_D2",
+                            "name": "Issuer Script Results",
+                            "expected": "NOT_NULL"
+                        },
+                        {
                             "id": "REQ_62",
                             "name": "Invoice Number",
                             "expected": "NOT_NULL"
@@ -294,41 +420,6 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
-                        },
-                        {
-                            "id": "REQ_56_MD",
-                            "name": "ECPay Merchant ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TD",
-                            "name": "ECPay Terminal ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TT",
-                            "name": "Trade Type",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_IM",
-                            "name": "Installment Period",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_RM",
-                            "name": "Redeem Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_CU",
-                            "name": "UnionPay Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_PS",
-                            "name": "ECPay POS Serial Number",
-                            "expected": "IF_EXIST:NOT_NULL"
                         }
                     ]
                 }
@@ -438,46 +529,6 @@
                             "expected": "NOT_NULL"
                         },
                         {
-                            "id": "REQ_56_MD",
-                            "name": "ECPay Merchant ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TD",
-                            "name": "ECPay Terminal ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TT",
-                            "name": "Trade Type",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_IM",
-                            "name": "Installment Period",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_RM",
-                            "name": "Redeem Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_CU",
-                            "name": "UnionPay Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_PS",
-                            "name": "ECPay POS Serial Number",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_NI",
-                            "name": "Receipt to Cloud",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
                             "id": "REQ_58",
                             "name": "Installment/Redeem",
                             "expected": "IF_EXIST:NOT_NULL"
@@ -521,16 +572,6 @@
                             "id": "RSP_56_SD",
                             "name": "Sub Merchant Name",
                             "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "RSP_56_NI",
-                            "name": "Receipt to Cloud",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "RSP_56_MS",
-                            "name": "Message Specification",
-                            "expected": "IF_EXIST:NOT_NULL"
                         }
                     ]
                 }
@@ -600,6 +641,11 @@
                             "expected": "IF_EXIST:NOT_NULL"
                         },
                         {
+                            "id": "REQ_56_OD",
+                            "name": "Merchant Order Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
                             "id": "REQ_56_PN",
                             "name": "Card Number",
                             "expected": "NOT_NULL"
@@ -623,46 +669,6 @@
                             "id": "REQ_56_TN",
                             "name": "ECPay Order Number",
                             "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_MD",
-                            "name": "ECPay Merchant ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TD",
-                            "name": "ECPay Terminal ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TT",
-                            "name": "Trade Type",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_IM",
-                            "name": "Installment Period",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_RM",
-                            "name": "Redeem Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_CU",
-                            "name": "UnionPay Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_PS",
-                            "name": "ECPay POS Serial Number",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_NI",
-                            "name": "Receipt to Cloud",
-                            "expected": "IF_EXIST:NOT_NULL"
                         },
                         {
                             "id": "REQ_58",
@@ -708,16 +714,279 @@
                             "id": "RSP_56_SD",
                             "name": "Sub Merchant Name",
                             "expected": "NOT_NULL"
+                        }
+                    ]
+                }
+            ]
+        },
+        "退貨_晶片插卡": {
+            "type": "multi-step",
+            "description": "Refund EMV Chip (晶片插卡退貨，含 TC Upload)",
+            "steps": [
+                {
+                    "step_name": "退貨授權",
+                    "mti": "0200",
+                    "fields": [
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "203000"
                         },
                         {
-                            "id": "RSP_56_NI",
-                            "name": "Receipt to Cloud",
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "STAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "POS Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "NII",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "POS Condition Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Auth Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "EMV Chip Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "ECPay Definition Data",
                             "expected": "IF_EXIST:NOT_NULL"
                         },
                         {
-                            "id": "RSP_56_MS",
-                            "name": "Message Specification",
+                            "id": "REQ_56_OD",
+                            "name": "Merchant Order Number",
                             "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_PN",
+                            "name": "Card Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_ED",
+                            "name": "Expire Day",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MN",
+                            "name": "Machine Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_SK",
+                            "name": "Data Encrypt Method",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_TN",
+                            "name": "ECPay Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_58",
+                            "name": "Installment/Redeem",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_12",
+                            "name": "Time",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_13",
+                            "name": "Date",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "RSP_56_TN",
+                            "name": "ECPay Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_56_AQ",
+                            "name": "Acquirer Name",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_56_SD",
+                            "name": "Sub Merchant Name",
+                            "expected": "NOT_NULL"
+                        }
+                    ]
+                },
+                {
+                    "step_name": "TC Upload",
+                    "mti": "0220",
+                    "fields": [
+                        {
+                            "id": "REQ_2",
+                            "name": "PAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "253000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "STAN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_12",
+                            "name": "Time",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_13",
+                            "name": "Date",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "POS Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "NII",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "POS Condition Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Terminal ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Merchant ID",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "EMV Chip Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56",
+                            "name": "ECPay Definition Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_OD",
+                            "name": "Merchant Order Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_PN",
+                            "name": "Card Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_ED",
+                            "name": "Expire Day",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MN",
+                            "name": "Machine Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_SK",
+                            "name": "Data Encrypt Method",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_D1",
+                            "name": "Transaction Certificate Value",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_D2",
+                            "name": "Issuer Script Results",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_37",
+                            "name": "RRN",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_38",
+                            "name": "Auth Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
                         }
                     ]
                 }
@@ -827,46 +1096,6 @@
                             "expected": "NOT_NULL"
                         },
                         {
-                            "id": "REQ_56_MD",
-                            "name": "ECPay Merchant ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TD",
-                            "name": "ECPay Terminal ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TT",
-                            "name": "Trade Type",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_IM",
-                            "name": "Installment Period",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_RM",
-                            "name": "Redeem Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_CU",
-                            "name": "UnionPay Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_PS",
-                            "name": "ECPay POS Serial Number",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_NI",
-                            "name": "Receipt to Cloud",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
                             "id": "REQ_58",
                             "name": "Installment/Redeem",
                             "expected": "IF_EXIST:NOT_NULL"
@@ -910,16 +1139,6 @@
                             "id": "RSP_56_SD",
                             "name": "Sub Merchant Name",
                             "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "RSP_56_NI",
-                            "name": "Receipt to Cloud",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "RSP_56_MS",
-                            "name": "Message Specification",
-                            "expected": "IF_EXIST:NOT_NULL"
                         }
                     ]
                 }
@@ -1014,41 +1233,6 @@
                             "expected": "NOT_NULL"
                         },
                         {
-                            "id": "REQ_56_MD",
-                            "name": "ECPay Merchant ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TD",
-                            "name": "ECPay Terminal ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TT",
-                            "name": "Trade Type",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_IM",
-                            "name": "Installment Period",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_RM",
-                            "name": "Redeem Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_CU",
-                            "name": "UnionPay Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_PS",
-                            "name": "ECPay POS Serial Number",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
                             "id": "REQ_62",
                             "name": "Invoice Number",
                             "expected": "NOT_NULL"
@@ -1097,11 +1281,6 @@
                             "id": "RSP_56_SD",
                             "name": "Sub Merchant Name",
                             "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "RSP_56_MS",
-                            "name": "Message Specification",
-                            "expected": "IF_EXIST:NOT_NULL"
                         }
                     ]
                 }
@@ -1206,46 +1385,6 @@
                             "expected": "NOT_NULL"
                         },
                         {
-                            "id": "REQ_56_TN",
-                            "name": "ECPay Order Number",
-                            "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_MD",
-                            "name": "ECPay Merchant ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TD",
-                            "name": "ECPay Terminal ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TT",
-                            "name": "Trade Type",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_IM",
-                            "name": "Installment Period",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_RM",
-                            "name": "Redeem Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_CU",
-                            "name": "UnionPay Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_PS",
-                            "name": "ECPay POS Serial Number",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
                             "id": "REQ_62",
                             "name": "Invoice Number",
                             "expected": "NOT_NULL"
@@ -1284,16 +1423,6 @@
                             "id": "RSP_56_AQ",
                             "name": "Acquirer Name",
                             "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "RSP_56_SD",
-                            "name": "Sub Merchant Name",
-                            "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "RSP_56_MS",
-                            "name": "Message Specification",
-                            "expected": "IF_EXIST:NOT_NULL"
                         }
                     ]
                 }
@@ -1393,41 +1522,6 @@
                             "expected": "NOT_NULL"
                         },
                         {
-                            "id": "REQ_56_MD",
-                            "name": "ECPay Merchant ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TD",
-                            "name": "ECPay Terminal ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TT",
-                            "name": "Trade Type",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_IM",
-                            "name": "Installment Period",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_RM",
-                            "name": "Redeem Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_CU",
-                            "name": "UnionPay Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_PS",
-                            "name": "ECPay POS Serial Number",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
                             "id": "REQ_62",
                             "name": "Invoice Number",
                             "expected": "NOT_NULL"
@@ -1476,11 +1570,6 @@
                             "id": "RSP_56_SD",
                             "name": "Sub Merchant Name",
                             "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "RSP_56_MS",
-                            "name": "Message Specification",
-                            "expected": "IF_EXIST:NOT_NULL"
                         }
                     ]
                 }
@@ -1590,41 +1679,6 @@
                             "expected": "NOT_NULL"
                         },
                         {
-                            "id": "REQ_56_MD",
-                            "name": "ECPay Merchant ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TD",
-                            "name": "ECPay Terminal ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TT",
-                            "name": "Trade Type",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_IM",
-                            "name": "Installment Period",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_RM",
-                            "name": "Redeem Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_CU",
-                            "name": "UnionPay Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_PS",
-                            "name": "ECPay POS Serial Number",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
                             "id": "REQ_62",
                             "name": "Invoice Number",
                             "expected": "NOT_NULL"
@@ -1668,11 +1722,6 @@
                             "id": "RSP_56_SD",
                             "name": "Sub Merchant Name",
                             "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "RSP_56_MS",
-                            "name": "Message Specification",
-                            "expected": "IF_EXIST:NOT_NULL"
                         }
                     ]
                 }
@@ -1747,6 +1796,36 @@
                             "expected": "IF_EXIST:NOT_NULL"
                         },
                         {
+                            "id": "REQ_56_OD",
+                            "name": "Merchant Order Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_PN",
+                            "name": "Card Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_ED",
+                            "name": "Expire Day",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MN",
+                            "name": "Machine Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_SK",
+                            "name": "Data Encrypt Method",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_TN",
+                            "name": "ECPay Order Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
                             "id": "REQ_62",
                             "name": "Invoice Number",
                             "expected": "NOT_NULL"
@@ -1770,41 +1849,6 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
-                        },
-                        {
-                            "id": "REQ_56_MD",
-                            "name": "ECPay Merchant ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TD",
-                            "name": "ECPay Terminal ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TT",
-                            "name": "Trade Type",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_IM",
-                            "name": "Installment Period",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_RM",
-                            "name": "Redeem Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_CU",
-                            "name": "UnionPay Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_PS",
-                            "name": "ECPay POS Serial Number",
-                            "expected": "IF_EXIST:NOT_NULL"
                         }
                     ]
                 }
@@ -1879,6 +1923,36 @@
                             "expected": "IF_EXIST:NOT_NULL"
                         },
                         {
+                            "id": "REQ_56_OD",
+                            "name": "Merchant Order Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_PN",
+                            "name": "Card Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_ED",
+                            "name": "Expire Day",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MN",
+                            "name": "Machine Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_SK",
+                            "name": "Data Encrypt Method",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_TN",
+                            "name": "ECPay Order Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
                             "id": "REQ_62",
                             "name": "Invoice Number",
                             "expected": "NOT_NULL"
@@ -1902,41 +1976,6 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
-                        },
-                        {
-                            "id": "REQ_56_MD",
-                            "name": "ECPay Merchant ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TD",
-                            "name": "ECPay Terminal ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TT",
-                            "name": "Trade Type",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_IM",
-                            "name": "Installment Period",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_RM",
-                            "name": "Redeem Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_CU",
-                            "name": "UnionPay Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_PS",
-                            "name": "ECPay POS Serial Number",
-                            "expected": "IF_EXIST:NOT_NULL"
                         }
                     ]
                 }
@@ -2011,6 +2050,36 @@
                             "expected": "IF_EXIST:NOT_NULL"
                         },
                         {
+                            "id": "REQ_56_OD",
+                            "name": "Merchant Order Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_PN",
+                            "name": "Card Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_ED",
+                            "name": "Expire Day",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MN",
+                            "name": "Machine Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_SK",
+                            "name": "Data Encrypt Method",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_TN",
+                            "name": "ECPay Order Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
                             "id": "REQ_62",
                             "name": "Invoice Number",
                             "expected": "NOT_NULL"
@@ -2034,41 +2103,6 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
-                        },
-                        {
-                            "id": "REQ_56_MD",
-                            "name": "ECPay Merchant ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TD",
-                            "name": "ECPay Terminal ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TT",
-                            "name": "Trade Type",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_IM",
-                            "name": "Installment Period",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_RM",
-                            "name": "Redeem Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_CU",
-                            "name": "UnionPay Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_PS",
-                            "name": "ECPay POS Serial Number",
-                            "expected": "IF_EXIST:NOT_NULL"
                         }
                     ]
                 }
@@ -2143,6 +2177,36 @@
                             "expected": "IF_EXIST:NOT_NULL"
                         },
                         {
+                            "id": "REQ_56_OD",
+                            "name": "Merchant Order Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_PN",
+                            "name": "Card Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_ED",
+                            "name": "Expire Day",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_MN",
+                            "name": "Machine Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_SK",
+                            "name": "Data Encrypt Method",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_TN",
+                            "name": "ECPay Order Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
                             "id": "REQ_62",
                             "name": "Invoice Number",
                             "expected": "NOT_NULL"
@@ -2166,41 +2230,6 @@
                             "id": "RSP_39",
                             "name": "Response Code",
                             "expected": "00"
-                        },
-                        {
-                            "id": "REQ_56_MD",
-                            "name": "ECPay Merchant ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TD",
-                            "name": "ECPay Terminal ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TT",
-                            "name": "Trade Type",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_IM",
-                            "name": "Installment Period",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_RM",
-                            "name": "Redeem Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_CU",
-                            "name": "UnionPay Indicator",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_PS",
-                            "name": "ECPay POS Serial Number",
-                            "expected": "IF_EXIST:NOT_NULL"
                         }
                     ]
                 }
@@ -2263,21 +2292,6 @@
                             "id": "REQ_56_SK",
                             "name": "Data Encrypt Method",
                             "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_MD",
-                            "name": "ECPay Merchant ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TD",
-                            "name": "ECPay Terminal ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_PS",
-                            "name": "ECPay POS Serial Number",
-                            "expected": "IF_EXIST:NOT_NULL"
                         },
                         {
                             "id": "REQ_60",
@@ -2375,21 +2389,6 @@
                             "id": "REQ_56_SK",
                             "name": "Data Encrypt Method",
                             "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_MD",
-                            "name": "ECPay Merchant ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TD",
-                            "name": "ECPay Terminal ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_PS",
-                            "name": "ECPay POS Serial Number",
-                            "expected": "IF_EXIST:NOT_NULL"
                         },
                         {
                             "id": "REQ_60",
@@ -2561,16 +2560,6 @@
                             "expected": "NOT_NULL"
                         },
                         {
-                            "id": "REQ_56_MD",
-                            "name": "ECPay Merchant ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TD",
-                            "name": "ECPay Terminal ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
                             "id": "RSP_12",
                             "name": "Time",
                             "expected": "NOT_NULL"
@@ -2638,16 +2627,6 @@
                             "expected": "NOT_NULL"
                         },
                         {
-                            "id": "REQ_56_MD",
-                            "name": "ECPay Merchant ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TD",
-                            "name": "ECPay Terminal ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
                             "id": "RSP_12",
                             "name": "Time",
                             "expected": "NOT_NULL"
@@ -2713,16 +2692,6 @@
                             "id": "REQ_56_MT",
                             "name": "Machine Type",
                             "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_MD",
-                            "name": "ECPay Merchant ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TD",
-                            "name": "ECPay Terminal ID",
-                            "expected": "IF_EXIST:NOT_NULL"
                         },
                         {
                             "id": "RSP_12",
@@ -2799,22 +2768,17 @@
                         {
                             "id": "REQ_56_TT",
                             "name": "Trade Type",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_56_TN",
+                            "name": "ECPay Order Number",
                             "expected": "IF_EXIST:NOT_NULL"
                         },
                         {
                             "id": "REQ_56_SK",
                             "name": "Data Encrypt Method",
                             "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_MD",
-                            "name": "ECPay Merchant ID",
-                            "expected": "IF_EXIST:NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_56_TD",
-                            "name": "ECPay Terminal ID",
-                            "expected": "IF_EXIST:NOT_NULL"
                         },
                         {
                             "id": "RSP_12",
@@ -2834,7 +2798,7 @@
                         {
                             "id": "RSP_56_MS",
                             "name": "Message Specification",
-                            "expected": "IF_EXIST:NOT_NULL"
+                            "expected": "NOT_NULL"
                         }
                     ]
                 }
