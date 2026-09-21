@@ -57,24 +57,20 @@ export function parseIsoLog(logText: string): Record<string, string> {
     // 實際 logcat 行含時間戳前綴，必須用 includes 判斷 Field/Tag，不能專連行首
     // 正則對齊原始 Python re.search 行為（任意位置找到第一筆匹配）
     // 一個 pattern 涵蓋全部情況：有/無 Field、Tag 前綴，有/無空格
-    const m = line.match(/(?:Field|Tag)?\s*([.*A-Za-z0-9_]+)\s*:\s*\[\d+\](.*)/);
+    const m = line.match(/(?:Field|TAG)?\s*([.*A-Za-z0-9_]+)\s*:\s*\[\d+\](.*)/i);
     if (!m) continue;
 
-    // 對齊 Python 原始邏輯：
-    //   m[1] = 欄位名稱（可能包含 .MTI、03、9F26、M6 等）
-    //   m[2] = 欄位值
     let nameRaw = m[1].trim();
     const val = m[2].trim();
 
-    // 判斷用 includes（不能用 ^Field 錨定，因為 logcat 行有時間戳前綴）
-    if (line.includes('Field')) {
-      // 純數字欄位去除前導零 (e.g., "03" → "3")
+    const lineUpper = line.toUpperCase();
+    if (lineUpper.includes('FIELD')) {
       if (/^\d+$/.test(nameRaw)) {
         nameRaw = String(parseInt(nameRaw, 10));
       }
       parentField = nameRaw;
       blockData[parentField] = val;
-    } else if (line.includes('Tag') && parentField) {
+    } else if (lineUpper.includes('TAG') && parentField) {
       blockData[`${parentField}_${nameRaw}`] = val;
       blockData[`${parentField}_TAG_${nameRaw}`] = val;
       // F55 等欄位的值全在子 TAG 裡，parentField 本身可能是空的
