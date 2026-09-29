@@ -253,6 +253,13 @@ export class AdbBridge {
    */
   private processLogLine(line: string): void {
     if (line.includes('REAL SEND DATA Pack START')) {
+      if (this.isCapturing) {
+        console.warn('[LogCapture] 前一筆 buffer 尚未 flush 就開始新區塊，強制 flush');
+        const rawLog = this.logBuffer.join('\n');
+        const parsed = parseIsoLog(rawLog);
+        this.logBuffer = [];
+        this.evaluateBuffer(parsed, rawLog);
+      }
       this.isCapturing = true;
       this.logBuffer = [line];
       return;
@@ -266,16 +273,25 @@ export class AdbBridge {
         const rawLog = this.logBuffer.join('\n');
         const parsed = parseIsoLog(rawLog);
         this.logBuffer = [];
+        console.log('[LogCapture] flush buffer, parsed keys:', Object.keys(parsed).length,
+          'MTI:', parsed['REQ_.MTI'] ?? '(none)',
+          'pendingSteps:', this.pendingSteps.length,
+          'stepIdx:', this.currentStepIdx);
         this.evaluateBuffer(parsed, rawLog);
       }
     }
   }
 
   private evaluateBuffer(parsed: Record<string, string>, rawLog?: string): void {
-    if (this.pendingSteps.length === 0) return;
+    if (this.pendingSteps.length === 0) {
+      console.warn('[evaluateBuffer] pendingSteps 為空，跳過');
+      return;
+    }
     const actualMti = (parsed['REQ_.MTI'] ?? '').replace('0x', '').trim();
     const expectedStep = this.pendingSteps[this.currentStepIdx];
     const expectedMti = expectedStep.mti.trim();
+    console.log('[evaluateBuffer] actualMTI:', actualMti, 'expectedMTI:', expectedMti,
+      'stepIdx:', this.currentStepIdx, '/', this.pendingSteps.length);
 
     // MTI 不符合這一步
     if (actualMti && !actualMti.includes(expectedMti)) {
