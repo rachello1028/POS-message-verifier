@@ -7,19 +7,71 @@
                     "step_name": "銷售_刷卡",
                     "mti": "0200",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "000000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^02" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_35", "name": "Track 2 Data",                         "expected": "NOT_NULL" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "000000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^02"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_35",
+                            "name": "Track 2 Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -31,19 +83,71 @@
                     "step_name": "銷售_人工輸入",
                     "mti": "0200",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "000000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_14", "name": "Date, Expiration",                     "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^01" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "000000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^01"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -55,44 +159,172 @@
                     "step_name": "銷售_晶片",
                     "mti": "0200",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "000000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^05" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_35", "name": "Track 2 Data",                         "expected": "NOT_NULL" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_55", "name": "ICC System Related Data",              "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "000000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^05"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_35",
+                            "name": "Track 2 Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "ICC System Related Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 },
                 {
                     "step_name": "銷售_晶片_TC上傳",
                     "mti": "0220",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "000000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_12", "name": "Time, Local Transaction",              "expected": "NOT_NULL" },
-                        { "id": "REQ_13", "name": "Date, Local Transaction",              "expected": "NOT_NULL" },
-                        { "id": "REQ_14", "name": "Date, Expiration",                     "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^05" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
-                        { "id": "REQ_39", "name": "Response Code",                        "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_55", "name": "ICC System Related Data",              "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "000000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_12",
+                            "name": "Time, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_13",
+                            "name": "Date, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^05"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_39",
+                            "name": "Response Code",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "ICC System Related Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -104,19 +336,71 @@
                     "step_name": "銷售_晶片毀損改刷磁條",
                     "mti": "0200",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "000000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^80" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_35", "name": "Track 2 Data",                         "expected": "NOT_NULL" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "000000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^80"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_35",
+                            "name": "Track 2 Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -128,19 +412,71 @@
                     "step_name": "退貨_刷卡",
                     "mti": "0200",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "200000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^02" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_35", "name": "Track 2 Data",                         "expected": "NOT_NULL" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "200000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^02"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_35",
+                            "name": "Track 2 Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -152,18 +488,66 @@
                     "step_name": "退貨_人工輸入",
                     "mti": "0200",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "200000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^01" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "200000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^01"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -175,19 +559,71 @@
                     "step_name": "預取授權_刷卡",
                     "mti": "0100",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "380000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^02" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_35", "name": "Track 2 Data",                         "expected": "NOT_NULL" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "380000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^02"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_35",
+                            "name": "Track 2 Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -199,19 +635,71 @@
                     "step_name": "預取授權_人工輸入",
                     "mti": "0100",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "380000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_14", "name": "Date, Expiration",                     "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^01" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "380000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^01"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -223,20 +711,76 @@
                     "step_name": "預取授權_晶片",
                     "mti": "0100",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "380000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^05" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_35", "name": "Track 2 Data",                         "expected": "NOT_NULL" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_55", "name": "ICC System Related Data",              "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "380000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^05"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_35",
+                            "name": "Track 2 Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "ICC System Related Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -248,19 +792,71 @@
                     "step_name": "預取授權_晶片毀損改刷磁條",
                     "mti": "0100",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "380000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^80" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_35", "name": "Track 2 Data",                         "expected": "NOT_NULL" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "380000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^80"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_35",
+                            "name": "Track 2 Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -272,21 +868,81 @@
                     "step_name": "銷售取消_原交易已上傳",
                     "mti": "0200",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "020000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_14", "name": "Date, Expiration",                     "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^01" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_37", "name": "Retrieval Reference Number",           "expected": "NOT_NULL" },
-                        { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "020000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^01"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "Retrieval Reference Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -298,21 +954,81 @@
                     "step_name": "退貨取消_原交易已上傳",
                     "mti": "0200",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "220000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_14", "name": "Date, Expiration",                     "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^01" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_37", "name": "Retrieval Reference Number",           "expected": "NOT_NULL" },
-                        { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "220000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^01"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "Retrieval Reference Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -324,24 +1040,96 @@
                     "step_name": "銷售調整",
                     "mti": "0220",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "020000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_12", "name": "Time, Local Transaction",              "expected": "NOT_NULL" },
-                        { "id": "REQ_13", "name": "Date, Local Transaction",              "expected": "NOT_NULL" },
-                        { "id": "REQ_14", "name": "Date, Expiration",                     "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^01" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_37", "name": "Retrieval Reference Number",           "expected": "NOT_NULL" },
-                        { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_60", "name": "Private Use",                          "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "020000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_12",
+                            "name": "Time, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_13",
+                            "name": "Date, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^01"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "Retrieval Reference Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_60",
+                            "name": "Private Use",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -353,24 +1141,96 @@
                     "step_name": "銷售小費",
                     "mti": "0220",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "020000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_12", "name": "Time, Local Transaction",              "expected": "NOT_NULL" },
-                        { "id": "REQ_13", "name": "Date, Local Transaction",              "expected": "NOT_NULL" },
-                        { "id": "REQ_14", "name": "Date, Expiration",                     "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^01" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_37", "name": "Retrieval Reference Number",           "expected": "NOT_NULL" },
-                        { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_60", "name": "Private Use",                          "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "020000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_12",
+                            "name": "Time, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_13",
+                            "name": "Date, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^01"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "Retrieval Reference Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_60",
+                            "name": "Private Use",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -382,22 +1242,86 @@
                     "step_name": "離線_刷卡",
                     "mti": "0220",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "000000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_12", "name": "Time, Local Transaction",              "expected": "NOT_NULL" },
-                        { "id": "REQ_13", "name": "Date, Local Transaction",              "expected": "NOT_NULL" },
-                        { "id": "REQ_14", "name": "Date, Expiration",                     "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^02" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "000000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_12",
+                            "name": "Time, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_13",
+                            "name": "Date, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^02"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -409,21 +1333,81 @@
                     "step_name": "離線_人工輸入",
                     "mti": "0220",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "000000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_12", "name": "Time, Local Transaction",              "expected": "NOT_NULL" },
-                        { "id": "REQ_13", "name": "Date, Local Transaction",              "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^01" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "000000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_12",
+                            "name": "Time, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_13",
+                            "name": "Date, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^01"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -435,22 +1419,86 @@
                     "step_name": "查詢銀行交易補登_刷卡_銷售",
                     "mti": "0220",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "000000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_12", "name": "Time, Local Transaction",              "expected": "NOT_NULL" },
-                        { "id": "REQ_13", "name": "Date, Local Transaction",              "expected": "NOT_NULL" },
-                        { "id": "REQ_14", "name": "Date, Expiration",                     "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^01" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "06" },
-                        { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "000000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_12",
+                            "name": "Time, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_13",
+                            "name": "Date, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^01"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "06"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -462,24 +1510,96 @@
                     "step_name": "查詢銀行交易補登_晶片_銷售",
                     "mti": "0220",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "000000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_12", "name": "Time, Local Transaction",              "expected": "NOT_NULL" },
-                        { "id": "REQ_13", "name": "Date, Local Transaction",              "expected": "NOT_NULL" },
-                        { "id": "REQ_14", "name": "Date, Expiration",                     "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^05" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "06" },
-                        { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
-                        { "id": "REQ_39", "name": "Response Code",                        "expected": "00" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_55", "name": "ICC System Related Data",              "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "000000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_12",
+                            "name": "Time, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_13",
+                            "name": "Date, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^05"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "06"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "ICC System Related Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -491,14 +1611,46 @@
                     "step_name": "結帳",
                     "mti": "0500",
                     "fields": [
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "920000" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_60", "name": "Private Use",                          "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "920000"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_60",
+                            "name": "Private Use",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -510,13 +1662,41 @@
                     "step_name": "批次上傳結帳",
                     "mti": "0500",
                     "fields": [
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "960000" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_60", "name": "Private Use",                          "expected": "NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "960000"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_60",
+                            "name": "Private Use",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -528,19 +1708,71 @@
                     "step_name": "銷售沖正",
                     "mti": "0400",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "000000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_14", "name": "Date, Expiration",                     "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^01" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "000000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^01"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -552,19 +1784,71 @@
                     "step_name": "退貨沖正",
                     "mti": "0400",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "200000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_14", "name": "Date, Expiration",                     "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^01" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "200000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^01"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -576,19 +1860,71 @@
                     "step_name": "預取授權沖正",
                     "mti": "0400",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "380000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_14", "name": "Date, Expiration",                     "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^01" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "380000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^01"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -600,19 +1936,71 @@
                     "step_name": "銷售取消沖正",
                     "mti": "0400",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "020000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_14", "name": "Date, Expiration",                     "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^01" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "020000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^01"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -624,19 +2012,71 @@
                     "step_name": "退貨取消沖正",
                     "mti": "0400",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "220000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_14", "name": "Date, Expiration",                     "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^01" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "220000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^01"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -648,20 +2088,76 @@
                     "step_name": "ARPC_Fail_Reversal",
                     "mti": "0400",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "000000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_14", "name": "Date, Expiration",                     "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^05" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_55", "name": "ICC System Related Data",              "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "000000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^05"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "ICC System Related Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -673,25 +2169,101 @@
                     "step_name": "批次上傳_銷售_刷卡",
                     "mti": "0320",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "000000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_12", "name": "Time, Local Transaction",              "expected": "NOT_NULL" },
-                        { "id": "REQ_13", "name": "Date, Local Transaction",              "expected": "NOT_NULL" },
-                        { "id": "REQ_14", "name": "Date, Expiration",                     "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^02" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_37", "name": "Retrieval Reference Number",           "expected": "NOT_NULL" },
-                        { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
-                        { "id": "REQ_39", "name": "Response Code",                        "expected": "00" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_60", "name": "Private Use",                          "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "000000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_12",
+                            "name": "Time, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_13",
+                            "name": "Date, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^02"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "Retrieval Reference Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_60",
+                            "name": "Private Use",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -703,26 +2275,106 @@
                     "step_name": "批次上傳_銷售_晶片",
                     "mti": "0320",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "000000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_12", "name": "Time, Local Transaction",              "expected": "NOT_NULL" },
-                        { "id": "REQ_13", "name": "Date, Local Transaction",              "expected": "NOT_NULL" },
-                        { "id": "REQ_14", "name": "Date, Expiration",                     "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "REGEX:^05" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_37", "name": "Retrieval Reference Number",           "expected": "NOT_NULL" },
-                        { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
-                        { "id": "REQ_39", "name": "Response Code",                        "expected": "00" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_55", "name": "ICC System Related Data",              "expected": "NOT_NULL" },
-                        { "id": "REQ_60", "name": "Private Use",                          "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "000000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_12",
+                            "name": "Time, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_13",
+                            "name": "Date, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "REGEX:^05"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "Retrieval Reference Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_55",
+                            "name": "ICC System Related Data",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_60",
+                            "name": "Private Use",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]
@@ -734,25 +2386,101 @@
                     "step_name": "批次上傳_退貨_刷卡",
                     "mti": "0320",
                     "fields": [
-                        { "id": "REQ_2",  "name": "Primary Account Number",              "expected": "NOT_NULL" },
-                        { "id": "REQ_3",  "name": "Processing Code",                     "expected": "200000" },
-                        { "id": "REQ_4",  "name": "Amount, Transaction",                 "expected": "NOT_NULL" },
-                        { "id": "REQ_11", "name": "System Trace Audit Number",            "expected": "NOT_NULL" },
-                        { "id": "REQ_12", "name": "Time, Local Transaction",              "expected": "NOT_NULL" },
-                        { "id": "REQ_13", "name": "Date, Local Transaction",              "expected": "NOT_NULL" },
-                        { "id": "REQ_14", "name": "Date, Expiration",                     "expected": "NOT_NULL" },
-                        { "id": "REQ_22", "name": "Point of Service Entry Mode",          "expected": "NOT_NULL" },
-                        { "id": "REQ_24", "name": "Network International Identifier",     "expected": "822" },
-                        { "id": "REQ_25", "name": "Point of Service Condition Code",      "expected": "00" },
-                        { "id": "REQ_37", "name": "Retrieval Reference Number",           "expected": "NOT_NULL" },
-                        { "id": "REQ_38", "name": "Authorization Identification Response", "expected": "NOT_NULL" },
-                        { "id": "REQ_39", "name": "Response Code",                        "expected": "00" },
-                        { "id": "REQ_41", "name": "Card Acceptor Terminal Identification", "expected": "NOT_NULL" },
-                        { "id": "REQ_42", "name": "Card Acceptor Identification Code",    "expected": "NOT_NULL" },
-                        { "id": "REQ_60", "name": "Private Use",                          "expected": "NOT_NULL" },
-                        { "id": "REQ_62", "name": "Invoice/ECR Ref No",                   "expected": "NOT_NULL" },
-                        { "id": "REQ_63", "name": "Additional Data",                      "expected": "IF_EXIST:NOT_NULL" },
-                        { "id": "RSP_39", "name": "Response Code",                        "expected": "00" }
+                        {
+                            "id": "REQ_2",
+                            "name": "Primary Account Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_3",
+                            "name": "Processing Code",
+                            "expected": "200000"
+                        },
+                        {
+                            "id": "REQ_4",
+                            "name": "Amount, Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_11",
+                            "name": "System Trace Audit Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_12",
+                            "name": "Time, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_13",
+                            "name": "Date, Local Transaction",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_14",
+                            "name": "Date, Expiration",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_22",
+                            "name": "Point of Service Entry Mode",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_24",
+                            "name": "Network International Identifier",
+                            "expected": "822"
+                        },
+                        {
+                            "id": "REQ_25",
+                            "name": "Point of Service Condition Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_37",
+                            "name": "Retrieval Reference Number",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_38",
+                            "name": "Authorization Identification Response",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        },
+                        {
+                            "id": "REQ_41",
+                            "name": "Card Acceptor Terminal Identification",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_42",
+                            "name": "Card Acceptor Identification Code",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_60",
+                            "name": "Private Use",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_62",
+                            "name": "Invoice/ECR Ref No",
+                            "expected": "NOT_NULL"
+                        },
+                        {
+                            "id": "REQ_63",
+                            "name": "Additional Data",
+                            "expected": "IF_EXIST:NOT_NULL"
+                        },
+                        {
+                            "id": "RSP_39",
+                            "name": "Response Code",
+                            "expected": "00"
+                        }
                     ]
                 }
             ]

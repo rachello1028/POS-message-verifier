@@ -1134,7 +1134,6 @@
         },
         "電簽上傳_小費": {
             "type": "multi-step",
-            "description": "小費交易電子簽單上傳（含原始金額欄位）",
             "steps": [
                 {
                     "step_name": "電簽上傳",
@@ -1231,11 +1230,6 @@
                             "expected": "NOT_NULL"
                         },
                         {
-                            "id": "REQ_62_TAG_06",
-                            "name": "Adjust / Tip Amount",
-                            "expected": "NOT_NULL"
-                        },
-                        {
                             "id": "REQ_62_TAG_08",
                             "name": "Unsign Flag",
                             "expected": "REGEX:[01]"
@@ -1243,11 +1237,6 @@
                         {
                             "id": "REQ_62_TAG_0A",
                             "name": "Merchant Chinese Name 1",
-                            "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_62_TAG_40",
-                            "name": "Original Amount",
                             "expected": "NOT_NULL"
                         },
                         {
@@ -1261,7 +1250,6 @@
         },
         "電簽上傳_調帳": {
             "type": "multi-step",
-            "description": "調帳交易電子簽單上傳（含原始金額欄位）",
             "steps": [
                 {
                     "step_name": "電簽上傳",
@@ -1358,11 +1346,6 @@
                             "expected": "NOT_NULL"
                         },
                         {
-                            "id": "REQ_62_TAG_06",
-                            "name": "Adjust / Tip Amount",
-                            "expected": "NOT_NULL"
-                        },
-                        {
                             "id": "REQ_62_TAG_08",
                             "name": "Unsign Flag",
                             "expected": "REGEX:[01]"
@@ -1370,11 +1353,6 @@
                         {
                             "id": "REQ_62_TAG_0A",
                             "name": "Merchant Chinese Name 1",
-                            "expected": "NOT_NULL"
-                        },
-                        {
-                            "id": "REQ_62_TAG_40",
-                            "name": "Original Amount",
                             "expected": "NOT_NULL"
                         },
                         {

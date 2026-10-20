@@ -12,10 +12,12 @@ POS Host Simulator — 模擬銀行後台
 """
 
 import asyncio
+import ipaddress
 import json
 import os
 import re
 import socket
+import ssl
 import struct
 import random
 import string
@@ -1029,7 +1031,8 @@ class HostSimulator:
                  has_tpdu: bool = True,
                  mti_encoding: str = 'bcd',
                  length_header: str = '2-bytes-be',
-                 response_delay: float = 0.1):
+                 response_delay: float = 0.1,
+                 ssl_context: ssl.SSLContext | None = None):
         self.generator = generator
         self.tcp_port = tcp_port
         self.ws_port = ws_port
@@ -1037,6 +1040,7 @@ class HostSimulator:
         self.mti_encoding = mti_encoding
         self.length_header = length_header
         self.response_delay = response_delay
+        self.ssl_context = ssl_context
         self.ws_clients: set = set()
         self.tx_counter = 0
         self.running = False
@@ -1184,10 +1188,213 @@ class HostSimulator:
             return str(msg_len).zfill(4).encode('ascii')
         return struct.pack('>H', msg_len)
 
+    async def _read_http_request(self, reader: asyncio.StreamReader):
+        """讀取 HTTP 請求，回傳 (method, path, headers_dict, body_bytes)"""
+        header_data = b''
+        while b'\r\n\r\n' not in header_data:
+            chunk = await asyncio.wait_for(reader.read(4096), timeout=30)
+            if not chunk:
+                return None
+            header_data += chunk
+
+        header_end = header_data.index(b'\r\n\r\n')
+        header_text = header_data[:header_end].decode('latin-1')
+        remaining = header_data[header_end + 4:]
+
+        lines = header_text.split('\r\n')
+        request_line = lines[0]
+        parts = request_line.split(' ', 2)
+        method = parts[0] if len(parts) >= 1 else ''
+        path = parts[1] if len(parts) >= 2 else '/'
+
+        headers = {}
+        for line in lines[1:]:
+            if ':' in line:
+                k, v = line.split(':', 1)
+                headers[k.strip().lower()] = v.strip()
+
+        content_length = int(headers.get('content-length', '0'))
+        body = remaining
+        while len(body) < content_length:
+            chunk = await asyncio.wait_for(reader.read(4096), timeout=10)
+            if not chunk:
+                break
+            body += chunk
+
+        return method, path, headers, body[:content_length]
+
+    async def _read_tcp_message_with_peek(self, reader, peek: bytes):
+        """peek 已讀了前 4 bytes，接著讀完 length header 和 body"""
+        try:
+            if self.length_header == '2-bytes-be':
+                hdr = peek[:2]
+                msg_len = struct.unpack('>H', hdr)[0]
+                extra = peek[2:]
+            elif self.length_header == '2-bytes-le':
+                hdr = peek[:2]
+                msg_len = struct.unpack('<H', hdr)[0]
+                extra = peek[2:]
+            elif self.length_header == '4-bytes-ascii':
+                hdr = peek
+                msg_len = int(hdr.decode('ascii'))
+                extra = b''
+            else:
+                hdr = peek[:2]
+                msg_len = struct.unpack('>H', hdr)[0]
+                extra = peek[2:]
+
+            if msg_len <= 0 or msg_len > 9999:
+                return None
+
+            need = msg_len - len(extra)
+            if need > 0:
+                rest = await asyncio.wait_for(reader.readexactly(need), timeout=10)
+                return extra + rest
+            return extra[:msg_len]
+        except Exception:
+            return None
+
+    async def _process_tcp_message(self, body: bytes, writer):
+        """處理一筆 raw TCP ISO 8583 訊息（原有邏輯）"""
+        self.tx_counter += 1
+        tx_id = self.tx_counter
+        ts = datetime.now().strftime('%H:%M:%S.%f')[:-3]
+
+        try:
+            req = Iso8583Message.parse(body, has_tpdu=self.has_tpdu,
+                                       mti_encoding=self.mti_encoding)
+        except Exception as e:
+            print(f"  [#{tx_id}] 解析失敗: {e}")
+            print(f"  [#{tx_id}] RAW: {body.hex()}")
+            await self.ws_broadcast({
+                'type': 'error',
+                'tx_id': tx_id,
+                'message': f'解析失敗: {e}',
+                'raw_hex': body.hex(),
+            })
+            return
+
+        bank, tx_name, rule = self.generator.match_rule(req.mti, req.fields)
+        tid = req.fields.get(41, '')
+
+        if req.mti == '0220' and req.fields.get(3) == '250000' and tid:
+            last = self.last_tx_name.get(tid)
+            if last and tx_name and '一般銷售' in tx_name:
+                suffix = tx_name.split('_', 1)[1] if '_' in tx_name else ''
+                base = last.split('_', 1)[0]
+                tx_name = f"{base}_{suffix}" if suffix else base
+
+        if req.mti == '0202' and tid:
+            last = self.last_tx_name.get(tid)
+            if last:
+                if not tx_name:
+                    tx_name = f"{last}_Confirm"
+                elif 'Confirm' not in tx_name:
+                    tx_name = f"{tx_name}_Confirm"
+                if not bank:
+                    bank = self.last_tx_bank.get(tid)
+
+        if req.mti in ('0100', '0200') and tid and tx_name:
+            self.last_tx_name[tid] = tx_name
+            if bank:
+                self.last_tx_bank[tid] = bank
+
+        if tx_name and 22 in req.fields:
+            f22 = req.fields[22]
+            entry = f22[1:3] if len(f22) >= 3 else f22[:2]
+            suffixes = {
+                '01': '手輸', '02': '刷卡', '05': '晶片',
+                '07': '感應', '77': '感應', '71': '感應',
+                '80': 'FALLBACK', '90': 'FALLBACK',
+                '91': '感應', '92': 'FALLBACK',
+            }
+            suffix = suffixes.get(entry)
+            if suffix:
+                has_suffix = any(s in tx_name for s in
+                                 ('刷卡', '晶片', '感應', '手輸',
+                                  'FALLBACK', '4DBC'))
+                if not has_suffix:
+                    tx_name = f"{tx_name}_{suffix}"
+
+        if tx_name:
+            if 54 in req.fields and req.fields[54].strip():
+                tx_name = '小費'
+            elif '分期' not in tx_name and 63 in req.fields:
+                f63 = req.fields[63]
+                idx = f63.find('10')
+                if idx >= 0 and idx + 12 <= len(f63) and f63[idx+2:idx+12].isdigit():
+                    tx_name = f"分期{tx_name}"
+
+        print(f"  [#{tx_id}] {ts} ← REQ {req.summary()}")
+        if bank:
+            print(f"  [#{tx_id}]   匹配: {bank} / {tx_name}")
+        else:
+            print(f"  [#{tx_id}]   未匹配規格，使用通用回應")
+
+        await self.ws_broadcast({
+            'type': 'request',
+            'tx_id': tx_id,
+            'timestamp': ts,
+            'mti': req.mti,
+            'bank': bank,
+            'tx_name': tx_name,
+            'fields': {str(k): v for k, v in req.fields.items()},
+            'raw_hex': body.hex(),
+        })
+
+        if self.generator.should_timeout():
+            print(f"  [#{tx_id}] {ts} !! TIMEOUT (不回應)")
+            await self.ws_broadcast({
+                'type': 'response',
+                'tx_id': tx_id,
+                'timestamp': datetime.now().strftime('%H:%M:%S.%f')[:-3],
+                'mti': '',
+                'fields': {},
+                'response_code': 'TIMEOUT',
+                'raw_hex': '',
+            })
+            return
+
+        if self.response_delay > 0:
+            await asyncio.sleep(self.response_delay)
+
+        resp = self.generator.generate_response(req)
+        resp_body = resp.build(has_tpdu=self.has_tpdu,
+                               mti_encoding=self.mti_encoding)
+
+        response_data = self.build_length_header(resp_body) + resp_body
+        writer.write(response_data)
+        await writer.drain()
+
+        print(f"  [#{tx_id}] {ts} → RSP {resp.summary()}")
+
+        await self.ws_broadcast({
+            'type': 'response',
+            'tx_id': tx_id,
+            'timestamp': datetime.now().strftime('%H:%M:%S.%f')[:-3],
+            'mti': resp.mti,
+            'fields': {str(k): v for k, v in resp.fields.items()},
+            'response_code': resp.fields.get(39, '??'),
+            'raw_hex': resp_body.hex(),
+        })
+
+    def _build_http_response(self, status: int, body: bytes,
+                              content_type: str = 'application/octet-stream') -> bytes:
+        status_text = {200: 'OK', 400: 'Bad Request', 404: 'Not Found'}.get(status, 'OK')
+        header = (
+            f'HTTP/1.1 {status} {status_text}\r\n'
+            f'Content-Type: {content_type}\r\n'
+            f'Content-Length: {len(body)}\r\n'
+            f'Connection: close\r\n'
+            f'\r\n'
+        )
+        return header.encode('latin-1') + body
+
     async def handle_connection(self, reader: asyncio.StreamReader,
                                 writer: asyncio.StreamWriter):
         addr = writer.get_extra_info('peername')
-        print(f"\n[TCP] POS 連入: {addr}")
+        proto = 'HTTPS' if self.ssl_context else 'TCP'
+        print(f"\n[{proto}] POS 連入: {addr}")
         await self.ws_broadcast({
             'type': 'connection',
             'action': 'connected',
@@ -1195,36 +1402,76 @@ class HostSimulator:
         })
 
         try:
-            while True:
-                body = await self.read_message(reader)
-                if body is None:
-                    break
+            # 偵測是 HTTP 還是 raw TCP（先 peek 開頭幾 bytes）
+            peek = await asyncio.wait_for(reader.read(4), timeout=60)
+            if not peek:
+                return
+            is_http = peek[:3] in (b'GET', b'POS', b'PUT') or peek[:4] in (b'POST', b'HEAD')
+
+            if is_http:
+                # HTTP 模式：從 POST body 取出 ISO 電文
+                # 把 peek 放回去重新讀完整 HTTP
+                full_data = peek + await asyncio.wait_for(reader.read(65536), timeout=30)
+                header_end = full_data.find(b'\r\n\r\n')
+                if header_end < 0:
+                    writer.write(self._build_http_response(400, b'Bad Request'))
+                    await writer.drain()
+                    return
+
+                header_text = full_data[:header_end].decode('latin-1')
+                remaining = full_data[header_end + 4:]
+
+                headers = {}
+                for line in header_text.split('\r\n')[1:]:
+                    if ':' in line:
+                        k, v = line.split(':', 1)
+                        headers[k.strip().lower()] = v.strip()
+
+                content_length = int(headers.get('content-length', '0'))
+                http_body = remaining
+                while len(http_body) < content_length:
+                    chunk = await asyncio.wait_for(reader.read(4096), timeout=10)
+                    if not chunk:
+                        break
+                    http_body += chunk
+                http_body = http_body[:content_length]
+
+                print(f"  [HTTP] POST {len(http_body)} bytes")
+
+                if len(http_body) < 4:
+                    writer.write(self._build_http_response(400, b'Empty body'))
+                    await writer.drain()
+                    return
+
+                # HTTP body 裡面就是 length header + ISO 8583
+                body = http_body
+                # 嘗試解開 length header
+                if self.length_header == '2-bytes-be' and len(body) >= 2:
+                    msg_len = struct.unpack('>H', body[:2])[0]
+                    if msg_len == len(body) - 2:
+                        body = body[2:]
+                elif self.length_header == '2-bytes-le' and len(body) >= 2:
+                    msg_len = struct.unpack('<H', body[:2])[0]
+                    if msg_len == len(body) - 2:
+                        body = body[2:]
 
                 self.tx_counter += 1
                 tx_id = self.tx_counter
                 ts = datetime.now().strftime('%H:%M:%S.%f')[:-3]
 
-                # 解析 request
                 try:
                     req = Iso8583Message.parse(body, has_tpdu=self.has_tpdu,
                                                mti_encoding=self.mti_encoding)
                 except Exception as e:
                     print(f"  [#{tx_id}] 解析失敗: {e}")
                     print(f"  [#{tx_id}] RAW: {body.hex()}")
-                    await self.ws_broadcast({
-                        'type': 'error',
-                        'tx_id': tx_id,
-                        'message': f'解析失敗: {e}',
-                        'raw_hex': body.hex(),
-                    })
-                    continue
+                    writer.write(self._build_http_response(400, b'Parse error'))
+                    await writer.drain()
+                    return
 
-                bank, tx_name, rule = self.generator.match_rule(
-                    req.mti, req.fields)
-
+                bank, tx_name, rule = self.generator.match_rule(req.mti, req.fields)
                 tid = req.fields.get(41, '')
 
-                # TC Upload (0220/F3=250000) 沿用上一筆主交易的名稱
                 if req.mti == '0220' and req.fields.get(3) == '250000' and tid:
                     last = self.last_tx_name.get(tid)
                     if last and tx_name and '一般銷售' in tx_name:
@@ -1232,7 +1479,6 @@ class HostSimulator:
                         base = last.split('_', 1)[0]
                         tx_name = f"{base}_{suffix}" if suffix else base
 
-                # 0202 Confirm 沿用上一筆主交易名稱（加 Confirm 後綴）
                 if req.mti == '0202' and tid:
                     last = self.last_tx_name.get(tid)
                     if last:
@@ -1243,13 +1489,11 @@ class HostSimulator:
                         if not bank:
                             bank = self.last_tx_bank.get(tid)
 
-                # 記住主交易名稱供後續 TC Upload / Confirm 使用
                 if req.mti in ('0100', '0200') and tid and tx_name:
                     self.last_tx_name[tid] = tx_name
                     if bank:
                         self.last_tx_bank[tid] = bank
 
-                # 依 F22 Entry Mode 補充過卡方式（規格未區分時）
                 if tx_name and 22 in req.fields:
                     f22 = req.fields[22]
                     entry = f22[1:3] if len(f22) >= 3 else f22[:2]
@@ -1267,23 +1511,10 @@ class HostSimulator:
                         if not has_suffix:
                             tx_name = f"{tx_name}_{suffix}"
 
-                # 偵測特殊交易類型：依欄位存在性修正交易名稱
-                if tx_name:
-                    if 54 in req.fields and req.fields[54].strip():
-                        tx_name = '小費'
-                    elif '分期' not in tx_name and 63 in req.fields:
-                        f63 = req.fields[63]
-                        idx = f63.find('10')
-                        if idx >= 0 and idx + 12 <= len(f63) and f63[idx+2:idx+12].isdigit():
-                            tx_name = f"分期{tx_name}"
-
                 print(f"  [#{tx_id}] {ts} ← REQ {req.summary()}")
                 if bank:
                     print(f"  [#{tx_id}]   匹配: {bank} / {tx_name}")
-                else:
-                    print(f"  [#{tx_id}]   未匹配規格，使用通用回應")
 
-                # 通知 Web UI
                 await self.ws_broadcast({
                     'type': 'request',
                     'tx_id': tx_id,
@@ -1295,7 +1526,6 @@ class HostSimulator:
                     'raw_hex': body.hex(),
                 })
 
-                # Timeout 檢查
                 if self.generator.should_timeout():
                     print(f"  [#{tx_id}] {ts} !! TIMEOUT (不回應)")
                     await self.ws_broadcast({
@@ -1307,20 +1537,18 @@ class HostSimulator:
                         'response_code': 'TIMEOUT',
                         'raw_hex': '',
                     })
-                    continue
+                    return
 
-                # 模擬 Host 處理延遲
                 if self.response_delay > 0:
                     await asyncio.sleep(self.response_delay)
 
-                # 生成回應
                 resp = self.generator.generate_response(req)
                 resp_body = resp.build(has_tpdu=self.has_tpdu,
                                        mti_encoding=self.mti_encoding)
 
-                # 送出
+                # HTTP 回應：length header + ISO body
                 response_data = self.build_length_header(resp_body) + resp_body
-                writer.write(response_data)
+                writer.write(self._build_http_response(200, response_data))
                 await writer.drain()
 
                 print(f"  [#{tx_id}] {ts} → RSP {resp.summary()}")
@@ -1334,11 +1562,26 @@ class HostSimulator:
                     'response_code': resp.fields.get(39, '??'),
                     'raw_hex': resp_body.hex(),
                 })
+                return  # HTTP 是 request-response，處理完就關連線
+
+            # ── raw TCP 模式（原有邏輯）──────────────────────────────────
+            # 把 peek 放回 reader 的 buffer
+            # asyncio.StreamReader 沒有 unread，用一個小 wrapper 處理
+            # 直接把 peek 當作第一筆 message 的開頭
+            first_body = await self._read_tcp_message_with_peek(reader, peek)
+            if first_body is not None:
+                await self._process_tcp_message(first_body, writer)
+
+            while True:
+                body = await self.read_message(reader)
+                if body is None:
+                    break
+                await self._process_tcp_message(body, writer)
 
         except ConnectionResetError:
-            print(f"[TCP] 連線被 POS 重置: {addr}")
+            print(f"[{proto}] 連線被 POS 重置: {addr}")
         except Exception as e:
-            print(f"[TCP] 連線異常: {addr} — {e}")
+            print(f"[{proto}] 連線異常: {addr} — {e}")
             traceback.print_exc()
         finally:
             writer.close()
@@ -1346,7 +1589,7 @@ class HostSimulator:
                 await writer.wait_closed()
             except Exception:
                 pass
-            print(f"[TCP] POS 斷線: {addr}")
+            print(f"[{proto}] POS 斷線: {addr}")
             await self.ws_broadcast({
                 'type': 'connection',
                 'action': 'disconnected',
@@ -1356,9 +1599,10 @@ class HostSimulator:
     async def start(self):
         self.running = True
 
-        # 啟動 TCP Server
+        # 啟動 TCP Server（支援 SSL）
         tcp_server = await asyncio.start_server(
-            self.handle_connection, '0.0.0.0', self.tcp_port)
+            self.handle_connection, '0.0.0.0', self.tcp_port,
+            ssl=self.ssl_context)
 
         # 啟動 WebSocket Server（若有安裝 websockets）
         ws_server = None
@@ -1367,9 +1611,10 @@ class HostSimulator:
                 self.handle_ws_client, '127.0.0.1', self.ws_port,
                 ping_interval=25, ping_timeout=10)
 
+        proto = 'HTTPS(SSL)' if self.ssl_context else 'TCP'
         print("=" * 58)
         print("  POS Host Simulator — 模擬銀行後台")
-        print(f"  TCP  監聽: 0.0.0.0:{self.tcp_port}")
+        print(f"  {proto} 監聽: 0.0.0.0:{self.tcp_port}")
         if ws_server:
             print(f"  WS   監控: ws://127.0.0.1:{self.ws_port}")
         else:
@@ -1384,6 +1629,78 @@ class HostSimulator:
         print("等待 POS 連線中…（按 Ctrl+C 停止）\n")
 
         await asyncio.Future()
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  SSL 自簽憑證
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _ensure_self_signed_cert(cert_dir: Path):
+    """產生自簽憑證供 HTTPS 使用，已存在則跳過"""
+    cert_file = cert_dir / 'server.crt'
+    key_file = cert_dir / 'server.key'
+    if cert_file.exists() and key_file.exists():
+        return str(cert_file), str(key_file)
+
+    try:
+        from cryptography import x509
+        from cryptography.x509.oid import NameOID
+        from cryptography.hazmat.primitives import hashes, serialization
+        from cryptography.hazmat.primitives.asymmetric import rsa
+        import datetime as _dt
+
+        key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+        subject = issuer = x509.Name([
+            x509.NameAttribute(NameOID.COMMON_NAME, 'POS Host Simulator'),
+        ])
+        cert = (
+            x509.CertificateBuilder()
+            .subject_name(subject)
+            .issuer_name(issuer)
+            .public_key(key.public_key())
+            .serial_number(x509.random_serial_number())
+            .not_valid_before(_dt.datetime.now(_dt.timezone.utc))
+            .not_valid_after(_dt.datetime.now(_dt.timezone.utc) + _dt.timedelta(days=3650))
+            .add_extension(
+                x509.SubjectAlternativeName([
+                    x509.DNSName('localhost'),
+                    x509.IPAddress(ipaddress.IPv4Address('127.0.0.1')),
+                    x509.IPAddress(ipaddress.IPv4Address('0.0.0.0')),
+                ]),
+                critical=False,
+            )
+            .sign(key, hashes.SHA256())
+        )
+
+        cert_dir.mkdir(parents=True, exist_ok=True)
+        key_file.write_bytes(key.private_bytes(
+            serialization.Encoding.PEM,
+            serialization.PrivateFormat.TraditionalOpenSSL,
+            serialization.NoEncryption(),
+        ))
+        cert_file.write_bytes(cert.public_bytes(serialization.Encoding.PEM))
+        print(f"[SSL] 已產生自簽憑證: {cert_file}")
+        return str(cert_file), str(key_file)
+
+    except ImportError:
+        import subprocess
+        cert_dir.mkdir(parents=True, exist_ok=True)
+        subprocess.run([
+            'openssl', 'req', '-x509', '-newkey', 'rsa:2048',
+            '-keyout', str(key_file), '-out', str(cert_file),
+            '-days', '3650', '-nodes',
+            '-subj', '/CN=POS Host Simulator',
+        ], check=True, capture_output=True)
+        print(f"[SSL] 已透過 openssl 產生自簽憑證: {cert_file}")
+        return str(cert_file), str(key_file)
+
+
+def _create_ssl_context(cert_file: str, key_file: str):
+    ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    ctx.load_cert_chain(cert_file, key_file)
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+    return ctx
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1469,6 +1786,8 @@ def main():
                     help='回應延遲秒數 (預設 0.1)')
     ap.add_argument('--bank', default=None,
                     help='指定使用哪家銀行規格回應 (預設自動匹配)')
+    ap.add_argument('--ssl', action='store_true',
+                    help='啟用 HTTPS（自動產生自簽憑證）')
     ap.add_argument('--self-test', action='store_true',
                     help='執行自我測試')
     args = ap.parse_args()
@@ -1502,6 +1821,13 @@ def main():
         gen.active_bank = args.bank
         print(f"[INFO] 指定銀行: {args.bank}")
 
+    ssl_ctx = None
+    if args.ssl:
+        cert_dir = Path(__file__).parent / 'certs'
+        cert_file, key_file = _ensure_self_signed_cert(cert_dir)
+        ssl_ctx = _create_ssl_context(cert_file, key_file)
+        print(f"[SSL] 已啟用 HTTPS 模式")
+
     sim = HostSimulator(
         gen,
         tcp_port=args.port,
@@ -1510,6 +1836,7 @@ def main():
         mti_encoding='ascii' if args.mti_ascii else 'bcd',
         length_header=args.length_header,
         response_delay=args.delay,
+        ssl_context=ssl_ctx,
     )
 
     try:
