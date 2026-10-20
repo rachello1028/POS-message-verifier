@@ -1024,6 +1024,116 @@ def get_local_ip():
 #  TCP Server — 主角
 # ═══════════════════════════════════════════════════════════════════════════════
 
+# ═══════════════════════════════════════════════════════════════════════════════
+#  綠界 SCP 主機模擬（ecpayment /1.0.0/Cashier/*）
+# ═══════════════════════════════════════════════════════════════════════════════
+#  SCP 打綠界主機：POST JSON {"MerchantID", "RqHeader", "Data"}
+#  Data = Base64( AES-128-CBC/PKCS7( URLEncode(JSON) ) )，金鑰 HashKey/HashIV
+#  回應：{"MerchantID", "RpHeader", "TransCode", "TransMsg", "Data"}
+#  主要用途：收款/退貨不回應 → 驗證 SCP 會不會自動送 QueryTrade 發查
+
+# 綠界公開的 stage 測試特店 3002607 金鑰
+ECPAY_STAGE_HASH_KEY = 'pwFHCqoQZGmho4w6'
+ECPAY_STAGE_HASH_IV = 'EkRm7iFT261dpevs'
+
+
+class EcpayScpHost:
+    def __init__(self, hash_key: str = ECPAY_STAGE_HASH_KEY,
+                 hash_iv: str = ECPAY_STAGE_HASH_IV,
+                 trade_mode: str = 'hang', query_mode: str = 'success'):
+        self.key = hash_key.encode()
+        self.iv = hash_iv.encode()
+        self.trade_mode = trade_mode    # GenPaymentCode/Refund: hang | success
+        self.query_mode = query_mode    # QueryTrade: success | not_found
+        self.trades: dict[str, dict] = {}  # MerchantTradeNo → 收款請求資訊
+
+    def _cipher(self):
+        from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+        return Cipher(algorithms.AES(self.key), modes.CBC(self.iv))
+
+    def decrypt(self, data_b64: str) -> dict:
+        import base64
+        from urllib.parse import unquote_plus
+        d = self._cipher().decryptor()
+        pt = d.update(base64.b64decode(data_b64)) + d.finalize()
+        pt = pt[:-pt[-1]]
+        return json.loads(unquote_plus(pt.decode('utf-8')))
+
+    def encrypt(self, obj: dict) -> str:
+        import base64
+        from urllib.parse import quote_plus
+        raw = quote_plus(json.dumps(obj, ensure_ascii=False, separators=(',', ':'))).encode()
+        pad = 16 - len(raw) % 16
+        e = self._cipher().encryptor()
+        return base64.b64encode(e.update(raw + bytes([pad]) * pad) + e.finalize()).decode()
+
+    @staticmethod
+    def find_key(obj, key: str):
+        """遞迴找第一個符合的 key（請求明文結構不完全確定）"""
+        if isinstance(obj, dict):
+            if key in obj:
+                return obj[key]
+            for v in obj.values():
+                found = EcpayScpHost.find_key(v, key)
+                if found is not None:
+                    return found
+        return None
+
+    @staticmethod
+    def flatten(obj, prefix: str = '') -> dict[str, str]:
+        out = {}
+        for k, v in obj.items():
+            name = f'{prefix}{k}'
+            if isinstance(v, dict):
+                out.update(EcpayScpHost.flatten(v, f'{name}.'))
+            else:
+                out[name] = str(v)
+        return out
+
+    def build_response(self, merchant_id: str, plain: dict) -> bytes:
+        return json.dumps({
+            'MerchantID': merchant_id,
+            'RpHeader': {'Timestamp': int(datetime.now().timestamp())},
+            'TransCode': 1,
+            'TransMsg': 'Success!',
+            'Data': self.encrypt(plain),
+        }, ensure_ascii=False).encode('utf-8')
+
+    def trade_success(self, merchant_id: str, trade_no: str) -> dict:
+        """依記錄的收款請求組成功回應（格式取自 stage 實際回應）"""
+        t = self.trades.get(trade_no, {})
+        now = datetime.now()
+        stamp = now.strftime('%y%m%d%H%M%S')
+        trade_date = t.get('trade_date') or now.strftime('%Y/%m/%d %H:%M:%S')
+        return {
+            'RtnCode': 1,
+            'RtnMsg': 'Success!',
+            'PlatformID': '',
+            'MerchantID': merchant_id,
+            'OrderInfo': {
+                'MerchantTradeNo': trade_no,
+                'TradeNo': t.setdefault('trade_no', stamp + f'{random.randint(0, 9999):04d}'),
+                'TradeAmt': t.get('amount', 0),
+                'TradeDate': trade_date,
+                'PaymentType': 'POS',
+                'ChargeFee': 0.0,
+                'ProcessFee': 0.0,
+                'TradeStatus': '1',
+                'PaymentDate': trade_date,
+            },
+            'POSInfo': {
+                'TerminalID': t.get('terminal_id', ''),
+                'PayFrom': 'TWQR_OPAY',
+                'PaymentCode': t.get('payment_code', ''),
+                'StoreID': t.get('store_id', ''),
+                'StoreName': '',
+                'StoreAddr': '',
+                'GatewayTradeNo': t.setdefault('gateway_no', stamp + f'{random.randint(0, 9999):04d}'),
+            },
+            'CustomField': '',
+        }
+
+
 class HostSimulator:
     def __init__(self, generator: ResponseGenerator, *,
                  tcp_port: int = 8000,
@@ -1032,8 +1142,10 @@ class HostSimulator:
                  mti_encoding: str = 'bcd',
                  length_header: str = '2-bytes-be',
                  response_delay: float = 0.1,
-                 ssl_context: ssl.SSLContext | None = None):
+                 ssl_context: ssl.SSLContext | None = None,
+                 ecpay: EcpayScpHost | None = None):
         self.generator = generator
+        self.ecpay = ecpay or EcpayScpHost()
         self.tcp_port = tcp_port
         self.ws_port = ws_port
         self.has_tpdu = has_tpdu
@@ -1390,6 +1502,108 @@ class HostSimulator:
         )
         return header.encode('latin-1') + body
 
+    async def _handle_ecpay(self, path: str, body: bytes, reader, writer):
+        """綠界 SCP 主機 API：GenPaymentCode / Refund / QueryTrade"""
+        api = path.rstrip('/').rsplit('/', 1)[-1]
+        ec = self.ecpay
+        self.tx_counter += 1
+        tx_id = self.tx_counter
+        ts = datetime.now().strftime('%H:%M:%S.%f')[:-3]
+
+        try:
+            outer = json.loads(body.decode('utf-8'))
+            plain = ec.decrypt(outer['Data'])
+        except Exception as e:
+            print(f"  [#{tx_id}] [ECPAY] {api} 解析/解密失敗: {e}")
+            print(f"  [#{tx_id}] RAW: {body[:500]!r}")
+            await self.ws_broadcast({'type': 'error', 'tx_id': tx_id,
+                                     'message': f'綠界 {api} 解密失敗: {e}',
+                                     'raw_hex': body.hex()})
+            writer.write(self._build_http_response(400, b'Bad Request'))
+            await writer.drain()
+            return
+
+        merchant_id = str(outer.get('MerchantID') or ec.find_key(plain, 'MerchantID') or '')
+        trade_no = str(ec.find_key(plain, 'MerchantTradeNo') or '')
+        print(f"  [#{tx_id}] {ts} ← [ECPAY] {api}  MerchantTradeNo={trade_no}")
+        print(f"  [#{tx_id}]   明文: {json.dumps(plain, ensure_ascii=False)}")
+
+        tx_name = {'GenPaymentCode': '掃碼收款', 'Refund': '退貨',
+                   'QueryTrade': 'Timeout 發查'}.get(api, api)
+        if api == 'QueryTrade':
+            orig = ec.trades.get(trade_no)
+            if orig and orig.get('hang_at'):
+                gap = (datetime.now() - orig['hang_at']).total_seconds()
+                tx_name += f'（原交易掛住後 {gap:.1f}s）'
+                print(f"  [#{tx_id}]   ★ 收到發查！距原交易掛住 {gap:.1f}s")
+            else:
+                print(f"  [#{tx_id}]   ★ 收到發查（查無模擬器記錄的原交易）")
+
+        await self.ws_broadcast({
+            'type': 'request', 'tx_id': tx_id, 'timestamp': ts,
+            'mti': api, 'bank': '綠界SCP', 'tx_name': tx_name,
+            'fields': ec.flatten(plain), 'raw_hex': body.hex(),
+        })
+
+        async def respond(resp_plain: dict):
+            data = ec.build_response(merchant_id, resp_plain)
+            writer.write(self._build_http_response(200, data, 'application/json; charset=utf-8'))
+            await writer.drain()
+            rc = str(resp_plain.get('RtnCode', ''))
+            print(f"  [#{tx_id}] → [ECPAY] {api} RtnCode={rc} {resp_plain.get('RtnMsg', '')}")
+            await self.ws_broadcast({
+                'type': 'response', 'tx_id': tx_id,
+                'timestamp': datetime.now().strftime('%H:%M:%S.%f')[:-3],
+                'mti': api, 'fields': ec.flatten(resp_plain),
+                'response_code': '00' if rc == '1' else rc,
+                'raw_hex': data.hex(),
+            })
+
+        if api in ('GenPaymentCode', 'Refund'):
+            if api == 'GenPaymentCode' and trade_no:
+                ec.trades[trade_no] = {
+                    'amount': ec.find_key(plain, 'TotalAmount') or 0,
+                    'trade_date': ec.find_key(plain, 'MerchantTradeDate'),
+                    'payment_code': ec.find_key(plain, 'PaymentCode') or '',
+                    'terminal_id': ec.find_key(plain, 'TerminalID') or '',
+                    'store_id': ec.find_key(plain, 'StoreID') or '',
+                }
+            if ec.trade_mode == 'hang':
+                if trade_no:
+                    ec.trades.setdefault(trade_no, {})['hang_at'] = datetime.now()
+                print(f"  [#{tx_id}] !! {api} 掛住不回應，等 SCP 逾時…")
+                await self.ws_broadcast({
+                    'type': 'response', 'tx_id': tx_id,
+                    'timestamp': datetime.now().strftime('%H:%M:%S.%f')[:-3],
+                    'mti': '', 'fields': {}, 'response_code': 'TIMEOUT', 'raw_hex': '',
+                })
+                start = datetime.now()
+                try:
+                    while await asyncio.wait_for(reader.read(4096), timeout=600):
+                        pass
+                except (asyncio.TimeoutError, ConnectionError):
+                    pass
+                gap = (datetime.now() - start).total_seconds()
+                print(f"  [#{tx_id}]   SCP 在 {gap:.1f}s 後斷線（= SCP 端逾時秒數）")
+                return
+            if api == 'GenPaymentCode':
+                await respond(ec.trade_success(merchant_id, trade_no))
+            else:
+                await respond({'RtnCode': 1, 'RtnMsg': '成功', 'MerchantID': merchant_id,
+                               'OrderInfo': {'MerchantTradeNo': trade_no}})
+            return
+
+        if api == 'QueryTrade':
+            if ec.query_mode == 'success' and trade_no in ec.trades:
+                await respond(ec.trade_success(merchant_id, trade_no))
+            else:
+                await respond({'RtnCode': 10000185, 'RtnMsg': 'Cant not find the trade data'})
+            return
+
+        print(f"  [#{tx_id}]   未支援的綠界 API: {api}，回 404")
+        writer.write(self._build_http_response(404, b'Not Found'))
+        await writer.drain()
+
     async def handle_connection(self, reader: asyncio.StreamReader,
                                 writer: asyncio.StreamWriter):
         addr = writer.get_extra_info('peername')
@@ -1436,7 +1650,13 @@ class HostSimulator:
                     http_body += chunk
                 http_body = http_body[:content_length]
 
-                print(f"  [HTTP] POST {len(http_body)} bytes")
+                req_path = header_text.split('\r\n', 1)[0].split(' ')[1] \
+                    if ' ' in header_text.split('\r\n', 1)[0] else '/'
+                print(f"  [HTTP] POST {req_path} {len(http_body)} bytes")
+
+                if '/Cashier/' in req_path:
+                    await self._handle_ecpay(req_path, http_body, reader, writer)
+                    return
 
                 if len(http_body) < 4:
                     writer.write(self._build_http_response(400, b'Empty body'))
@@ -1788,6 +2008,12 @@ def main():
                     help='指定使用哪家銀行規格回應 (預設自動匹配)')
     ap.add_argument('--ssl', action='store_true',
                     help='啟用 HTTPS（自動產生自簽憑證）')
+    ap.add_argument('--ecpay-trade', default='hang', choices=['hang', 'success'],
+                    help='綠界 SCP 收款/退貨：hang=掛住不回應（測 timeout 發查）, success=回成功')
+    ap.add_argument('--ecpay-query', default='success', choices=['success', 'not_found'],
+                    help='綠界 SCP 發查(QueryTrade)：success=回原交易成功, not_found=查無交易')
+    ap.add_argument('--ecpay-hash-key', default=ECPAY_STAGE_HASH_KEY)
+    ap.add_argument('--ecpay-hash-iv', default=ECPAY_STAGE_HASH_IV)
     ap.add_argument('--self-test', action='store_true',
                     help='執行自我測試')
     args = ap.parse_args()
@@ -1837,7 +2063,10 @@ def main():
         length_header=args.length_header,
         response_delay=args.delay,
         ssl_context=ssl_ctx,
+        ecpay=EcpayScpHost(args.ecpay_hash_key, args.ecpay_hash_iv,
+                           args.ecpay_trade, args.ecpay_query),
     )
+    print(f"[ECPAY] 綠界 SCP 主機：收款/退貨={args.ecpay_trade}，發查={args.ecpay_query}")
 
     try:
         asyncio.run(sim.start())
