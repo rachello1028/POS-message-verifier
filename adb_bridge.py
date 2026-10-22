@@ -26,6 +26,15 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--port', type=int, default=9999, help='WebSocket 監聽埠號')
 args = parser.parse_args()
 LISTEN_PORT = args.port
+# 只接受這些網頁連進來：瀏覽器一定會帶 Origin，所以其他網站開著時連不上 bridge。
+# None＝沒帶 Origin 的本機程式。用預覽網址或其他 port 時，用環境變數 BRIDGE_ALLOWED_ORIGINS 追加（逗號分隔）。
+ALLOWED_ORIGINS = [
+    "https://pos-message-verifier.vercel.app",
+    "https://ecr-transaction-master.vercel.app",
+    "http://localhost:3001", "http://127.0.0.1:3001",
+    "http://localhost:3000", "http://127.0.0.1:3000",
+    None,
+] + [o.strip() for o in os.environ.get("BRIDGE_ALLOWED_ORIGINS", "").split(",") if o.strip()]
 RULES_DIR = os.path.join(os.path.dirname(__file__), "rules")
 
 connected_clients: set = set()
@@ -389,6 +398,7 @@ async def main() -> None:
 
     async with websockets.serve(
         handle_client, '127.0.0.1', LISTEN_PORT,
+        origins=ALLOWED_ORIGINS,
         ping_interval=20,   # 每 20 秒發一次 WS 協定層 ping
         ping_timeout=10,    # 10 秒內沒收到 pong 就強制關閉連線
     ):

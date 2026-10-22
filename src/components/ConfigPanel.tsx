@@ -9,6 +9,7 @@ import type { AllRules, TransactionConfig, TransactionStep, VerifyField } from '
 import { parseSpec, toRulesJson } from '../utils/specParser';
 import { sortTransactions } from '../utils/txSort';
 import JSZip from 'jszip';
+import { fetchWithAppToken } from '../services/appToken';
 
 interface Props {
   rules: AllRules;
@@ -441,7 +442,7 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
     }
     setIsCloudUploading(true);
     try {
-      const res = await fetch(`/api/cloud-specs?bank=${encodeURIComponent(selectedBank)}`, {
+      const res = await fetchWithAppToken(`/api/cloud-specs?bank=${encodeURIComponent(selectedBank)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(bankSpec),
@@ -466,7 +467,7 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
     if (!selectedCloudBank) { showCloudMsg('error', '請先選擇要刪除的規格'); return; }
     if (!window.confirm(`確定要從雲端刪除「${selectedCloudBank}」的規格嗎？`)) return;
     try {
-      const res = await fetch(`/api/cloud-specs?bank=${encodeURIComponent(selectedCloudBank)}`, {
+      const res = await fetchWithAppToken(`/api/cloud-specs?bank=${encodeURIComponent(selectedCloudBank)}`, {
         method: 'DELETE',
       });
       if (!res.ok) {
