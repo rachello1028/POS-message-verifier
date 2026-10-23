@@ -122,10 +122,17 @@ def bcd_encode(digits: str) -> bytes:
 
 
 def bcd_decode(data: bytes, num_digits: int) -> str:
+    """定長數字欄位：奇數位數時補在左邊，取最後 num_digits 位"""
     s = data.hex().upper()
     if len(s) > num_digits:
         s = s[-num_digits:]
     return s
+
+
+def bcd_decode_var(data: bytes, num_digits: int) -> str:
+    """變長（LLVAR/LLLVAR）數字欄位：奇數位數時補在右邊（與 build 一致），取前 num_digits 位。
+    例：35 位 Track2 → 18 bytes，最後半個 byte 是補位的 0/F。"""
+    return data.hex().upper()[:num_digits]
 
 
 def ascii_encode(text: str, length: int, pad_char: str = ' ') -> bytes:
@@ -223,7 +230,7 @@ class Iso8583Message:
                         byte_len = (flen + 1) // 2
                         raw = data[pos:pos+byte_len]
                         pos += byte_len
-                        msg.fields[bit] = bcd_decode(raw, flen)
+                        msg.fields[bit] = bcd_decode_var(raw, flen)
                     else:
                         raw = data[pos:pos+flen]
                         pos += flen
@@ -241,7 +248,7 @@ class Iso8583Message:
                         byte_len = (flen + 1) // 2
                         raw = data[pos:pos+byte_len]
                         pos += byte_len
-                        msg.fields[bit] = bcd_decode(raw, flen)
+                        msg.fields[bit] = bcd_decode_var(raw, flen)
                     else:
                         raw = data[pos:pos+flen]
                         pos += flen
