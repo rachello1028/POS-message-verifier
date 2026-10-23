@@ -31,6 +31,16 @@ try:
 except ImportError:
     websockets = None
 
+# WS 監控埠只接受這些網頁連進來（瀏覽器一定會帶 Origin）；None＝沒帶 Origin 的本機程式。
+# 用預覽網址或其他 port 時，用環境變數 BRIDGE_ALLOWED_ORIGINS 追加（逗號分隔）。
+ALLOWED_ORIGINS = [
+    "https://pos-message-verifier.vercel.app",
+    "https://ecr-transaction-master.vercel.app",
+    "http://localhost:3001", "http://127.0.0.1:3001",
+    "http://localhost:3000", "http://127.0.0.1:3000",
+    None,
+] + [o.strip() for o in os.environ.get("BRIDGE_ALLOWED_ORIGINS", "").split(",") if o.strip()]
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 #  ISO 8583 欄位定義表
@@ -1829,6 +1839,7 @@ class HostSimulator:
         if websockets:
             ws_server = await websockets.serve(
                 self.handle_ws_client, '127.0.0.1', self.ws_port,
+                origins=ALLOWED_ORIGINS,
                 ping_interval=25, ping_timeout=10)
 
         proto = 'HTTPS(SSL)' if self.ssl_context else 'TCP'

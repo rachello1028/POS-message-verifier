@@ -1,4 +1,5 @@
 import { put, list, del } from '@vercel/blob';
+import { timingSafeEqual } from 'node:crypto';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 const PREFIX = 'pos-specs/';
@@ -7,8 +8,25 @@ function bankToPath(bank: string) {
   return `${PREFIX}${bank}.json`;
 }
 
+// 寫入（PUT/DELETE）要帶 X-App-Token，值須等於 Vercel 環境變數 APP_WRITE_TOKEN；沒設定就一律拒絕
+function hasWriteToken(req: VercelRequest, res: VercelResponse): boolean {
+  const expected = process.env.APP_WRITE_TOKEN ?? '';
+  if (!expected) {
+    res.status(503).json({ error: '伺服器未設定 APP_WRITE_TOKEN' });
+    return false;
+  }
+  const got = Buffer.from(String(req.headers['x-app-token'] ?? ''));
+  const want = Buffer.from(expected);
+  if (got.length !== want.length || !timingSafeEqual(got, want)) {
+    res.status(401).json({ error: '需要團隊存取碼' });
+    return false;
+  }
+  return true;
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Cache-Control', 'no-store');
+  if ((req.method === 'PUT' || req.method === 'DELETE') && !hasWriteToken(req, res)) return;
 
   try {
     // GET without bank → return list of available banks
