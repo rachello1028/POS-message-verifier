@@ -50,7 +50,8 @@ jobs:
       - name: Promote to production (current)
         run: |
           set +e
-          out=$(vercel promote "${{ steps.deploy.outputs.url }}" --token=${{ secrets.VERCEL_TOKEN }} --yes 2>&1)
+          # token 只授權給 team 時，promote 不帶 --scope 會用個人帳號查而回 "User not found (404)"
+          out=$(vercel promote "${{ steps.deploy.outputs.url }}" --scope=$VERCEL_ORG_ID --token=${{ secrets.VERCEL_TOKEN }} --yes 2>&1)
           code=$?
           echo "$out"
           if [ $code -eq 0 ]; then exit 0; fi
