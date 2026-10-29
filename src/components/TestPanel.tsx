@@ -441,7 +441,9 @@ export default function TestPanel({
                     <span className={`badge ${
                       tx.pass ? 'badge-success' : 'badge-error'
                     }`}>
-                      {tx.pass ? '✅ 完美通過' : '❌ 驗証失敗'}
+                      {tx.pass
+                        ? <><CheckCircle2 className="w-3.5 h-3.5 inline-block align-[-2px]" aria-hidden="true" /> 完美通過</>
+                        : <><XCircle className="w-3.5 h-3.5 inline-block align-[-2px]" aria-hidden="true" /> 驗証失敗</>}
                     </span>
                     {tx.incomplete && (
                       <span className="badge text-[var(--amber-ink)] bg-[var(--amber-soft)] border-[var(--amber-line)]">

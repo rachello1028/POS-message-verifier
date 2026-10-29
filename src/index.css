@@ -225,6 +225,21 @@
   border-color: rgba(16, 185, 129, 0.2);
 }
 
+/* ── 基礎：橫向不溢出、鍵盤焦點、減少動態 ─────────────────── */
+
+html, body { overflow-x: clip; }
+
+/* 外框顏色平常就設好：transition-colors 會過渡 outline-color，焦點框才不會從文字色淡入 */
+:where(a, button, input, select, textarea, summary, [tabindex]) { outline-color: var(--blue-ink); }
+:focus-visible {
+  outline: 2px solid var(--blue-ink);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
 /* ── 表單控件 ─────────────────────────────────────────── */
 
 input, select, textarea {

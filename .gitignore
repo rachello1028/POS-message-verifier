@@ -13,3 +13,6 @@ memory/
 
 # 模擬後台 HTTPS 自簽憑證（含私鑰，執行時自動產生）
 certs/
+
+# Hallmark 檢查產物
+.hallmark/

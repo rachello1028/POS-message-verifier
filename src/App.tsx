@@ -7,6 +7,7 @@ import AutoTestPanel from './components/AutoTestPanel';
 import SimulatorPanel from './components/SimulatorPanel';
 import type { AllRules, ConnectionStatus, TransactionResult, TransactionStep, AutoTestScript } from './types';
 import { AdbBridge } from './services/adbBridge';
+import { useDialog } from './hooks/useDialog';
 import { SimBridge } from './services/simBridge';
 import type { SimTransaction, SimStatus } from './services/simBridge';
 import { transactionsToScript } from './services/scriptConverter';
@@ -246,6 +247,11 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
     bridgeRef.current?.saveRules(updated);
   }, []);
 
+  // 計時器裡要讀「現在」的連線狀態，不能用 closure 抓到的舊值
+  const connStatusRef = useRef(connStatus);
+  connStatusRef.current = connStatus;
+  const setupDialogRef = useDialog(showSetupModal, () => setShowSetupModal(false));
+
   const handleStartBridge = useCallback(() => {
     setIsBridgeLaunching(true);
     const a = document.createElement('a');
@@ -259,12 +265,12 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
       bridgeRef.current?.connect();
       // 再等 3 秒，若還是沒連上就提示用戶需要首次設定或手動啟動
       setTimeout(() => {
-        if (bridgeRef.current && connStatus !== 'connected') {
+        if (bridgeRef.current && connStatusRef.current !== 'connected') {
           setShowSetupModal(true);
         }
       }, 3000);
     }, 2500);
-  }, [connStatus]);
+  }, []);
 
   const handleConfirmPort = useCallback(() => {
     const p = portDraft.trim().replace(/\D/g, '');
@@ -294,14 +300,14 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
   const StatusBadge = () => {
     const map: Record<ConnectionStatus, { icon: React.ReactNode; label: string; cls: string }> = {
       connected:    { icon: <Wifi className="w-3.5 h-3.5" />,                          label: 'ADB Bridge 已連線', cls: 'text-[var(--emerald-ink)]' },
-      connecting:   { icon: <Loader2 className="w-3.5 h-3.5 animate-spin" />,          label: 'ADB 連線中…',      cls: 'text-[var(--amber-ink)]'   },
+      connecting:   { icon: <Loader2 className="w-3.5 h-3.5 animate-spin motion-reduce:animate-none" />,          label: 'ADB 連線中…',      cls: 'text-[var(--amber-ink)]'   },
       disconnected: { icon: <WifiOff className="w-3.5 h-3.5" />,                       label: 'ADB Bridge 未連線', cls: 'text-[var(--fg-subtle)]'   },
       error:        { icon: <AlertTriangle className="w-3.5 h-3.5" />,                  label: 'ADB 連線失敗',      cls: 'text-[var(--red-ink)]'     },
     };
     const { icon, label, cls } = map[connStatus];
     return (
       <div className={`flex items-center gap-1.5 text-xs ${cls}`} title={connMsg}>
-        {icon} {label}
+        {icon} <span className="hidden sm:inline">{label}</span>
       </div>
     );
   };
@@ -337,12 +343,12 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
 
       {/* ── Tabs ────────────────────────────────────────── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
-        <div className="flex gap-1 bg-[var(--surface)] border border-[var(--border)] rounded-xl p-1 w-fit">
+        <div className="flex gap-1 bg-[var(--surface)] border border-[var(--border)] rounded-xl p-1 w-fit max-w-full overflow-x-auto">
           {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap shrink-0 transition-colors ${
                 activeTab === tab.id
                   ? 'bg-[var(--primary)] text-white shadow-md'
                   : 'text-[var(--fg-muted)] hover:text-[var(--fg)] hover:bg-[var(--surface-3)]'
@@ -402,14 +408,14 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
                 )}
               </span>
             </span>
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex items-center gap-2 flex-wrap">
               <button
                 onClick={handleStartBridge}
                 disabled={isBridgeLaunching}
                 className="btn-primary flex items-center gap-1.5 text-xs px-3 py-1.5 disabled:opacity-60 disabled:cursor-not-allowed rounded-lg"
               >
                 {isBridgeLaunching
-                  ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> 啟動中…</>
+                  ? <><Loader2 className="w-3.5 h-3.5 animate-spin motion-reduce:animate-none" /> 啟動中…</>
                   : <><Zap className="w-3.5 h-3.5" /> 啟動 ADB Bridge</>}
               </button>
               <a
@@ -510,12 +516,12 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
       {/* ── 首次設定 Modal ────────────────────────────────── */}
       {showSetupModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShowSetupModal(false)}>
-          <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
+          <div ref={setupDialogRef} role="dialog" aria-modal="true" aria-labelledby="setup-dialog-title" className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
             <div className="p-4 border-b border-[var(--border)] flex items-center justify-between">
-              <h2 className="text-base font-bold text-[var(--fg)] flex items-center gap-2">
+              <h2 id="setup-dialog-title" className="text-base font-bold text-[var(--fg)] flex items-center gap-2">
                 <Zap className="w-4 h-4 text-[var(--emerald-ink)]" /> 首次設定：一鍵啟動 Bridge
               </h2>
-              <button onClick={() => setShowSetupModal(false)} className="p-1 hover:bg-[var(--surface-3)] rounded-lg transition-colors text-[var(--fg-muted)]">
+              <button onClick={() => setShowSetupModal(false)} aria-label="關閉" className="p-1 hover:bg-[var(--surface-3)] rounded-lg transition-colors text-[var(--fg-muted)]">
                 <X className="w-4 h-4" />
               </button>
             </div>

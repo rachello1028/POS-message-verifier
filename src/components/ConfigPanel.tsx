@@ -10,6 +10,7 @@ import { parseSpec, toRulesJson } from '../utils/specParser';
 import { sortTransactions } from '../utils/txSort';
 import JSZip from 'jszip';
 import { fetchWithAppToken } from '../services/appToken';
+import { useDialog } from '../hooks/useDialog';
 
 interface Props {
   rules: AllRules;
@@ -154,6 +155,8 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
   const [specImportOpen, setSpecImportOpen] = useState(false);
   const [specParsing, setSpecParsing] = useState(false);
   const [specResult, setSpecResult] = useState<ReturnType<typeof parseSpec> | null>(null);
+  const closeSpecDialog = () => { setSpecImportOpen(false); setSpecResult(null); };
+  const specDialogRef = useDialog(specImportOpen && !!specResult, closeSpecDialog);
   const [specBankName, setSpecBankName] = useState('');
   const [specSelectedTx, setSpecSelectedTx] = useState<Set<number>>(() => new Set());
   const specFileRef = useRef<HTMLInputElement>(null);
@@ -598,7 +601,7 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
               )}
 
               <div className="space-y-1.5">
-                <p className="text-[10px] text-[var(--fg-subtle)] uppercase tracking-wider font-semibold">從雲端下載</p>
+                <p className="text-xs text-[var(--fg-subtle)] font-semibold">從雲端下載</p>
                 {cloudBanks.length > 0 ? (
                   <select
                     value={selectedCloudBank}
@@ -631,7 +634,7 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
               </div>
 
               <div className="border-t border-[var(--border)] pt-2 space-y-1.5">
-                <p className="text-[10px] text-[var(--fg-subtle)] uppercase tracking-wider font-semibold">上傳到雲端</p>
+                <p className="text-xs text-[var(--fg-subtle)] font-semibold">上傳到雲端</p>
                 <button
                   onClick={uploadToCloud}
                   disabled={isCloudUploading || !selectedBank}
@@ -728,7 +731,7 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
                           className="p-1 rounded hover:text-[var(--amber-ink)] text-[var(--fg-subtle)] opacity-0 group-hover:opacity-100 transition-opacity"
                         >
                           {/* pencil icon inline svg */}
-                          <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <svg className="w-3 h-3" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                           </svg>
@@ -924,15 +927,15 @@ export default function ConfigPanel({ rules: initialRules, onSave }: Props) {
 
       {/* ── 規格匯入 Modal ─────────────────────────────────────────────── */}
       {specImportOpen && specResult && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="w-[640px] max-h-[80vh] flex flex-col rounded-xl border border-[var(--border)] bg-[var(--surface-2)] shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div ref={specDialogRef} role="dialog" aria-modal="true" aria-labelledby="spec-dialog-title" className="w-full max-w-[640px] max-h-[80vh] flex flex-col rounded-xl border border-[var(--border)] bg-[var(--surface-2)] shadow-2xl">
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border)]">
               <div className="flex items-center gap-2">
                 <FilePlus2 className="w-5 h-5 text-[var(--blue-ink)]" />
-                <h2 className="text-base font-semibold text-[var(--fg)]">規格解析結果</h2>
+                <h2 id="spec-dialog-title" className="text-base font-semibold text-[var(--fg)]">規格解析結果</h2>
               </div>
-              <button onClick={() => { setSpecImportOpen(false); setSpecResult(null); }} className="p-1 rounded hover:bg-[var(--surface-3)] text-[var(--fg-subtle)]">
+              <button onClick={closeSpecDialog} aria-label="關閉" className="p-1 rounded hover:bg-[var(--surface-3)] text-[var(--fg-subtle)]">
                 <X className="w-4 h-4" />
               </button>
             </div>

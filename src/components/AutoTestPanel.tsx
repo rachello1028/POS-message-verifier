@@ -465,7 +465,7 @@ export default function AutoTestPanel({
 
         {posStatus.activeDevice && (
           <div className="mt-2 text-xs text-[var(--emerald-ink)]">
-            ✅ 已連接設備：{posStatus.activeDevice}
+            <CheckCircle2 className="w-3.5 h-3.5 inline-block align-[-2px]" aria-hidden="true" /> 已連接設備：{posStatus.activeDevice}
           </div>
         )}
 
@@ -600,9 +600,9 @@ export default function AutoTestPanel({
             <div className="flex items-center gap-2">
               {summary && (
                 <div className="flex items-center gap-3 text-xs mr-2">
-                  <span className="text-[var(--emerald-ink)]">✅ {summary.passed}</span>
-                  <span className="text-[var(--red-ink)]">❌ {summary.failed}</span>
-                  {summary.running > 0 && <span className="text-[var(--blue-ink)]">⏳ {summary.running}</span>}
+                  <span className="text-[var(--emerald-ink)]" title="通過"><CheckCircle2 className="w-3.5 h-3.5 inline-block align-[-2px]" aria-hidden="true" /> {summary.passed}</span>
+                  <span className="text-[var(--red-ink)]" title="失敗"><XCircle className="w-3.5 h-3.5 inline-block align-[-2px]" aria-hidden="true" /> {summary.failed}</span>
+                  {summary.running > 0 && <span className="text-[var(--blue-ink)]" title="執行中"><Loader2 className="w-3.5 h-3.5 inline-block align-[-2px] animate-spin motion-reduce:animate-none" aria-hidden="true" /> {summary.running}</span>}
                   <span className="text-[var(--fg-subtle)]">共 {summary.total}</span>
                 </div>
               )}
@@ -686,7 +686,7 @@ export default function AutoTestPanel({
                         </details>
                       )}
                       {result.error && (
-                        <div className="text-[var(--red-ink)]">❌ {result.error}</div>
+                        <div className="text-[var(--red-ink)]"><XCircle className="w-3.5 h-3.5 inline-block align-[-2px]" aria-hidden="true" /> {result.error}</div>
                       )}
                       {result.progressMessages.length > 0 && (
                         <details className="mt-1">
@@ -703,7 +703,7 @@ export default function AutoTestPanel({
                           <div className={`mt-1 px-2 py-1 rounded ${result.transaction.pass ? 'bg-[var(--emerald-soft)] text-[var(--emerald-ink)]' : 'bg-[var(--red-soft)] text-[var(--red-ink)]'}`}>
                             電文驗證：{result.transaction.pass ? '通過' : '失敗'}
                             {result.transaction.steps.map((s, si) => (
-                              <span key={si} className="ml-2">[{s.stepName}: {s.pass ? '✅' : '❌'}]</span>
+                              <span key={si} className="ml-2">[{s.stepName}：{s.pass ? '通過' : '失敗'}]</span>
                             ))}
                           </div>
                           {!result.transaction.pass && (
