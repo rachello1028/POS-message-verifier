@@ -44,18 +44,22 @@ jobs:
           echo "已部署: $url"
           echo "url=$url" >> "$GITHUB_OUTPUT"
 
-      # 保險：明確把這次部署 promote 成 Current Production，避免它停在 Staged
-      # 導致 push+build 成功但正式網址沒更新。deploy --prod 正常時此步會回 409
-      # (已是 current)，屬預期，視為成功；只有其他錯誤才讓 job 失敗。
+      # 保險：確認正式網址指到這次部署，沒有就 promote，避免它停在 Staged
+      # 導致 push+build 成功但正式網址沒更新。
+      # 直接打 Vercel REST API：team 專用的 token 跑 `vercel promote` 會先查個人帳號而回
+      # "User not found (404)"，API 帶 teamId 就沒這個問題。
       - name: Promote to production (current)
+        env:
+          TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          DEPLOY_URL: ${{ steps.deploy.outputs.url }}
         run: |
-          set +e
-          # token 只授權給 team 時，promote 不帶 --scope 會用個人帳號查而回 "User not found (404)"
-          out=$(vercel promote "${{ steps.deploy.outputs.url }}" --scope=$VERCEL_ORG_ID --token=${{ secrets.VERCEL_TOKEN }} --yes 2>&1)
-          code=$?
-          echo "$out"
-          if [ $code -eq 0 ]; then exit 0; fi
-          if echo "$out" | grep -qi "already the current production"; then
-            echo "(此部署已是 current production，無需 promote)"; exit 0
-          fi
-          echo "promote 失敗"; exit $code
+          api() { curl -sS -H "Authorization: Bearer $TOKEN" "$@"; }
+          host="${DEPLOY_URL#https://}"
+          dep_id=$(api "https://api.vercel.com/v13/deployments/$host?teamId=$VERCEL_ORG_ID" | jq -r '.id')
+          cur_id=$(api "https://api.vercel.com/v9/projects/$VERCEL_PROJECT_ID?teamId=$VERCEL_ORG_ID" | jq -r '.targets.production.id')
+          echo "這次部署: $dep_id / 目前正式: $cur_id"
+          if [ -z "$dep_id" ] || [ "$dep_id" = "null" ]; then echo "查不到這次部署的 id"; exit 1; fi
+          if [ "$dep_id" = "$cur_id" ]; then echo "(此部署已是 current production，無需 promote)"; exit 0; fi
+          code=$(api -o /tmp/promote.json -w '%{http_code}' -X POST "https://api.vercel.com/v10/projects/$VERCEL_PROJECT_ID/promote/$dep_id?teamId=$VERCEL_ORG_ID")
+          cat /tmp/promote.json; echo
+          case "$code" in 2*) echo "已 promote";; *) echo "promote 失敗 (HTTP $code)"; exit 1;; esac
