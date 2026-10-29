@@ -3,6 +3,11 @@
   "outputDirectory": "dist",
   "devCommand": "vite --port=3001 --host=0.0.0.0",
   "framework": null,
+  "git": {
+    "deploymentEnabled": {
+      "main": false
+    }
+  },
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" }
   ]
