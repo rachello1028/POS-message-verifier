@@ -920,7 +920,7 @@
     }
   },
   "GP_SmartPay": {
-    "description": "GP SmartPay 金融卡主機（CARDPOOL）",
+    "description": "GP SmartPay 金融卡（GPAP EDC ISO8583 V3 4.14～4.17；TAG 放 F59）",
     "mti_map": {
       "0100": "0110",
       "0200": "0210",
@@ -929,7 +929,7 @@
     },
     "response_rules": {
       "default": {
-        "_comment": "消費扣款/取消/退費/授權完成 (0200→0210)；F35/F57 由程式補",
+        "_comment": "消費扣款/取消/退費/授權完成 (0200→0210)；F35/F37/F38/F42/F59 由程式補",
         "echo": [
           3,
           4,
@@ -947,7 +947,7 @@
         "conditional": {}
       },
       "0202": {
-        "_comment": "Confirm (0202→0212)：F37/F38 帶回請求的值",
+        "_comment": "Confirm (0202→0212)：F37/F38 帶回請求值；F42/F59 由程式補",
         "echo": [
           3,
           4,
@@ -983,7 +983,7 @@
         "conditional": {}
       },
       "0500": {
-        "_comment": "結帳 (0500→0510)",
+        "_comment": "結帳 (0500→0510)：GPAP 4.11 回應不帶 F63",
         "echo": [
           3,
           11,
@@ -997,9 +997,7 @@
           "38": "auth_code",
           "39": "response_code"
         },
-        "conditional": {
-          "63": "echo_if_present"
-        }
+        "conditional": {}
       }
     }
   }

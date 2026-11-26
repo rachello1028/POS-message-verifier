@@ -584,17 +584,20 @@ class ResponseGenerator:
                 return val if val and val != 'Y' else None
         return None
 
-    # ── GP SmartPay（CARDPOOL 金融卡主機）─────────────────────────────────────
+    # ── GP SmartPay（GPAP EDC ISO8583 V3：4.14～4.17、4.11）───────────────────
+    # 以 GP 主規格 GPAP_EDC_ISO8583_20241107_V3_Draft.md 為準（實機 GPEDC 照這份）。
+    # 不要用 G_SmartPay刷卡機規格書.md（CARDPOOL 段，TAG 放 F57），實機會判 FAILURE。
     GP_SP_ORIGINAL_PCS = {
         '002542': ('002525', '002541'),  # 取消消費扣款 → 原消費扣款
         '002543': ('002525', '002541'),  # 退費 → 原消費扣款
         '002552': ('002551',),           # 授權完成 → 原預先授權
     }
     GP_SP_BALANCE_CENTS = 10_000_000     # 模擬帳戶餘額 100,000.00
+    GP_SP_TAG_FIELD = 59                 # TAG 放 F59（LLLVAR，BCD 2 bytes 長度）
 
     @staticmethod
     def _gp_sp_tags(raw: bytes) -> dict[str, bytes]:
-        """F57 TLV：Table ID(2 ascii) + Length(1 binary) + Data"""
+        """F59 TLV：Table ID(2 ascii) + Length(1 binary) + Data"""
         tags, i = {}, 0
         while i + 3 <= len(raw):
             tid = raw[i:i+2].decode('ascii', errors='replace')
@@ -606,10 +609,11 @@ class ResponseGenerator:
     def _generate_gp_smartpay_response(self, req: 'Iso8583Message',
                                        resp: 'Iso8583Message', rc: str,
                                        tx_name: str | None):
-        """依 GP SmartPay 刷卡機規格書第 3 章補 F35/F37/F38/F57"""
+        """依 GPAP V3 4.14～4.17 補 F35/F37/F38/F42/F59"""
         pc = req.fields.get(3, '')
         mti = req.mti
         amount = req.fields.get(4, '')
+        fno = self.GP_SP_TAG_FIELD
 
         # F35 解密（只印 log，回應照原 bytes 帶回）
         if 35 in req.raw_fields and 35 in req.bytes_llvar:
@@ -619,16 +623,28 @@ class ResponseGenerator:
             how = '明文' if start is None else f'XOR 起點 {start:02d}'
             print(f"  [SmartPay] F35 解密（{how}）：發卡單位={issuer} 帳號={pan}")
 
-        req_tags = self._gp_sp_tags(req.raw_fields.get(57, b''))
+        req_tags = self._gp_sp_tags(req.raw_fields.get(fno, b''))
         if req_tags:
-            shown = {k: (v.decode('ascii', errors='replace') if k in ('S1', 'S4', 'S5', 'S9') else v.hex().upper())
+            shown = {k: (v.hex().upper() if k == 'S2' else v.decode('ascii', errors='replace'))
                      for k, v in req_tags.items()}
-            print(f"  [SmartPay] F57 請求 TAG：{shown}")
+            print(f"  [SmartPay] F59 請求 TAG：{shown}")
+        if 57 in req.fields:
+            print("  [SmartPay][WARN] 請求帶了 F57，GPAP V3 的 SmartPay TAG 應放 F59")
 
-        if mti == '0500':
-            return  # 結帳：profile 已處理（帶回 F63），不帶 F57
+        tags: list[tuple[bytes, bytes]] = []
+        if '29' in req_tags:                       # Sub-batch Number：帶回（SmartPay = 0003）
+            tags.append((b'29', req_tags['29']))
 
-        # 取消/退費/授權完成：用 F37 找原交易，回原交易的 F35/F38，RRN 重新產生
+        if mti == '0500':                          # 結帳：F59 為 C，只帶回 Tag 29
+            if tags:
+                self._gp_sp_set_f59(resp, tags)
+            return
+
+        # F42：0210/0212 回帶（退費 4.16 的回應不帶）
+        if 42 in req.fields and pc != '002543':
+            resp.fields[42] = req.fields[42]
+
+        # 取消/退費/授權完成：F37 帶原消費扣款的 RRN（GPAP 3.14），回應 RRN 照帶
         if mti in ('0100', '0200') and pc in self.GP_SP_ORIGINAL_PCS:
             orig_rrn = req.fields.get(37, '')
             tid = req.fields.get(41, '')
@@ -638,44 +654,60 @@ class ResponseGenerator:
                         and entry['resp'].get(37) == orig_rrn):
                     orig = entry
                     break
-            resp.fields[37] = self._next_rrn()
+            if orig_rrn:
+                resp.fields[37] = orig_rrn         # Same as Original Sale
             if orig:
                 print(f"  [SmartPay] 找到原交易 RRN={orig_rrn} Auth={orig['resp'].get(38)}")
-                if pc in ('002542', '002543') and 35 in orig['raw_req']:
-                    resp.fields[35] = orig['req'][35]
-                    resp.raw_fields[35] = orig['raw_req'][35]
-                    resp.bytes_llvar.add(35)
-                if pc == '002542' and orig['resp'].get(38):
+                if orig['resp'].get(38):
                     resp.fields[38] = orig['resp'][38]
+                src_req, src_raw = orig['req'], orig['raw_req']
             else:
                 print(f"  [SmartPay] 找不到原交易 RRN={orig_rrn}（TID={tid}），F35 改帶回請求值")
-                if pc in ('002542', '002543') and 35 in req.bytes_llvar:
-                    resp.fields[35] = req.fields[35]
-                    resp.raw_fields[35] = req.raw_fields[35]
-                    resp.bytes_llvar.add(35)
+                src_req, src_raw = req.fields, req.raw_fields
+            # F35 只有取消 (4.15) 的 0210 要帶
+            if pc == '002542' and 35 in src_raw:
+                resp.fields[35] = src_req[35]
+                resp.raw_fields[35] = src_raw[35]
+                resp.bytes_llvar.add(35)
 
-        # F57：S9 必帶；0210/0110 再補 S5~S8（選帶，讓收據列印也測得到）
-        tags = [(b'S9', b'4001' if rc == '00' else b'2999')]
-        if mti in ('0100', '0200') and rc == '00':
+        approved = rc == '00'
+        if mti in ('0100', '0200'):
+            # 0210：S5~S8（O）、S9（Y）、SB（Y：主機日期時間；取消/退費帶回原交易日期時間）
             now = datetime.now()
-            roc_yy = f"{(now.year - 1911) % 100:02d}"
-            try:
-                amt_cents = int(amount or '0')
-            except ValueError:
-                amt_cents = 0
-            sign = 1 if pc in ('002542', '002543') else -1  # 取消/退費加回，其餘扣款
-            bal = self.GP_SP_BALANCE_CENTS + sign * amt_cents
-            bal_str = ('+' if bal >= 0 else '-') + str(abs(bal)).zfill(13)[-13:]
-            tags = [
-                (b'S5', (roc_yy + now.strftime('%m%d')).encode('ascii')),
-                (b'S6', bal_str.encode('ascii')),
-                (b'S7', bal_str.encode('ascii')),
-                (b'S8', b'SIMULATOR PROMO '),
-            ] + tags
-        f57 = b''.join(t + bytes([len(v)]) + v for t, v in tags)
-        resp.fields[57] = f57.decode('ascii')
-        resp.raw_fields[57] = f57
-        print(f"  [SmartPay] F57 回應 TAG：" + ', '.join(f"{t.decode()}={v.decode()}" for t, v in tags))
+            if approved:
+                roc_yy = f"{(now.year - 1911) % 100:02d}"
+                try:
+                    amt_cents = int(amount or '0')
+                except ValueError:
+                    amt_cents = 0
+                sign = 1 if pc in ('002542', '002543') else -1  # 取消/退費加回，其餘扣款
+                bal = self.GP_SP_BALANCE_CENTS + sign * amt_cents
+                bal_str = ('+' if bal >= 0 else '-') + str(abs(bal)).zfill(13)[-13:]
+                tags += [
+                    (b'S5', (roc_yy + now.strftime('%m%d')).encode('ascii')),
+                    (b'S6', bal_str.encode('ascii')),
+                    (b'S7', bal_str.encode('ascii')),
+                    (b'S8', b'SIMULATOR PROMO '),
+                ]
+            tags.append((b'S9', b'4001' if approved else b'2999'))
+            sb = req_tags.get('SB')
+            if not (sb and len(sb) == 14 and pc in ('002542', '002543')):
+                sb = now.strftime('%Y%m%d%H%M%S').encode('ascii')
+            tags.append((b'SB', sb))
+        else:
+            # 0212：S8（消費扣款 Y）、S9（Y）
+            if pc in ('002525', '002541'):
+                tags.append((b'S8', b'SIMULATOR PROMO '))
+            tags.append((b'S9', b'4001' if approved else b'2999'))
+
+        self._gp_sp_set_f59(resp, tags)
+
+    def _gp_sp_set_f59(self, resp: 'Iso8583Message', tags: list[tuple[bytes, bytes]]):
+        fno = self.GP_SP_TAG_FIELD
+        data = b''.join(t + bytes([len(v)]) + v for t, v in tags)
+        resp.fields[fno] = data.decode('ascii')    # 值都是 ASCII，build 會照原 bytes 送出
+        resp.raw_fields[fno] = data
+        print(f"  [SmartPay] F59 回應 TAG：" + ', '.join(f"{t.decode()}={v.decode()}" for t, v in tags))
 
     def _next_auth_code(self) -> str:
         self.auth_counter += 1
@@ -1022,7 +1054,7 @@ class ResponseGenerator:
                     del resp.raw_fields[56]
 
         # SmartPay 回應：依銀行決定 TAG/Field
-        # GP → F57 + TAG S9 | TSB → F58 + TAG F9
+        # GP → F59 + TAG S9 | TSB → F58 + TAG F9
         pc = req.fields.get(3, '')
         is_smartpay = pc.startswith('0025') or pc.startswith('0026') or pc.startswith('9200')
         if profile_bank == 'GP_SmartPay':
@@ -1031,7 +1063,7 @@ class ResponseGenerator:
                 (not profile_bank and is_smartpay)):
             if profile_bank == 'GP':
                 tag_id = b'S9'
-                field_no = 57
+                field_no = 59   # GPAP V3：SmartPay TAG 在 F59
             else:
                 tag_id = b'F9'
                 field_no = 58
