@@ -169,6 +169,7 @@ Write-Host "✅ 註冊成功！現在網頁可以直接啟動 ADB Bridge 了。"
         setSimStatus(s);
         setSimTransactions([]);
       },
+      onHostIps: (host_ip, host_ips) => setSimStatus(prev => prev ? { ...prev, host_ip, host_ips } : prev),
       onTransaction: (tx) => setSimTransactions(prev =>
         prev.some(t => t.tx_id === tx.tx_id) ? prev : [...prev, tx]
       ),

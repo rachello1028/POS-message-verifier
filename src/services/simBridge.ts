@@ -15,6 +15,15 @@ export interface SimTransaction {
   resp_hex: string;
 }
 
+export interface SimHostIp {
+  ip: string;
+  alias: string;
+  desc: string;
+  kind: 'wifi' | 'ethernet' | 'usb' | 'virtual';
+  label: string;
+  default_route: boolean;
+}
+
 export interface SimStatus {
   connected: boolean;
   tcp_port: number;
@@ -22,6 +31,7 @@ export interface SimStatus {
   mti_encoding: string;
   default_rc: string;
   host_ip: string;
+  host_ips: SimHostIp[];
   delay: number;
   timeout_mode: string;
   field_overrides: Record<string, string>;
@@ -37,6 +47,7 @@ export interface SimConnection {
 interface SimBridgeCallbacks {
   onStatus: (status: 'connected' | 'connecting' | 'disconnected' | 'error') => void;
   onSimStatus: (s: SimStatus) => void;
+  onHostIps?: (hostIp: string, hostIps: SimHostIp[]) => void;
   onTransaction: (tx: SimTransaction) => void;
   onConnection: (conn: SimConnection) => void;
   onConfigUpdated: (cfg: Record<string, unknown>) => void;
@@ -144,12 +155,16 @@ export class SimBridge {
         mti_encoding: data.mti_encoding as string,
         default_rc: data.default_rc as string,
         host_ip: (data.host_ip as string) || '127.0.0.1',
+        host_ips: (data.host_ips as SimHostIp[]) || [],
         delay: (data.delay as number) ?? 0.1,
         timeout_mode: (data.timeout_mode as string) ?? 'none',
         field_overrides: (data.field_overrides as Record<string, string>) ?? {},
         active_bank: (data.active_bank as string) || null,
         available_banks: (data.available_banks as string[]) || [],
       });
+    } else if (type === 'host_ips') {
+      // 後台背景重抓網卡清單後推過來，只更新 IP（不能走 onSimStatus，那條會清空交易列表）
+      this.callbacks.onHostIps?.((data.host_ip as string) || '127.0.0.1', (data.host_ips as SimHostIp[]) || []);
     } else if (type === 'request') {
       const txId = data.tx_id as number;
       this.pendingTx.set(txId, {

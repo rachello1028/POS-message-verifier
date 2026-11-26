@@ -1173,6 +1173,77 @@ def get_local_ip():
         return '127.0.0.1'
 
 
+_PS_LIST_IPS = r"""[Console]::OutputEncoding=[Text.Encoding]::UTF8
+@(Get-NetIPAddress -AddressFamily IPv4 -ErrorAction SilentlyContinue | Where-Object { $_.IPAddress -notlike '127.*' -and $_.IPAddress -notlike '169.254.*' } | ForEach-Object {
+  $a = Get-NetAdapter -InterfaceIndex $_.InterfaceIndex -ErrorAction SilentlyContinue
+  [pscustomobject]@{ ip=$_.IPAddress; alias=$_.InterfaceAlias; media="$($a.PhysicalMediaType)"; desc="$($a.InterfaceDescription)"; up=("$($a.Status)" -eq 'Up') }
+}) | ConvertTo-Json -Compress"""
+
+_VIRTUAL_HINTS = ('virtual', 'vpn', 'pangp', 'vmware', 'hyper-v', 'vethernet',
+                  'tap-', 'wintun', 'tailscale', 'zerotier', 'loopback')
+
+
+def _classify_nic(alias: str, media: str, desc: str) -> str:
+    """wifi / ethernet / usb（手機 USB 網路分享）/ virtual（VPN、虛擬機）"""
+    d = f'{alias} {desc}'.lower()
+    if any(h in d for h in _VIRTUAL_HINTS):
+        return 'virtual'
+    if '802.11' in media or 'wi-fi' in d or 'wifi' in d or 'wireless' in d or 'wlan' in d:
+        return 'wifi'
+    if 'apple mobile' in d or ('remote ndis' in d) or 'usb' in d:
+        return 'usb'
+    return 'ethernet'
+
+
+_KIND_ORDER = {'wifi': 0, 'ethernet': 1, 'usb': 2, 'virtual': 3}
+_KIND_LABEL = {'wifi': 'Wi-Fi', 'ethernet': '有線網路', 'usb': '手機 USB 網路', 'virtual': 'VPN／虛擬網卡'}
+
+
+def get_local_ips() -> list[dict]:
+    """列出本機所有 IPv4（排除 127/169.254），Wi-Fi 排最前面。
+    電腦同時接多張網卡時（例如 iPhone USB 網路分享＋Wi-Fi），預設路由那張不一定是 EDC 所在網段，
+    所以全部列給前端選。Windows 用 Get-NetIPAddress 拿網卡名稱與類型（約 2~3 秒，呼叫端放 thread）。"""
+    items: list[dict] = []
+    if os.name == 'nt':
+        try:
+            import subprocess
+            out = subprocess.run(
+                ['powershell', '-NoProfile', '-NonInteractive', '-Command', _PS_LIST_IPS],
+                capture_output=True, timeout=15, creationflags=0x08000000)
+            raw = json.loads(out.stdout.decode('utf-8', 'replace') or '[]')
+            if isinstance(raw, dict):
+                raw = [raw]
+            for r in raw:
+                if r.get('up') is False:
+                    continue
+                kind = _classify_nic(r.get('alias', ''), r.get('media', ''), r.get('desc', ''))
+                items.append({'ip': r['ip'], 'alias': r.get('alias', ''), 'desc': r.get('desc', ''),
+                              'kind': kind, 'label': _KIND_LABEL[kind]})
+        except Exception as e:
+            print(f"[WARN] 列舉網卡失敗，改用預設路由 IP: {e}")
+    if not items:
+        try:
+            ips = socket.gethostbyname_ex(socket.gethostname())[2]
+        except Exception:
+            ips = []
+        for ip in ips:
+            if not ip.startswith(('127.', '169.254.')):
+                items.append({'ip': ip, 'alias': '', 'desc': '', 'kind': 'ethernet', 'label': '網路'})
+    default_ip = get_local_ip()
+    for it in items:
+        it['default_route'] = it['ip'] == default_ip
+    if default_ip != '127.0.0.1' and not any(it['ip'] == default_ip for it in items):
+        items.append({'ip': default_ip, 'alias': '', 'desc': '', 'kind': 'ethernet',
+                      'label': '網路', 'default_route': True})
+    items.sort(key=lambda it: (_KIND_ORDER.get(it['kind'], 9), not it['default_route']))
+    return items
+
+
+def pick_host_ip(ips: list[dict]) -> str:
+    """預設顯示的 IP：有 Wi-Fi 用 Wi-Fi，否則第一張實體網卡，都沒有才用預設路由。"""
+    return ips[0]['ip'] if ips else get_local_ip()
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 #  TCP Server — 主角
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1307,6 +1378,8 @@ class HostSimulator:
         self.response_delay = response_delay
         self.ssl_context = ssl_context
         self.ws_clients: set = set()
+        self.host_ips: list[dict] = []      # get_local_ips() 快取，WS 連入時背景更新
+        self._ips_refreshing = False
         self.tx_counter = 0
         self.running = False
         self.last_tx_name: dict[str, str] = {}  # TID → 上一筆主交易名稱
@@ -1324,6 +1397,18 @@ class HostSimulator:
                 dead.add(client)
         self.ws_clients -= dead
 
+    async def refresh_host_ips(self):
+        if self._ips_refreshing:
+            return
+        self._ips_refreshing = True
+        try:
+            ips = await asyncio.to_thread(get_local_ips)
+        finally:
+            self._ips_refreshing = False
+        if ips != self.host_ips:
+            self.host_ips = ips
+            await self.ws_broadcast({'type': 'host_ips', 'host_ip': pick_host_ip(ips), 'host_ips': ips})
+
     async def handle_ws_client(self, ws, path=None):
         self.ws_clients.add(ws)
         print(f"[WS] 監控客戶端連入 ({len(self.ws_clients)} 個)")
@@ -1334,13 +1419,15 @@ class HostSimulator:
             'has_tpdu': self.has_tpdu,
             'mti_encoding': self.mti_encoding,
             'default_rc': self.generator.default_rc,
-            'host_ip': get_local_ip(),
+            'host_ip': pick_host_ip(self.host_ips),
+            'host_ips': self.host_ips,
             'delay': self.response_delay,
             'timeout_mode': self.generator.timeout_mode,
             'field_overrides': self.generator.field_overrides,
             'active_bank': self.generator.active_bank,
             'available_banks': list(self.generator.response_profiles.keys()),
         }, ensure_ascii=False))
+        asyncio.create_task(self.refresh_host_ips())   # 網卡可能剛插拔，背景重抓
         try:
             async for raw in ws:
                 try:
@@ -1989,6 +2076,10 @@ class HostSimulator:
         print("=" * 58)
         print("  POS Host Simulator — 模擬銀行後台")
         print(f"  {proto} 監聽: 0.0.0.0:{self.tcp_port}")
+        self.host_ips = await asyncio.to_thread(get_local_ips)
+        for i, it in enumerate(self.host_ips):
+            mark = '★' if i == 0 else ' '
+            print(f"  {mark} POS 連線: {it['ip']}:{self.tcp_port}  [{it['label']}] {it['alias']}")
         if ws_server:
             print(f"  WS   監控: ws://127.0.0.1:{self.ws_port}")
         else:

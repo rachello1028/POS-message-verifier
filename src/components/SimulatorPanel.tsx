@@ -76,6 +76,10 @@ export default function SimulatorPanel({
   const [showIpModal, setShowIpModal] = useState(false);
   const [copiedIp, setCopiedIp] = useState(false);
   const [copiedIpCmd, setCopiedIpCmd] = useState(false);
+  // 使用者選的網卡（存網卡名稱而不是 IP，DHCP 換 IP 後仍會跟著同一張卡）
+  const [hostIpAlias, setHostIpAlias] = useState<string | null>(() => {
+    try { return localStorage.getItem('sim_host_ip_alias'); } catch { return null; }
+  });
   const [delayValue, setDelayValue] = useState(simStatus?.delay ?? 0.1);
   const [timeoutMode, setTimeoutMode] = useState(simStatus?.timeout_mode ?? 'none');
   const [timeoutCount, setTimeoutCount] = useState(1);
@@ -183,14 +187,26 @@ export default function SimulatorPanel({
     setShowIpModal(true);
   }, []);
 
+  const hostIps = simStatus?.host_ips ?? [];
+  const chosenHost =
+    (hostIpAlias ? hostIps.find(h => h.alias === hostIpAlias) : undefined)
+    ?? hostIps.find(h => h.ip === simStatus?.host_ip)
+    ?? hostIps[0];
+  const displayIp = chosenHost?.ip ?? simStatus?.host_ip;
+
+  const chooseHostIp = useCallback((alias: string) => {
+    setHostIpAlias(alias);
+    try { localStorage.setItem('sim_host_ip_alias', alias); } catch { /* ignore */ }
+  }, []);
+
   const copyIpInfo = useCallback(() => {
-    const ip = simStatus?.host_ip;
+    const ip = displayIp;
     if (!ip || ip === '127.0.0.1') return;
     navigator.clipboard.writeText(`${ip}:${simTcpPort}`).then(() => {
       setCopiedIp(true);
       setTimeout(() => setCopiedIp(false), 2000);
     }).catch(() => {});
-  }, [simStatus, simTcpPort]);
+  }, [displayIp, simTcpPort]);
 
   const IP_CMD = `powershell -c "(Get-NetIPAddress -AddressFamily IPv4 | Where-Object {$_.InterfaceAlias -notmatch 'Loopback'} | Select-Object -First 1).IPAddress"`;
 
@@ -254,7 +270,7 @@ export default function SimulatorPanel({
     return map[mti] ?? mti;
   };
 
-  const hasSimIp = simStatus?.host_ip && simStatus.host_ip !== '127.0.0.1';
+  const hasSimIp = !!displayIp && displayIp !== '127.0.0.1';
 
   const ipModalEl = showIpModal && (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShowIpModal(false)}>
@@ -272,9 +288,38 @@ export default function SimulatorPanel({
 
           {hasSimIp ? (
             <>
+              {hostIps.length > 1 && (
+                <div className="space-y-1.5">
+                  <p className="text-xs text-[var(--fg-muted)]">
+                    這台電腦有 {hostIps.length} 張網卡，請選 EDC 所在的那個網路（通常是 Wi-Fi）：
+                  </p>
+                  {hostIps.map(h => {
+                    const active = h.alias === chosenHost?.alias && h.ip === chosenHost?.ip;
+                    return (
+                      <button
+                        key={`${h.alias}-${h.ip}`}
+                        onClick={() => chooseHostIp(h.alias)}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg border text-left transition-colors ${
+                          active
+                            ? 'border-[var(--blue-ink)] bg-[var(--surface-2)]'
+                            : 'border-[var(--border)] hover:bg-[var(--surface-2)]'
+                        }`}
+                      >
+                        <span className={`w-3.5 h-3.5 rounded-full border-2 flex-shrink-0 ${
+                          active ? 'border-[var(--blue-ink)] bg-[var(--blue-ink)]' : 'border-[var(--fg-subtle)]'
+                        }`} />
+                        <span className="font-mono text-sm text-[var(--fg)] w-32 flex-shrink-0">{h.ip}</span>
+                        <span className="text-xs text-[var(--fg-muted)] truncate" title={h.desc}>
+                          {h.label}{h.alias ? ` · ${h.alias}` : ''}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
               <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-xl p-5 text-center space-y-3">
                 <div className="text-2xl font-mono font-bold text-[var(--fg)] tracking-wide">
-                  {simStatus!.host_ip}
+                  {displayIp}
                 </div>
                 <div className="text-base font-mono text-[var(--blue-ink)]">
                   Port: {simTcpPort}
@@ -287,7 +332,7 @@ export default function SimulatorPanel({
               </div>
               <p className="text-xs text-[var(--emerald-ink)] flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0" />
-                IP 由 Host Simulator 自動偵測
+                {hostIps.length > 1 ? '已記住你的選擇，下次開啟會沿用同一張網卡' : 'IP 由 Host Simulator 自動偵測'}
               </p>
             </>
           ) : (
