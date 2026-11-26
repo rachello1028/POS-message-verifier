@@ -592,7 +592,6 @@ class ResponseGenerator:
         '002543': ('002525', '002541'),  # 退費 → 原消費扣款
         '002552': ('002551',),           # 授權完成 → 原預先授權
     }
-    GP_SP_BALANCE_CENTS = 10_000_000     # 模擬帳戶餘額 100,000.00
     GP_SP_TAG_FIELD = 59                 # TAG 放 F59（LLLVAR，BCD 2 bytes 長度）
 
     @staticmethod
@@ -672,21 +671,15 @@ class ResponseGenerator:
 
         approved = rc == '00'
         if mti in ('0100', '0200'):
-            # 0210：S5~S8（O）、S9（Y）、SB（Y：主機日期時間；取消/退費帶回原交易日期時間）
+            # 0210：S5、S8（O）、S9（Y）、SB（Y：主機日期時間；取消/退費帶回原交易日期時間）
+            # 不帶 S6/S7：GPEDC 1.048 只在 SMARTPAY_RATE_TYPE=2 時把 hex 轉回字元，
+            # 其他設定直接 Long.parseLong(hex 字串)，帶「+000…」必定 NumberFormatException（正式主機也不帶）
+            # S9 一定要帶：GPEDC 組 0202 時直接拿 0210 的 S9，缺了會 NPE 卡在「資料處理中」
             now = datetime.now()
             if approved:
                 roc_yy = f"{(now.year - 1911) % 100:02d}"
-                try:
-                    amt_cents = int(amount or '0')
-                except ValueError:
-                    amt_cents = 0
-                sign = 1 if pc in ('002542', '002543') else -1  # 取消/退費加回，其餘扣款
-                bal = self.GP_SP_BALANCE_CENTS + sign * amt_cents
-                bal_str = ('+' if bal >= 0 else '-') + str(abs(bal)).zfill(13)[-13:]
                 tags += [
                     (b'S5', (roc_yy + now.strftime('%m%d')).encode('ascii')),
-                    (b'S6', bal_str.encode('ascii')),
-                    (b'S7', bal_str.encode('ascii')),
                     (b'S8', b'SIMULATOR PROMO '),
                 ]
             tags.append((b'S9', b'4001' if approved else b'2999'))
