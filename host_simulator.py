@@ -135,6 +135,30 @@ def bcd_decode_var(data: bytes, num_digits: int) -> str:
     return data.hex().upper()[:num_digits]
 
 
+def is_smartpay_pc(pc: str) -> bool:
+    """SmartPay 金融卡交易：0025xx（交易）/ 0026xx（TSB Confirm）"""
+    return pc.startswith('0025') or pc.startswith('0026')
+
+
+def smartpay_decrypt_f35(raw: bytes) -> tuple[bytes, int | None]:
+    """解 SmartPay F35（規格 4.x：逐 byte 與遞增的 BCD 值 XOR，99 之後回到 00）。
+    規格對起始值的描述不一致（範例 STAN 尾碼 01 卻從 0x89 起跳），所以 100 種起點都試，
+    取「前 24 bytes（發卡單位 8 + 帳號 16）最多數字」的那組。回傳 (明文, 起點)；起點 None = 原本就是明文。"""
+    head = min(24, len(raw))
+    digits = b'0123456789'
+
+    def score(buf: bytes) -> int:
+        return sum(1 for b in buf[:head] if b in digits)
+
+    best, best_start, best_score = raw, None, score(raw)
+    for start in range(100):
+        out = bytes(b ^ int(f"{(start + i) % 100:02d}", 16) for i, b in enumerate(raw))
+        sc = score(out)
+        if sc > best_score:
+            best, best_start, best_score = out, start, sc
+    return best, best_start
+
+
 def ascii_encode(text: str, length: int, pad_char: str = ' ') -> bytes:
     return text.ljust(length, pad_char)[:length].encode('ascii', errors='replace')
 
@@ -151,6 +175,8 @@ class Iso8583Message:
         self.mti: str = ''
         self.fields: dict[int, str] = {}
         self.raw_fields: dict[int, bytes] = {}
+        # 規格標 z/n 但實際是「BCD 長度 + 原始 bytes」的 LLVAR 欄位（例：SmartPay F35 加密卡片資料）
+        self.bytes_llvar: set[int] = set()
 
     # ── 解析 ────────────────────────────────────────────────────────────────
 
@@ -226,7 +252,14 @@ class Iso8583Message:
                     ll = bcd_decode(data[pos:pos+1], 2)
                     flen = int(ll)
                     pos += 1
-                    if dtype in ('n', 'z'):
+                    if bit == 35 and is_smartpay_pc(msg.fields.get(3, '')):
+                        # SmartPay（金融卡）F35：LLVAR n2 + ans..54（發卡單位 8 + 帳號 16 + 備註 30，已 XOR 加密）
+                        raw = data[pos:pos+flen]
+                        pos += flen
+                        msg.raw_fields[bit] = raw
+                        msg.fields[bit] = raw.hex().upper()
+                        msg.bytes_llvar.add(bit)
+                    elif dtype in ('n', 'z'):
                         byte_len = (flen + 1) // 2
                         raw = data[pos:pos+byte_len]
                         pos += byte_len
@@ -318,7 +351,11 @@ class Iso8583Message:
                 else:
                     field_data.extend(ascii_encode(val, max_len))
             elif ltype == 'LLVAR':
-                if dtype in ('n', 'z'):
+                if bit in self.bytes_llvar and bit in self.raw_fields:
+                    raw = self.raw_fields[bit]
+                    field_data.extend(bcd_encode(str(len(raw)).zfill(2)))
+                    field_data.extend(raw)
+                elif dtype in ('n', 'z'):
                     flen = len(val)
                     field_data.extend(bcd_encode(str(flen).zfill(2)))
                     padded = val if len(val) % 2 == 0 else val + '0'
@@ -547,6 +584,99 @@ class ResponseGenerator:
                 return val if val and val != 'Y' else None
         return None
 
+    # ── GP SmartPay（CARDPOOL 金融卡主機）─────────────────────────────────────
+    GP_SP_ORIGINAL_PCS = {
+        '002542': ('002525', '002541'),  # 取消消費扣款 → 原消費扣款
+        '002543': ('002525', '002541'),  # 退費 → 原消費扣款
+        '002552': ('002551',),           # 授權完成 → 原預先授權
+    }
+    GP_SP_BALANCE_CENTS = 10_000_000     # 模擬帳戶餘額 100,000.00
+
+    @staticmethod
+    def _gp_sp_tags(raw: bytes) -> dict[str, bytes]:
+        """F57 TLV：Table ID(2 ascii) + Length(1 binary) + Data"""
+        tags, i = {}, 0
+        while i + 3 <= len(raw):
+            tid = raw[i:i+2].decode('ascii', errors='replace')
+            ln = raw[i+2]
+            tags[tid] = raw[i+3:i+3+ln]
+            i += 3 + ln
+        return tags
+
+    def _generate_gp_smartpay_response(self, req: 'Iso8583Message',
+                                       resp: 'Iso8583Message', rc: str,
+                                       tx_name: str | None):
+        """依 GP SmartPay 刷卡機規格書第 3 章補 F35/F37/F38/F57"""
+        pc = req.fields.get(3, '')
+        mti = req.mti
+        amount = req.fields.get(4, '')
+
+        # F35 解密（只印 log，回應照原 bytes 帶回）
+        if 35 in req.raw_fields and 35 in req.bytes_llvar:
+            plain, start = smartpay_decrypt_f35(req.raw_fields[35])
+            issuer = plain[:8].decode('ascii', errors='replace')
+            pan = plain[8:24].decode('ascii', errors='replace')
+            how = '明文' if start is None else f'XOR 起點 {start:02d}'
+            print(f"  [SmartPay] F35 解密（{how}）：發卡單位={issuer} 帳號={pan}")
+
+        req_tags = self._gp_sp_tags(req.raw_fields.get(57, b''))
+        if req_tags:
+            shown = {k: (v.decode('ascii', errors='replace') if k in ('S1', 'S4', 'S5', 'S9') else v.hex().upper())
+                     for k, v in req_tags.items()}
+            print(f"  [SmartPay] F57 請求 TAG：{shown}")
+
+        if mti == '0500':
+            return  # 結帳：profile 已處理（帶回 F63），不帶 F57
+
+        # 取消/退費/授權完成：用 F37 找原交易，回原交易的 F35/F38，RRN 重新產生
+        if mti in ('0100', '0200') and pc in self.GP_SP_ORIGINAL_PCS:
+            orig_rrn = req.fields.get(37, '')
+            tid = req.fields.get(41, '')
+            orig = None
+            for entry in reversed(self.tx_history.get(f"GP_SmartPay|{tid}", [])):
+                if (entry['req'].get(3) in self.GP_SP_ORIGINAL_PCS[pc]
+                        and entry['resp'].get(37) == orig_rrn):
+                    orig = entry
+                    break
+            resp.fields[37] = self._next_rrn()
+            if orig:
+                print(f"  [SmartPay] 找到原交易 RRN={orig_rrn} Auth={orig['resp'].get(38)}")
+                if pc in ('002542', '002543') and 35 in orig['raw_req']:
+                    resp.fields[35] = orig['req'][35]
+                    resp.raw_fields[35] = orig['raw_req'][35]
+                    resp.bytes_llvar.add(35)
+                if pc == '002542' and orig['resp'].get(38):
+                    resp.fields[38] = orig['resp'][38]
+            else:
+                print(f"  [SmartPay] 找不到原交易 RRN={orig_rrn}（TID={tid}），F35 改帶回請求值")
+                if pc in ('002542', '002543') and 35 in req.bytes_llvar:
+                    resp.fields[35] = req.fields[35]
+                    resp.raw_fields[35] = req.raw_fields[35]
+                    resp.bytes_llvar.add(35)
+
+        # F57：S9 必帶；0210/0110 再補 S5~S8（選帶，讓收據列印也測得到）
+        tags = [(b'S9', b'4001' if rc == '00' else b'2999')]
+        if mti in ('0100', '0200') and rc == '00':
+            now = datetime.now()
+            roc_yy = f"{(now.year - 1911) % 100:02d}"
+            try:
+                amt_cents = int(amount or '0')
+            except ValueError:
+                amt_cents = 0
+            sign = 1 if pc in ('002542', '002543') else -1  # 取消/退費加回，其餘扣款
+            bal = self.GP_SP_BALANCE_CENTS + sign * amt_cents
+            bal_str = ('+' if bal >= 0 else '-') + str(abs(bal)).zfill(13)[-13:]
+            tags = [
+                (b'S5', (roc_yy + now.strftime('%m%d')).encode('ascii')),
+                (b'S6', bal_str.encode('ascii')),
+                (b'S7', bal_str.encode('ascii')),
+                (b'S8', b'SIMULATOR PROMO '),
+            ] + tags
+        f57 = b''.join(t + bytes([len(v)]) + v for t, v in tags)
+        resp.fields[57] = f57.decode('ascii')
+        resp.raw_fields[57] = f57
+        print(f"  [SmartPay] F57 回應 TAG：" + ', '.join(f"{t.decode()}={v.decode()}" for t, v in tags))
+
     def _next_auth_code(self) -> str:
         self.auth_counter += 1
         if self.auth_counter > 999999:
@@ -721,6 +851,10 @@ class ResponseGenerator:
 
         # 決定使用哪個 profile
         profile_bank = self.active_bank or bank
+        # 指定 GP 時，命中的若是 GP_SmartPay 子規格，改用 SmartPay 自己的回應設定
+        if (bank and bank.endswith('_SmartPay') and bank in self.response_profiles
+                and (not self.active_bank or bank == f"{self.active_bank}_SmartPay")):
+            profile_bank = bank
         profile = self.response_profiles.get(profile_bank)
 
         # 取得 MTI mapping
@@ -891,9 +1025,11 @@ class ResponseGenerator:
         # GP → F57 + TAG S9 | TSB → F58 + TAG F9
         pc = req.fields.get(3, '')
         is_smartpay = pc.startswith('0025') or pc.startswith('0026') or pc.startswith('9200')
-        if is_smartpay and (profile_bank in ('GP', 'SmartPay', 'GP_SmartPay') or
+        if profile_bank == 'GP_SmartPay':
+            self._generate_gp_smartpay_response(req, resp, rc, tx_name)
+        elif is_smartpay and (profile_bank in ('GP', 'SmartPay') or
                 (not profile_bank and is_smartpay)):
-            if profile_bank == 'GP' or profile_bank == 'GP_SmartPay':
+            if profile_bank == 'GP':
                 tag_id = b'S9'
                 field_no = 57
             else:
